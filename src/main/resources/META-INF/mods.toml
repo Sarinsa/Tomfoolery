@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="MIT License"
+
+[[mods]]
+    modId="orespawn"
+    version="${file.jarVersion}"
+    displayName="Orespawn"
+    logoFile="logo.png"
+    credits="Myself"
+    authors="Team Aurora"
+    description="Adds a variety of new ores and minerals to Minecraft."
+
+[[dependencies.orespawn]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.orespawn]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"
