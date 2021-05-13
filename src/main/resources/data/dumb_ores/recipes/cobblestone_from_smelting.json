@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "dumb_ores:ore_ore"
+  },
+  "result": "minecraft:cobblestone",
+  "experience": 0.0,
+  "cookingtime": 200
+}

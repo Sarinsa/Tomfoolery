@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "orespawn:ore_ore",
-    "orespawn:cake_ore"
+    "dumb_ores:ore_ore",
+    "dumb_ores:cake_ore"
   ]
 }

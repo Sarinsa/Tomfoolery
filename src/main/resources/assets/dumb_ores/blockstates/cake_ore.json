@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "dumb_ores:block/cake_ore"
+    }
+  }
+}

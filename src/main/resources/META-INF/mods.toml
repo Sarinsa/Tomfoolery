@@ -1,24 +1,24 @@
 modLoader="javafml"
 loaderVersion="[36,)"
-license="MIT License"
+license="GNU General Public License v3"
 
 [[mods]]
-    modId="orespawn"
+    modId="dumb_ores"
     version="${file.jarVersion}"
-    displayName="Orespawn"
+    displayName="Dumb Ores"
     logoFile="logo.png"
     credits="Myself"
     authors="Team Aurora"
-    description="Adds a variety of new ores and minerals to Minecraft."
+    description="Adds a bunch of stupid ores and content that is completely devoid of sense"
 
-[[dependencies.orespawn]]
+[[dependencies.dumb_ores]]
     modId="forge"
     mandatory=true
     versionRange="[36,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.orespawn]]
+[[dependencies.dumb_ores]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.16.5,1.17)"

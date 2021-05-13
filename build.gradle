@@ -12,8 +12,8 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 version = '1.0'
-group = 'com.teamaurora.orespawn'
-archivesBaseName = 'orespawn'
+group = 'com.teamaurora.dumbores'
+archivesBaseName = 'Dumb-Ores'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
@@ -30,7 +30,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                orespawn {
+                dumb_ores {
                     source sourceSets.main
                 }
             }
@@ -43,7 +43,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                orespawn {
+                dumb_ores {
                     source sourceSets.main
                 }
             }
@@ -55,10 +55,10 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'orespawn', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'dumb_ores', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                orespawn {
+                dumb_ores {
                     source sourceSets.main
                 }
             }
@@ -75,7 +75,7 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "Orespawn",
+            "Specification-Title": "Dumb-Ores",
             "Specification-Vendor": "Team Aurora",
             "Specification-Version": "1",
             "Implementation-Title": project.name,

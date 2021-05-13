@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "dumb_ores:cobblestone_from_ore_ore_blasting"
+    ]
+  },
+  "criteria": {
+    "has_ore_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "dumb_ores:ore_ore"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "dumb_ores:cobblestone_from_ore_ore_blasting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ore_ore",
+      "has_the_recipe"
+    ]
+  ]
+}
