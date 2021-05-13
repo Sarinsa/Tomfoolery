@@ -7,13 +7,12 @@ import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.block.Block;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.RandomValueRange;
 import net.minecraft.loot.TagLootEntry;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.conditions.MatchTool;
 import net.minecraft.loot.functions.ApplyBonus;
-import net.minecraft.loot.functions.SetCount;
 import net.minecraftforge.common.Tags;
 
 import java.util.HashSet;
@@ -50,5 +49,7 @@ public class OrespawnBlockLootTables extends BlockLootTables {
         this.add(OrespawnBlocks.ORE_ORE.get(), (block) ->
                 createSilkTouchDispatchTable(block, applyExplosionDecay(block, TagLootEntry.expandTag(Tags.Items.ORES)
                         .apply(ApplyBonus.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))));
+
+        this.dropSelf(OrespawnBlocks.CAKE_ORE.get());
     }
 }

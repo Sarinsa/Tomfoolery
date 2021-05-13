@@ -2,6 +2,7 @@ package com.teamaurora.orespawn.datagen;
 
 import com.teamaurora.orespawn.common.core.Orespawn;
 import com.teamaurora.orespawn.datagen.loot_table.OrespawnLootTableProvider;
+import com.teamaurora.orespawn.datagen.recipe.DORecipeProvider;
 import com.teamaurora.orespawn.datagen.tag.OrespawnBlockTagsProvider;
 import com.teamaurora.orespawn.datagen.tag.OrespawnItemTagsProvider;
 import net.minecraft.data.BlockTagsProvider;
@@ -24,6 +25,7 @@ public class DataGatherer {
             dataGenerator.addProvider(blockTagsProvider);
             dataGenerator.addProvider(new OrespawnItemTagsProvider(dataGenerator, blockTagsProvider, existingFileHelper));
             dataGenerator.addProvider(new OrespawnLootTableProvider(dataGenerator));
+            dataGenerator.addProvider(new DORecipeProvider(dataGenerator));
         }
         if (event.includeClient()) {
 
