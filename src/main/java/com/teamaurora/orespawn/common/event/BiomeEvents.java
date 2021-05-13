@@ -3,6 +3,7 @@ package com.teamaurora.orespawn.common.event;
 import com.teamaurora.orespawn.common.worldgen.OrespawnConfiguredFeatures;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
@@ -26,6 +27,10 @@ public class BiomeEvents {
 
         if (hasDictType(biomeName, BiomeDictionary.Type.OVERWORLD)) {
             generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, OrespawnConfiguredFeatures.ORE_ORE);
+        }
+
+        if (biomeName.equals(Biomes.JUNGLE.location())) {
+            generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, OrespawnConfiguredFeatures.CAKE_ORE);
         }
     }
 

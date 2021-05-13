@@ -18,5 +18,6 @@ public class OrespawnItemTagsProvider extends ItemTagsProvider {
 
     protected void addTags() {
         this.tag(Tags.Items.ORES).add(OrespawnBlocks.ORE_ORE.get().asItem());
+        this.tag(Tags.Items.ORES).add(OrespawnBlocks.CAKE_ORE.get().asItem());
     }
 }

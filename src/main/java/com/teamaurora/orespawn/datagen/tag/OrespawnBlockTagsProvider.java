@@ -18,5 +18,6 @@ public class OrespawnBlockTagsProvider extends BlockTagsProvider {
     @Override
     protected void addTags() {
         this.tag(Tags.Blocks.ORES).add(OrespawnBlocks.ORE_ORE.get());
+        this.tag(Tags.Blocks.ORES).add(OrespawnBlocks.CAKE_ORE.get());
     }
 }

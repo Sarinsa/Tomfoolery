@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "orespawn:ore_ore"
+    "orespawn:ore_ore",
+    "orespawn:cake_ore"
   ]
 }
