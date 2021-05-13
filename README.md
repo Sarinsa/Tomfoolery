@@ -1,2 +1,2 @@
-# Orespawn-Remastered
-A reboot of the classic Orespawn mod with a greater focus on Vanilla+
+# Dumb-Ores
+A joke mod containing a bunch of stupid content to put a dumb smile on your face
