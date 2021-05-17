@@ -11,8 +11,8 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.0'
-group = 'com.teamaurora.dumbores'
+version = "${mc_version}-${mod_version}"
+group = 'com.sarinsa.dumb_ores'
 archivesBaseName = 'Dumb-Ores'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
@@ -68,8 +68,17 @@ minecraft {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+repositories {
+    maven {
+        name 'prog'
+        url "http://dvs1.progwml6.com/files/maven"
+    }
+}
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.16'
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+
+    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 }
 
 jar {
