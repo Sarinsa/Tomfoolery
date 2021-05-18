@@ -16,7 +16,7 @@ public class DOEntities {
 
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, DumbOres.MODID);
 
-    public static final RegistryObject<EntityType<CactusBlockEntity>> CACTUS_BLOCK_ENTITY = register("cactus_block_entity", EntityType.Builder.<CactusBlockEntity>of(CactusBlockEntity::new, EntityClassification.MISC).noSummon().sized(1.0F, 1.0F).clientTrackingRange(8).updateInterval(5));
+    public static final RegistryObject<EntityType<CactusBlockEntity>> CACTUS_BLOCK_ENTITY = register("cactus_block_entity", EntityType.Builder.<CactusBlockEntity>of(CactusBlockEntity::new, EntityClassification.MISC).noSummon().sized(1.0F, 1.0F).clientTrackingRange(10).updateInterval(5));
 
     /**
      * Initializing entity types for living entities in the mod class
