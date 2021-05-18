@@ -1,0 +1,40 @@
+package com.sarinsa.dumbores.common.core.registry;
+
+import com.sarinsa.dumbores.common.core.DumbOres;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.potion.*;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.brewing.BrewingRecipe;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.Supplier;
+
+public class DOPotions {
+
+    public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTION_TYPES, DumbOres.MODID);
+
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION = registerPotion("cactus_attraction", DOEffects.CACTUS_ATTRACTION, 200, 0);
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION_LONG = registerPotion("cactus_attraction_long", DOEffects.CACTUS_ATTRACTION, 500, 0);
+
+    public static void registerBrewingRecipes() {
+        registerBrewingRecipe(CACTUS_ATTRACTION.get(), Potions.AWKWARD, Ingredient.of(Items.GREEN_DYE));
+        registerBrewingRecipe(CACTUS_ATTRACTION_LONG.get(), CACTUS_ATTRACTION.get(), Ingredient.of(Tags.Items.DUSTS_GLOWSTONE));
+    }
+
+    private static void registerBrewingRecipe(Potion potionResult, Potion potionIngredient, Ingredient itemIngredient) {
+        BrewingRecipeRegistry.addRecipe(new BrewingRecipe(
+                Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), potionIngredient)),
+                itemIngredient,
+                PotionUtils.setPotion(new ItemStack(Items.POTION), potionResult)
+        ));
+    }
+
+    private static RegistryObject<Potion> registerPotion(String name, Supplier<Effect> effectSupplier, int duration, int amplifier) {
+        return POTIONS.register(name, () -> new Potion(new EffectInstance(effectSupplier.get(), duration, amplifier)));
+    }
+}
