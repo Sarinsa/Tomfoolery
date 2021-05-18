@@ -1,9 +1,15 @@
 package com.sarinsa.dumbores.common.entity;
 
+import com.sarinsa.dumbores.common.core.registry.DOEffects;
 import com.sarinsa.dumbores.common.core.registry.DOEntities;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -32,7 +38,6 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
 
     @Override
     protected void defineSynchedData() {
-
     }
 
     public void setFollowTarget(LivingEntity livingEntity) {
@@ -43,11 +48,42 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
     public void tick() {
         super.tick();
 
+        if (this.gracePeriod > 0)
+            --this.gracePeriod;
+
+        if (this.followTarget != null && this.followTarget.isAlive() && this.followTarget.hasEffect(DOEffects.CACTUS_ATTRACTION.get())) {
+            double xMotion = this.followTarget.getX() - this.getX();
+            double yMotion = (this.followTarget.getY() + this.followTarget.getEyeHeight()) - this.getY();
+            double zMotion = this.followTarget.getZ() - this.getZ();
+
+            this.setDeltaMovement(xMotion * 0.2D, yMotion * 0.2D, zMotion * 0.2D);
+
+            if (this.distanceToSqr(this.followTarget) > 600) {
+                this.followTarget = null;
+            }
+        }
+        else {
+            if (!this.isNoGravity()) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.04D, 0.0D));
+            }
+        }
+        this.move(MoverType.SELF, this.getDeltaMovement());
+
         for (LivingEntity livingEntity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1.2D))) {
             if (this.getBoundingBox().intersects(livingEntity.getBoundingBox())) {
                 livingEntity.hurt(DamageSource.CACTUS, 1.0F);
             }
         }
+
+        if (this.onGround && this.gracePeriod <= 0) {
+            this.level.setBlock(this.blockPosition(), Blocks.CACTUS.defaultBlockState(), 3);
+            this.remove();
+        }
+    }
+
+    @Override
+    public boolean canChangeDimensions() {
+        return false;
     }
 
     @Override
