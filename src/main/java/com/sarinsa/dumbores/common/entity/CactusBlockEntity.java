@@ -62,12 +62,16 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
 
     @Override
     protected void readAdditionalSaveData(CompoundNBT compoundNBT) {
+        Entity entity = this.level.getEntity(compoundNBT.getInt("FollowTarget"));
 
+        if (entity instanceof LivingEntity) {
+            this.followTarget = (LivingEntity) entity;
+        }
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundNBT compoundNBT) {
-
+        compoundNBT.putInt("FollowTarget", this.followTarget == null ? this.getId() : this.followTarget.getId());
     }
 
     @OnlyIn(Dist.CLIENT)
