@@ -2,6 +2,7 @@ package com.teamaurora.dumbores.datagen.recipe;
 
 import com.teamaurora.dumbores.common.core.DumbOres;
 import com.teamaurora.dumbores.common.core.registry.DOBlocks;
+import com.teamaurora.dumbores.common.core.registry.DOItems;
 import net.minecraft.data.CookingRecipeBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
@@ -21,16 +22,14 @@ public class DORecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
-        this.smeltingRecipe(DOBlocks.ORE_ORE.get(), Items.COBBLESTONE, 0.0F, consumer);
 
-        this.blastingRecipe(DOBlocks.ORE_ORE.get(), Items.COBBLESTONE, 0.0F, consumer);
     }
 
     protected void smeltingRecipe(IItemProvider ingredient, IItemProvider result, float experience, Consumer<IFinishedRecipe> consumer) {
         String ingredientName = itemName(result);
         CookingRecipeBuilder.smelting(Ingredient.of(ingredient), result, experience, 200)
                 .unlockedBy("has_" + ingredientName, has(ingredient))
-                .save(consumer, DumbOres.resourceLoc(ingredientName + "_from_smelting"));
+                .save(consumer, DumbOres.resourceLoc(ingredientName + "_from_" + ingredientName + "smelting"));
     }
 
     protected void blastingRecipe(IItemProvider ingredient, IItemProvider result, float experience, Consumer<IFinishedRecipe> consumer) {
