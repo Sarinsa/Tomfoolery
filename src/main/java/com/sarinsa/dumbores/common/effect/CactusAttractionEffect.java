@@ -30,9 +30,8 @@ public class CactusAttractionEffect extends Effect {
 
             if (state.is(Blocks.CACTUS)) {
                 world.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
-                CactusBlockEntity cactusEntity = new CactusBlockEntity(world, blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D);
+                CactusBlockEntity cactusEntity = new CactusBlockEntity(world, livingEntity, blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D);
                 world.addFreshEntity(cactusEntity);
-                cactusEntity.setFollowTarget(livingEntity);
             }
         }
     }
