@@ -18,8 +18,8 @@ public class DOPotions {
 
     public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTION_TYPES, DumbOres.MODID);
 
-    public static final RegistryObject<Potion> CACTUS_ATTRACTION = registerPotion("cactus_attraction", DOEffects.CACTUS_ATTRACTION, 200, 0);
-    public static final RegistryObject<Potion> CACTUS_ATTRACTION_LONG = registerPotion("cactus_attraction_long", DOEffects.CACTUS_ATTRACTION, 500, 0);
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION = registerPotion("cactus_attraction", DOEffects.CACTUS_ATTRACTION, 600, 0);
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION_LONG = registerPotion("cactus_attraction_long", DOEffects.CACTUS_ATTRACTION, 1200, 0);
 
     public static void registerBrewingRecipes() {
         registerBrewingRecipe(CACTUS_ATTRACTION.get(), Potions.AWKWARD, Ingredient.of(Items.GREEN_DYE));
