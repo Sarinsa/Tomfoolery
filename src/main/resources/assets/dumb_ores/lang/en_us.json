@@ -10,10 +10,14 @@
 
   "item.minecraft.potion.effect.cactus_attraction": "Potion of Cactus Attraction",
   "item.minecraft.potion.effect.cactus_attraction_long": "Potion of Cactus Attraction",
+  "item.minecraft.potion.effect.cactus_attraction_strong": "Potion of Cactus Attraction",
   "item.minecraft.splash_potion.effect.cactus_attraction": "Splash Potion of Cactus Attraction",
   "item.minecraft.splash_potion.effect.cactus_attraction_long": "Splash Potion of Cactus Attraction",
+  "item.minecraft.splash_potion.effect.cactus_attraction_strong": "Splash Potion of Cactus Attraction",
   "item.minecraft.lingering_potion.effect.cactus_attraction": "Lingering Potion of Cactus Attraction",
   "item.minecraft.lingering_potion.effect.cactus_attraction_long": "Lingering Potion of Cactus Attraction",
+  "item.minecraft.lingering_potion.effect.cactus_attraction_strong": "Lingering Potion of Cactus Attraction",
   "item.minecraft.tipped_arrow.effect.cactus_attraction": "Arrow of Cactus Attraction",
-  "item.minecraft.tipped_arrow.effect.cactus_attraction_long": "Arrow of Cactus Attraction"
+  "item.minecraft.tipped_arrow.effect.cactus_attraction_long": "Arrow of Cactus Attraction",
+  "item.minecraft.tipped_arrow.effect.cactus_attraction_strong": "Arrow of Cactus Attraction"
 }

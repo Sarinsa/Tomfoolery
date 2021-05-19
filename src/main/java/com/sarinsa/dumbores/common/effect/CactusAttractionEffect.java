@@ -22,8 +22,9 @@ public class CactusAttractionEffect extends Effect {
     public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
         World world = livingEntity.getCommandSenderWorld();
         BlockPos pos = livingEntity.blockPosition();
+        int range = amplifier > 0 ? 12 : 6;
 
-        Iterable<BlockPos> scanArea = BlockPos.betweenClosed(pos.offset(6, 5, 6), pos.offset(-6, -5, -6));
+        Iterable<BlockPos> scanArea = BlockPos.betweenClosed(pos.offset(range, 5, range), pos.offset(-range, -5, -range));
 
         for (BlockPos blockPos : scanArea) {
             BlockState state = world.getBlockState(blockPos);

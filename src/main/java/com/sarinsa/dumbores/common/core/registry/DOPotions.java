@@ -20,10 +20,12 @@ public class DOPotions {
 
     public static final RegistryObject<Potion> CACTUS_ATTRACTION = registerPotion("cactus_attraction", DOEffects.CACTUS_ATTRACTION, 600, 0);
     public static final RegistryObject<Potion> CACTUS_ATTRACTION_LONG = registerPotion("cactus_attraction_long", DOEffects.CACTUS_ATTRACTION, 1200, 0);
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION_STRONG = registerPotion("cactus_attraction_strong", DOEffects.CACTUS_ATTRACTION, 400, 1);
 
     public static void registerBrewingRecipes() {
         registerBrewingRecipe(CACTUS_ATTRACTION.get(), Potions.AWKWARD, Ingredient.of(Items.GREEN_DYE));
         registerBrewingRecipe(CACTUS_ATTRACTION_LONG.get(), CACTUS_ATTRACTION.get(), Ingredient.of(Tags.Items.DUSTS_GLOWSTONE));
+        registerBrewingRecipe(CACTUS_ATTRACTION_STRONG.get(), CACTUS_ATTRACTION.get(), Ingredient.of(Tags.Items.DUSTS_REDSTONE));
     }
 
     private static void registerBrewingRecipe(Potion potionResult, Potion potionIngredient, Ingredient itemIngredient) {
