@@ -2,6 +2,7 @@ package com.sarinsa.dumbores.common.core;
 
 import com.sarinsa.dumbores.common.core.registry.*;
 import com.sarinsa.dumbores.common.event.BiomeEvents;
+import com.sarinsa.dumbores.common.tags.DOItemTags;
 import com.sarinsa.dumbores.common.worldgen.DOConfiguredFeatures;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,6 +19,10 @@ public class DumbOres {
 
     public static final String MODID = "dumb_ores";
     private static final Logger LOGGER = LogManager.getLogger(MODID);
+
+    static {
+        DOItemTags.init();
+    }
 
     public DumbOres() {
         DOEntities.initTypes();

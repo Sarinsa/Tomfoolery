@@ -1,6 +1,7 @@
 package com.sarinsa.dumbores.datagen.loot_table;
 
 import com.sarinsa.dumbores.common.core.registry.DOBlocks;
+import com.sarinsa.dumbores.common.tags.DOItemTags;
 import net.minecraft.advancements.criterion.EnchantmentPredicate;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.MinMaxBounds;
@@ -49,6 +50,8 @@ public class DOBlockLootTables extends BlockLootTables {
                 createSilkTouchDispatchTable(block, applyExplosionDecay(block, TagLootEntry.expandTag(Tags.Items.ORES)
                         .apply(ApplyBonus.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))));
 
-        this.dropSelf(DOBlocks.CAKE_ORE.get());
+        this.add(DOBlocks.CAKE_ORE.get(), (block) ->
+                createSilkTouchDispatchTable(block, applyExplosionDecay(block, TagLootEntry.expandTag(DOItemTags.CAKES)
+                        .apply(ApplyBonus.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))));
     }
 }
