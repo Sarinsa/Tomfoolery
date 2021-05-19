@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "dumb_ores:cobblestone_from_ore_ore_blasting"
+      "dumb_ores:netheraight_ingot_from_ore_ore_blasting"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "dumb_ores:cobblestone_from_ore_ore_blasting"
+        "recipe": "dumb_ores:netheraight_ingot_from_ore_ore_blasting"
       }
     }
   },
