@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "com.sarinsa.dumb_ores.common.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "dumb_ores.mixins.refmap.json",
+  "mixins": [],
+  "client": [
+    "LivingRendererMixin"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
