@@ -1,0 +1,8 @@
+{
+  "item.grenade_launcher.thump": {
+    "subtitle": "sound_event.tomfoolery.subtitle.launcher_thump",
+    "sounds": [
+      "tomfoolery:item/grenade_launcher/launcher_thump"
+    ]
+  }
+}

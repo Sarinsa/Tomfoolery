@@ -3,22 +3,22 @@ loaderVersion="[36,)"
 license="GNU General Public License v3"
 
 [[mods]]
-    modId="dumb_ores"
+    modId="tomfoolery"
     version="${file.jarVersion}"
-    displayName="Dumb Ores"
+    displayName="Tomfoolery"
     logoFile="logo.png"
-    credits="Frenderman (assets), Father Toast (being pretty cool)"
+    credits="Frenderman (artist), Father Toast (cool dude)"
     authors="Sarinsa"
-    description="Adds a bunch of stupid ores and content that is completely devoid of sense"
+    description="A collection of my dumbest ideas and random things, with a few additions suggested by other cool peeps!"
 
-[[dependencies.dumb_ores]]
+[[dependencies.tomfoolery]]
     modId="forge"
     mandatory=true
-    versionRange="[36.1.16,)"
+    versionRange="[36.1.4,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.dumb_ores]]
+[[dependencies.tomfoolery]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.16.5,1.17)"

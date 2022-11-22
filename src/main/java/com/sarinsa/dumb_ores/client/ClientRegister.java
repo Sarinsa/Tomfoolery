@@ -1,15 +1,23 @@
 package com.sarinsa.dumb_ores.client;
 
 import com.sarinsa.dumb_ores.client.render.entity.cactus.CactusEntityRenderer;
-import com.sarinsa.dumb_ores.common.core.DumbOres;
-import com.sarinsa.dumb_ores.common.core.registry.DOEntities;
+import com.sarinsa.dumb_ores.client.render.entity.grenade.GrenadeRoundRenderer;
+import com.sarinsa.dumb_ores.common.core.Tomfoolery;
+import com.sarinsa.dumb_ores.common.core.registry.TomEntities;
+import com.sarinsa.dumb_ores.common.core.registry.TomItems;
+import com.sarinsa.dumb_ores.common.item.GrenadeRoundItem;
+import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = DumbOres.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+import java.util.function.Supplier;
+
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Tomfoolery.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegister {
 
     @SubscribeEvent
@@ -18,11 +26,21 @@ public class ClientRegister {
         registerEntityRenderers();
     }
 
+    @SubscribeEvent
+    public static void registerItemColors(ColorHandlerEvent.Item event) {
+        ItemColors itemColors = event.getItemColors();
+
+        for (Supplier<GrenadeRoundItem> itemSupplier : TomItems.GRENADE_AMMO) {
+            itemColors.register((itemStack, color) -> itemSupplier.get().getColor(color), itemSupplier.get());
+        }
+    }
+
     private static void setBlockRenderTypes() {
 
     }
 
     private static void registerEntityRenderers() {
-        RenderingRegistry.registerEntityRenderingHandler(DOEntities.CACTUS_BLOCK_ENTITY.get(), CactusEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(TomEntities.CACTUS_BLOCK_ENTITY.get(), CactusEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(TomEntities.GRENADE_ROUND.get(), GrenadeRoundRenderer::new);
     }
 }

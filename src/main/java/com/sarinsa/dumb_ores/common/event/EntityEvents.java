@@ -1,7 +1,7 @@
 package com.sarinsa.dumb_ores.common.event;
 
 import com.sarinsa.dumb_ores.common.capability.CapabilityHelper;
-import com.sarinsa.dumb_ores.common.core.registry.DOEffects;
+import com.sarinsa.dumb_ores.common.core.registry.TomEffects;
 import com.sarinsa.dumb_ores.common.network.NetworkHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -64,7 +64,7 @@ public class EntityEvents {
     }
 
     private static void updateEntityCactusAttract(Effect effect, World world, LivingEntity livingEntity, boolean marked) {
-        if (effect == DOEffects.CACTUS_ATTRACTION.get()) {
+        if (effect == TomEffects.CACTUS_ATTRACTION.get()) {
             if (!world.isClientSide) {
                 ServerWorld serverWorld = (ServerWorld) world;
 

@@ -1,6 +1,6 @@
 package com.sarinsa.dumb_ores.common.capability.cactus;
 
-import com.sarinsa.dumb_ores.common.core.DumbOres;
+import com.sarinsa.dumb_ores.common.core.Tomfoolery;
 import net.minecraft.nbt.ByteNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -19,7 +19,7 @@ public class CactusAttractCapabilityStorage implements Capability.IStorage<ICact
     @Override
     public void readNBT(Capability<ICactusAttractCapability> capability, ICactusAttractCapability instance, Direction side, INBT nbt) {
         if (nbt.getType() != ByteNBT.TYPE) {
-            DumbOres.LOGGER.error("Failed to read difficulty capability data! The parsed data must be of type ByteNBT");
+            Tomfoolery.LOGGER.error("Failed to read difficulty capability data! The parsed data must be of type ByteNBT");
             return;
         }
         ByteNBT tag = (ByteNBT) nbt;

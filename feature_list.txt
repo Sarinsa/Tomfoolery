@@ -1,0 +1,12 @@
+Ores:
+- Ore ore
+- Cake ore
+
+Shenanigans:
+- Cactus attraction potion
+- Cactus block entity
+- Netheraight
+- Custom death rotation degrees
+
+Gadgets:
+- Grenade Launcher

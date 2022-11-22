@@ -1,10 +1,7 @@
 package com.sarinsa.dumb_ores.common.entity;
 
 import com.sarinsa.dumb_ores.common.capability.CapabilityHelper;
-import com.sarinsa.dumb_ores.common.core.DumbOres;
-import com.sarinsa.dumb_ores.common.core.registry.DOEffects;
-import com.sarinsa.dumb_ores.common.core.registry.DOEntities;
-import com.sarinsa.dumb_ores.common.event.CapabilityEvents;
+import com.sarinsa.dumb_ores.common.core.registry.TomEntities;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -31,7 +28,7 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
     }
 
     public CactusBlockEntity(World world, LivingEntity followTarget, double x, double y, double z) {
-        super(DOEntities.CACTUS_BLOCK_ENTITY.get(), world);
+        super(TomEntities.CACTUS_BLOCK_ENTITY.get(), world);
         this.setPos(x, y, z);
         this.setFollowTarget(followTarget);
         this.noCulling = true;

@@ -8,11 +8,11 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 public class CapabilityHelper {
 
     public static boolean getCactusAttract(LivingEntity entity) {
-        return entity.getCapability(DOCapabilities.CACTUS_ATTRACT_CAPABILITY).orElse(DOCapabilities.CACTUS_ATTRACT_CAPABILITY.getDefaultInstance()).getMarked();
+        return entity.getCapability(TomCapabilities.CACTUS_ATTRACT_CAPABILITY).orElse(TomCapabilities.CACTUS_ATTRACT_CAPABILITY.getDefaultInstance()).getMarked();
     }
 
     public static void setCactusAttract(LivingEntity entity, boolean marked) {
-        entity.getCapability(DOCapabilities.CACTUS_ATTRACT_CAPABILITY).orElse(DOCapabilities.CACTUS_ATTRACT_CAPABILITY.getDefaultInstance()).setMarked(marked);
+        entity.getCapability(TomCapabilities.CACTUS_ATTRACT_CAPABILITY).orElse(TomCapabilities.CACTUS_ATTRACT_CAPABILITY.getDefaultInstance()).setMarked(marked);
     }
 
     public static void setCactusAttract(ServerPlayerEntity playerEntity, LivingEntity entity, boolean marked) {

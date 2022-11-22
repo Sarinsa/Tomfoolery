@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "dumb_ores:ore_ore"
-  },
-  "result": "dumb_ores:netheraight_ingot",
-  "experience": 0.0,
-  "cookingtime": 200
-}

@@ -24,6 +24,6 @@ public abstract class LivingRendererMixin<T extends LivingEntity, M extends Enti
 
     @Redirect(method = "setupRotations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingRenderer;getFlipDegrees(Lnet/minecraft/entity/LivingEntity;)F"))
     public float replaceFlipDegrees(LivingRenderer<T, M> livingRenderer, T entity) {
-        return ClientMixinHooks.getRendererFlipDegrees(this.getFlipDegrees(entity));
+        return ClientMixinHooks.getRendererFlipDegrees(getFlipDegrees(entity));
     }
 }

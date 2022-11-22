@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "tomfoolery:item/grenade_round_shell",
+    "layer1": "tomfoolery:item/grenade_round_top"
+  }
+}

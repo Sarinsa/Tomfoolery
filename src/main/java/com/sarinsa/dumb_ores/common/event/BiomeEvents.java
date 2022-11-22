@@ -1,6 +1,6 @@
 package com.sarinsa.dumb_ores.common.event;
 
-import com.sarinsa.dumb_ores.common.worldgen.DOConfiguredFeatures;
+import com.sarinsa.dumb_ores.common.worldgen.TomConfiguredFeatures;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biomes;
@@ -26,11 +26,11 @@ public class BiomeEvents {
         MobSpawnInfoBuilder spawnInfoBuilder = event.getSpawns();
 
         if (hasDictType(biomeName, BiomeDictionary.Type.OVERWORLD)) {
-            generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, DOConfiguredFeatures.ORE_ORE);
+            generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, TomConfiguredFeatures.ORE_ORE);
         }
 
         if (biomeName.equals(Biomes.JUNGLE.location())) {
-            generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, DOConfiguredFeatures.CAKE_ORE);
+            generationSettings.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, TomConfiguredFeatures.CAKE_ORE);
         }
     }
 

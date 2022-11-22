@@ -1,6 +1,6 @@
 package com.sarinsa.dumb_ores.common.network;
 
-import com.sarinsa.dumb_ores.common.core.DumbOres;
+import com.sarinsa.dumb_ores.common.core.Tomfoolery;
 import com.sarinsa.dumb_ores.common.network.message.S2CUpdateEntityCactusAttract;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -16,7 +16,7 @@ public class PacketHandler {
 
     private static SimpleChannel createChannel() {
         return NetworkRegistry.ChannelBuilder
-                .named(DumbOres.resourceLoc("channel"))
+                .named(Tomfoolery.resourceLoc("channel"))
                 .serverAcceptedVersions(PROTOCOL_NAME::equals)
                 .clientAcceptedVersions(PROTOCOL_NAME::equals)
                 .networkProtocolVersion(() -> PROTOCOL_NAME)

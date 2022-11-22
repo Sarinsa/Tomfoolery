@@ -15,13 +15,13 @@ apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
 mixin {
-    add sourceSets.main, "dumb_ores.mixins.refmap.json"
+    add sourceSets.main, "tomfoolery.mixins.refmap.json"
 }
 
 
 version = "${mc_version}-${mod_version}"
-group = 'com.sarinsa.dumb_ores'
-archivesBaseName = 'Dumb-Ores'
+group = 'com.sarinsa.tomfoolery'
+archivesBaseName = 'Tomfoolery'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
@@ -40,10 +40,10 @@ minecraft {
             property "mixin.debug.export", "true"
             property 'mixin.env.disableRefMap', 'true'
 
-            arg "-mixin.config=dumb_ores.mixins.json"
+            arg "-mixin.config=tomfoolery.mixins.json"
 
             mods {
-                dumb_ores {
+                tomfoolery {
                     source sourceSets.main
                 }
             }
@@ -58,10 +58,10 @@ minecraft {
             property "mixin.debug.export", "true"
             property 'mixin.env.disableRefMap', 'true'
 
-            arg "-mixin.config=dumb_ores.mixins.json"
+            arg "-mixin.config=tomfoolery.mixins.json"
 
             mods {
-                dumb_ores {
+                tomfoolery {
                     source sourceSets.main
                 }
             }
@@ -73,10 +73,10 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'dumb_ores', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'tomfoolery', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                dumb_ores {
+                tomfoolery {
                     source sourceSets.main
                 }
             }
@@ -105,14 +105,14 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "Dumb-Ores",
-            "Specification-Vendor": "Team Aurora",
+            "Specification-Title": "Tomfoolery",
+            "Specification-Vendor": "Sarinsa",
             "Specification-Version": "1",
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"Team Aurora",
+            "Implementation-Vendor" :"Sarinsa",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "MixinConfigs": "dumb_ores.mixins.json"
+            "MixinConfigs": "tomfoolery.mixins.json"
         ])
     }
 }
