@@ -5,9 +5,11 @@ import com.sarinsa.dumb_ores.common.core.registry.TomBlocks;
 import com.sarinsa.dumb_ores.common.core.registry.TomItems;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.*;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 
 import java.util.Objects;
@@ -23,6 +25,12 @@ public class TomRecipeProvider extends RecipeProvider {
     protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
         smeltingRecipe(TomBlocks.CAKE_ORE.get(), Blocks.STONE, 0.1F, consumer);
         smeltingRecipe(TomBlocks.ORE_ORE.get(), TomItems.NETHERAIGHT_INGOT.get(), 0.3F, consumer);
+
+        smithingRecipe(Items.DIAMOND_HELMET, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_HELMET.get(), consumer);
+        smithingRecipe(Items.DIAMOND_CHESTPLATE, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_CHESTPLATE.get(), consumer);
+        smithingRecipe(Items.DIAMOND_LEGGINGS, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_LEGGINGS.get(), consumer);
+        smithingRecipe(Items.DIAMOND_BOOTS, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_BOOTS.get(), consumer);
+
 
         ShapedRecipeBuilder.shaped(TomItems.EXPLOSIVE_GRENADE_ROUND.get(), 1)
                 .pattern("#T#")
@@ -67,6 +75,13 @@ public class TomRecipeProvider extends RecipeProvider {
         CookingRecipeBuilderNoTab.blasting(Ingredient.of(ingredient), result, experience, 100)
                 .unlockedBy("has_" + ingredientName, has(ingredient))
                 .save(consumer, Tomfoolery.resourceLoc(resultName + "_from_" + ingredientName + "_blasting"));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    protected void smithingRecipe(IItemProvider ingredient, IItemProvider alloy, Item result, Consumer<IFinishedRecipe> consumer) {
+        SmithingRecipeBuilderNoTab.smithing(Ingredient.of(ingredient), Ingredient.of(alloy), result)
+                .unlocks("has_" + alloy.asItem().getRegistryName().getPath(), has(alloy))
+                .save(consumer, result.getRegistryName());
     }
 
     protected static String itemName(IItemProvider criterionItem) {

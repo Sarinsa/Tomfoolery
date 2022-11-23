@@ -6,6 +6,7 @@
   "refmap": "dumb_ores.mixins.refmap.json",
   "mixins": [],
   "client": [
+    "LivingRendererMixin"
   ],
   "server": [],
   "injectors": {

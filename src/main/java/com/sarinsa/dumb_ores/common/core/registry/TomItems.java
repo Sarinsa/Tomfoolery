@@ -4,8 +4,9 @@ import com.sarinsa.dumb_ores.common.core.Tomfoolery;
 import com.sarinsa.dumb_ores.common.core.registry.types.GrenadeType;
 import com.sarinsa.dumb_ores.common.item.GrenadeLauncherItem;
 import com.sarinsa.dumb_ores.common.item.GrenadeRoundItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
+import com.sarinsa.dumb_ores.common.item.TomArmorMaterial;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.*;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -25,6 +26,10 @@ public class TomItems {
     public static final RegistryObject<GrenadeRoundItem> EXPLOSIVE_GRENADE_ROUND = registerGrenadeAmmo(TomGrenadeTypes.EXPLOSIVE);
     public static final RegistryObject<GrenadeRoundItem> DOOM_GRENADE_ROUND = registerGrenadeAmmo(TomGrenadeTypes.DOOM);
 
+    public static final RegistryObject<Item> NETHERAIGHT_HELMET = registerItem("netheraight_helmet", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlotType.HEAD, new Item.Properties()));
+    public static final RegistryObject<Item> NETHERAIGHT_CHESTPLATE = registerItem("netheraight_chestplate", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlotType.CHEST, new Item.Properties()));
+    public static final RegistryObject<Item> NETHERAIGHT_LEGGINGS = registerItem("netheraight_leggings", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlotType.LEGS, new Item.Properties()));
+    public static final RegistryObject<Item> NETHERAIGHT_BOOTS = registerItem("netheraight_boots", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlotType.FEET, new Item.Properties()));
 
 
     private static <T extends Item> RegistryObject<T> registerItem(String name, Supplier<T> itemSupplier) {

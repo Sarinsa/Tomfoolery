@@ -1,13 +1,18 @@
 package com.sarinsa.dumb_ores.common.compat.jei;
 
 import com.sarinsa.dumb_ores.common.core.Tomfoolery;
+import com.sarinsa.dumb_ores.common.core.registry.TomItems;
+import com.sarinsa.dumb_ores.common.util.TranslationReferences;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -43,6 +48,7 @@ public class TomfooleryJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        registration.addIngredientInfo(new ItemStack(TomItems.GRENADE_LAUNCHER.get()), VanillaTypes.ITEM, TranslationReferences.LAUNCHER_JEI_DESC);
     }
 
     @Override
@@ -64,15 +70,6 @@ public class TomfooleryJEI implements IModPlugin {
     @SuppressWarnings("unchecked")
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
-        IRecipeManager recipeManager = jeiRuntime.getRecipeManager();
-        IRecipeCategory<ICraftingRecipe> crafting = (IRecipeCategory<ICraftingRecipe>) recipeManager.getRecipeCategory(VanillaRecipeCategoryUid.CRAFTING);
-        List<ICraftingRecipe> recipes = recipeManager.getRecipes(crafting);
 
-        for (IRecipe<?> recipe : recipes) {
-            if (recipe.getId().equals(new ResourceLocation("netherite_ingot"))) {
-                recipeManager.hideRecipe(recipe, VanillaRecipeCategoryUid.CRAFTING);
-                break;
-            }
-        }
     }
 }

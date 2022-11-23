@@ -6,7 +6,12 @@
   "item.tomfoolery.explosive_grenade_round": "Explosive Grenade Round",
   "item.tomfoolery.doom_grenade_round": "Doom Grenade Round",
   "item.tomfoolery.grenade_launcher": "Ridicu-Launcher",
-  
+
+  "item.tomfoolery.netheraight_helmet": "Netheraight Helmet",
+  "item.tomfoolery.netheraight_chestplate": "Netheraight Chestplate",
+  "item.tomfoolery.netheraight_leggings": "Netheraight Leggings",
+  "item.tomfoolery.netheraight_boots": "Netheraight Boots",
+
   "effect.tomfoolery.cactus_attraction": "Cactus Attraction",
 
   "entity.tomfoolery.cactus_block_entity": "Cactus",
@@ -22,5 +27,7 @@
   "item.minecraft.lingering_potion.effect.cactus_attraction_strong": "Lingering Potion of Cactus Attraction",
   "item.minecraft.tipped_arrow.effect.cactus_attraction": "Arrow of Cactus Attraction",
   "item.minecraft.tipped_arrow.effect.cactus_attraction_long": "Arrow of Cactus Attraction",
-  "item.minecraft.tipped_arrow.effect.cactus_attraction_strong": "Arrow of Cactus Attraction"
+  "item.minecraft.tipped_arrow.effect.cactus_attraction_strong": "Arrow of Cactus Attraction",
+
+  "item.tomfoolery.grenade_launcher.jei_desc": "The Ridicu-Launcher is a versatile launcher that supports many types of ammo. It can launch normal grenade rounds, potions, pistons, torches and food etc. While it cannot be crafted, it can be found various places in the world."
 }
