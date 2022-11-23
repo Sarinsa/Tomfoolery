@@ -18,9 +18,9 @@ public class TomPotions {
 
     public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTION_TYPES, Tomfoolery.MODID);
 
-    public static final RegistryObject<Potion> CACTUS_ATTRACTION = registerPotion("cactus_attraction", TomEffects.CACTUS_ATTRACTION, 600, 0);
-    public static final RegistryObject<Potion> CACTUS_ATTRACTION_LONG = registerPotion("cactus_attraction_long", TomEffects.CACTUS_ATTRACTION, 1200, 0);
-    public static final RegistryObject<Potion> CACTUS_ATTRACTION_STRONG = registerPotion("cactus_attraction_strong", TomEffects.CACTUS_ATTRACTION, 400, 1);
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION = registerPotion("cactus_attraction", TomEffects.CACTUS_ATTRACTION, 900, 0);
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION_LONG = registerPotion("cactus_attraction_long", TomEffects.CACTUS_ATTRACTION, 1800, 0);
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION_STRONG = registerPotion("cactus_attraction_strong", TomEffects.CACTUS_ATTRACTION, 700, 1);
 
     public static void registerBrewingRecipes() {
         registerBrewingRecipe(CACTUS_ATTRACTION.get(), Potions.AWKWARD, Ingredient.of(Items.GREEN_DYE));

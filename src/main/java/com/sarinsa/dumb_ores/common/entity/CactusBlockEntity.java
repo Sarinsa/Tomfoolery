@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,36 +47,37 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
     public void tick() {
         super.tick();
 
-        if (this.gracePeriod > 0)
-            --this.gracePeriod;
+        if (gracePeriod > 0)
+            --gracePeriod;
 
-        if (this.followTarget != null && this.followTarget.isAlive() && CapabilityHelper.getCactusAttract(this.followTarget)) {
-            double xMotion = this.followTarget.getX() - this.getX();
-            double yMotion = (this.followTarget.getY() + this.followTarget.getEyeHeight()) - this.getY();
-            double zMotion = this.followTarget.getZ() - this.getZ();
+        if (followTarget != null && followTarget.isAlive() && CapabilityHelper.getCactusAttract(followTarget)) {
+            double xMotion = followTarget.getX() - getX();
+            double yMotion = (followTarget.getY() + followTarget.getEyeHeight()) - getY();
+            double zMotion = followTarget.getZ() - getZ();
 
-            this.setDeltaMovement(xMotion * 0.2D, yMotion * 0.2D, zMotion * 0.2D);
+            Vector3d deltaMovement = new Vector3d(xMotion, yMotion, zMotion).normalize();
+            setDeltaMovement(deltaMovement);
 
-            if (this.distanceToSqr(this.followTarget) > 600) {
-                this.followTarget = null;
+            if (distanceToSqr(followTarget) > 600) {
+                followTarget = null;
             }
         }
         else {
-            if (!this.isNoGravity()) {
-                this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.04D, 0.0D));
+            if (!isNoGravity()) {
+                setDeltaMovement(getDeltaMovement().add(0.0D, -0.04D, 0.0D));
             }
         }
-        this.move(MoverType.SELF, this.getDeltaMovement());
+        move(MoverType.SELF, getDeltaMovement());
 
-        for (LivingEntity livingEntity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1.2D))) {
-            if (this.getBoundingBox().intersects(livingEntity.getBoundingBox())) {
+        for (LivingEntity livingEntity : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(1.2D))) {
+            if (getBoundingBox().intersects(livingEntity.getBoundingBox())) {
                 livingEntity.hurt(DamageSource.CACTUS, 1.0F);
             }
         }
 
-        if (this.onGround && this.gracePeriod <= 0) {
-            this.level.setBlock(this.blockPosition(), Blocks.CACTUS.defaultBlockState(), 3);
-            this.remove();
+        if (onGround && gracePeriod <= 0) {
+            level.setBlock(blockPosition(), Blocks.CACTUS.defaultBlockState(), 3);
+            remove();
         }
     }
 
