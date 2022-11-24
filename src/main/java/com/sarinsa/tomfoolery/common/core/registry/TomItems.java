@@ -2,9 +2,8 @@ package com.sarinsa.tomfoolery.common.core.registry;
 
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.core.registry.types.GrenadeType;
-import com.sarinsa.tomfoolery.common.item.GrenadeLauncherItem;
-import com.sarinsa.tomfoolery.common.item.GrenadeRoundItem;
-import com.sarinsa.tomfoolery.common.item.TomArmorMaterial;
+import com.sarinsa.tomfoolery.common.item.*;
+import net.minecraft.block.Blocks;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraftforge.fml.RegistryObject;
@@ -31,6 +30,7 @@ public class TomItems {
     public static final RegistryObject<Item> NETHERAIGHT_LEGGINGS = registerItem("netheraight_leggings", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlotType.LEGS, new Item.Properties()));
     public static final RegistryObject<Item> NETHERAIGHT_BOOTS = registerItem("netheraight_boots", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlotType.FEET, new Item.Properties()));
 
+    public static final RegistryObject<Item> COOL_DIRT_GLASSES = registerItem("cool_dirt_glasses", () -> new CoolBlockReplacerGlassesItem(() -> Blocks.DIRT));
 
     private static <T extends Item> RegistryObject<T> registerItem(String name, Supplier<T> itemSupplier) {
         return ITEMS.register(name, itemSupplier);

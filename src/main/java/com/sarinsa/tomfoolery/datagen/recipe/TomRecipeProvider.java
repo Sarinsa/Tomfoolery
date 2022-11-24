@@ -49,12 +49,23 @@ public class TomRecipeProvider extends RecipeProvider {
                 .pattern("#W#")
                 .pattern("#N#")
                 .define('#', Tags.Items.INGOTS_IRON)
-                .define('W', Items.NETHER_STAR)
+                .define('W', Tags.Items.NETHER_STARS)
                 .define('N', Tags.Items.NUGGETS_IRON)
                 .unlockedBy(unlockName(Items.TNT), has(Items.TNT))
                 .unlockedBy(unlockName(Items.IRON_INGOT), has(Tags.Items.INGOTS_IRON))
                 .unlockedBy(unlockName(Items.IRON_NUGGET), has(Tags.Items.NUGGETS_IRON))
                 .group("grenade_ammo")
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(TomItems.COOL_DIRT_GLASSES.get())
+                .pattern(" N ")
+                .pattern("GDG")
+                .define('N', Tags.Items.NETHER_STARS)
+                .define('G', Items.GLASS)
+                .define('D', Items.DIRT)
+                .unlockedBy(unlockName(Items.NETHER_STAR), has(Tags.Items.NETHER_STARS))
+                .unlockedBy(unlockName(Items.GLASS), has(Tags.Items.GLASS))
+                .unlockedBy(unlockName(Items.DIRT), has(Items.DIRT))
                 .save(consumer);
     }
 

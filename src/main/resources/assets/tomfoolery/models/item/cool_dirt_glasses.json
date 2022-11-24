@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "tomfoolery:item/cool_dirt_glasses"
+  }
+}

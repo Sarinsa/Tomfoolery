@@ -2,6 +2,7 @@ package com.sarinsa.tomfoolery.common.item;
 
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -36,6 +37,16 @@ public class TomArmorMaterial implements IArmorMaterial {
             0.1F
     );
 
+    public static final TomArmorMaterial COOL_GLASSES = new TomArmorMaterial(
+            (equipmentSlotType) -> 40,
+            new int[] {1, 1, 1, 1},
+            100,
+            () -> SoundEvents.GLASS_BREAK,
+            () -> Ingredient.of(Items.DIRT),
+            name("dirt_glasses"),
+            0.0F,
+            -0.3F
+    );
 
 
 
