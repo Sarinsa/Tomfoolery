@@ -1,13 +1,11 @@
 {
   "required": true,
-  "package": "com.sarinsa.dumb_ores.common.mixin",
+  "package": "com.sarinsa.tomfoolery.common.mixin",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
-  "refmap": "dumb_ores.mixins.refmap.json",
+  "refmap": "tomfoolery.mixins.refmap.json",
   "mixins": [],
-  "client": [
-    "LivingRendererMixin"
-  ],
+  "client": [],
   "server": [],
   "injectors": {
     "defaultRequire": 1
