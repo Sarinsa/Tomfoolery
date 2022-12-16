@@ -137,8 +137,36 @@ public class EntityEvents {
 
                             Random random = player.level.random;
 
-                            serverWorld.sendParticles(ParticleTypes.CLOUD, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 10, random.nextGaussian(), random.nextGaussian(), random.nextGaussian(), 1.0D);
+                            serverWorld.sendParticles(ParticleTypes.CLOUD, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 10, random.nextGaussian(), random.nextGaussian(), random.nextGaussian(), 0.1D);
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onChestDestroyed(BlockEvent.BreakEvent event) {
+        if (event.isCanceled())
+            return;
+
+        PlayerEntity player = event.getPlayer();
+        TileEntity te = player.level.getBlockEntity(event.getPos());
+
+        if (te instanceof ChestTileEntity) {
+            ChestTileEntity tileEntity = (ChestTileEntity) te;
+
+            if (tileEntity.getTileData().contains(CreeperChestHideGoal.HIDDEN_CREEPER_TAG, Constants.NBT.TAG_BYTE)) {
+                if (tileEntity.getTileData().getBoolean(CreeperChestHideGoal.HIDDEN_CREEPER_TAG)) {
+
+                    if (!player.level.isClientSide) {
+                        BlockPos pos = tileEntity.getBlockPos().above();
+                        ServerWorld serverWorld = (ServerWorld) player.level;
+                        EntityType.CREEPER.spawn(serverWorld, null, null, player, pos, SpawnReason.TRIGGERED, true, false);
+
+                        Random random = player.level.random;
+
+                        serverWorld.sendParticles(ParticleTypes.CLOUD, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 10, random.nextGaussian(), random.nextGaussian(), random.nextGaussian(), 0.1D);
                     }
                 }
             }

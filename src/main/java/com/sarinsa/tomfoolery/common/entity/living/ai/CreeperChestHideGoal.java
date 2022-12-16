@@ -6,6 +6,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Random;
@@ -13,7 +14,7 @@ import java.util.Random;
 @SuppressWarnings("ConstantConditions")
 public class CreeperChestHideGoal extends MoveToBlockGoal {
 
-    public static final String HIDDEN_CREEPER_TAG = "HasHiddenCreeper";
+    public static final String HIDDEN_CREEPER_TAG = "tomfooleryHasHiddenCreeper";
 
     /** Needed to prevent creepers popping out of chests jumping straight back in. */
     private int cooldown;
@@ -39,6 +40,9 @@ public class CreeperChestHideGoal extends MoveToBlockGoal {
             if (chest.getTileData().contains(HIDDEN_CREEPER_TAG, Constants.NBT.TAG_BYTE)) {
                 return !chest.getTileData().getBoolean(HIDDEN_CREEPER_TAG);
             }
+            else {
+                return true;
+            }
         }
         return false;
     }
@@ -54,8 +58,8 @@ public class CreeperChestHideGoal extends MoveToBlockGoal {
             Random random = mob.level.random;
             BlockPos mobPos = mob.blockPosition();
 
-            for (int i = 0; i < 10; i++) {
-                mob.level.addParticle(ParticleTypes.CLOUD, mobPos.getX() + 0.5D, mobPos.getY() + 0.5D, mobPos.getZ() + 0.5D, random.nextGaussian(), random.nextGaussian(), random.nextGaussian());
+            if (mob.level instanceof ServerWorld) {
+                ((ServerWorld)mob.level).sendParticles(ParticleTypes.CLOUD, mobPos.getX() + 0.5D, mobPos.getY() + 0.5D, mobPos.getZ() + 0.5D, 10, random.nextGaussian(), random.nextGaussian(), random.nextGaussian(), 0.1D);
             }
             mob.remove();
         }
