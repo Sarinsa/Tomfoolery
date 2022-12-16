@@ -1,8 +1,12 @@
 package com.sarinsa.tomfoolery.common.item;
 
+import com.sarinsa.tomfoolery.api.ILauncherLogic;
 import com.sarinsa.tomfoolery.common.core.registry.TomItems;
 import com.sarinsa.tomfoolery.common.core.registry.TomSounds;
 import com.sarinsa.tomfoolery.common.entity.GrenadeRoundEntity;
+import com.sarinsa.tomfoolery.common.entity.InstaSaplingEntity;
+import net.minecraft.block.SaplingBlock;
+import net.minecraft.block.trees.Tree;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.item.*;
@@ -12,13 +16,19 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class GrenadeLauncherItem extends ShootableItem {
 
-    private static final Predicate<ItemStack> VALID_AMMO = (itemStack) -> itemStack.getItem() instanceof GrenadeRoundItem
+    public static final Map<Item, ILauncherLogic> LAUNCHER_LOGICS = new HashMap<>();
+
+    private static final Predicate<ItemStack> DEFAULT_VALID_AMMO = (itemStack) -> itemStack.getItem() instanceof GrenadeRoundItem
             || itemStack.getItem() instanceof SplashPotionItem
-            || itemStack.getItem() instanceof LingeringPotionItem;
+            || itemStack.getItem() instanceof LingeringPotionItem
+            || (itemStack.getItem() instanceof BlockItem && ((BlockItem) itemStack.getItem()).getBlock() instanceof SaplingBlock);
+
 
     public GrenadeLauncherItem() {
         super(new Item.Properties()
@@ -32,7 +42,7 @@ public class GrenadeLauncherItem extends ShootableItem {
 
     @Override
     public Predicate<ItemStack> getAllSupportedProjectiles() {
-        return VALID_AMMO;
+        return (itemStack) -> LAUNCHER_LOGICS.containsKey(itemStack.getItem()) || DEFAULT_VALID_AMMO.test(itemStack);
     }
 
     @Override
@@ -73,7 +83,11 @@ public class GrenadeLauncherItem extends ShootableItem {
             ItemStack ammoStack = getProjectile(player);
 
             if (!world.isClientSide) {
-                if (ammoStack.getItem() instanceof GrenadeRoundItem) {
+                if (LAUNCHER_LOGICS.containsKey(ammoStack.getItem())) {
+                    LAUNCHER_LOGICS.get(ammoStack.getItem()).onLaunch(world, player, hand);
+                }
+
+                else if (ammoStack.getItem() instanceof GrenadeRoundItem) {
                     GrenadeRoundEntity entity = new GrenadeRoundEntity(player, world);
                     entity.shootFromRotation(player, player.xRot, player.yRot, 2.0F, 2.0F, 2.0F);
                     entity.setGrenadeType(((GrenadeRoundItem) ammoStack.getItem()).getGrenadeType());
@@ -81,6 +95,13 @@ public class GrenadeLauncherItem extends ShootableItem {
                 }
                 else if (ammoStack.getItem() instanceof SplashPotionItem || ammoStack.getItem() instanceof LingeringPotionItem) {
                     PotionEntity entity = new PotionEntity(world, player);
+                    entity.setItem(ammoStack);
+                    entity.shootFromRotation(player, player.xRot, player.yRot, 2.0F, 2.0F, 2.0F);
+                    world.addFreshEntity(entity);
+                }
+                else if (ammoStack.getItem() instanceof BlockItem && ((BlockItem) ammoStack.getItem()).getBlock() instanceof SaplingBlock) {
+                    Tree tree = ((SaplingBlock) ((BlockItem) ammoStack.getItem()).getBlock()).treeGrower;
+                    InstaSaplingEntity entity = new InstaSaplingEntity(player, world, tree);
                     entity.setItem(ammoStack);
                     entity.shootFromRotation(player, player.xRot, player.yRot, 2.0F, 2.0F, 2.0F);
                     world.addFreshEntity(entity);

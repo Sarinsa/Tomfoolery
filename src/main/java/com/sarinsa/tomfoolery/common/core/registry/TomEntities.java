@@ -3,6 +3,7 @@ package com.sarinsa.tomfoolery.common.core.registry;
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.entity.CactusBlockEntity;
 import com.sarinsa.tomfoolery.common.entity.GrenadeRoundEntity;
+import com.sarinsa.tomfoolery.common.entity.InstaSaplingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -24,7 +25,10 @@ public class TomEntities {
             .sized(0.2F, 0.2F)
             .clientTrackingRange(6)
             .updateInterval(20));
-
+    public static final RegistryObject<EntityType<InstaSaplingEntity>> INSTA_SAPLING = register("insta_sapling", EntityType.Builder.<InstaSaplingEntity>of(InstaSaplingEntity::new, EntityClassification.MISC)
+            .sized(0.2F, 0.2F)
+            .clientTrackingRange(6)
+            .updateInterval(20));
 
     /**
      * Called during the EntityAttributeCreationEvent.
