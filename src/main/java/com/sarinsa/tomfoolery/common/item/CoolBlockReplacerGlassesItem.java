@@ -2,6 +2,7 @@ package com.sarinsa.tomfoolery.common.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
@@ -26,7 +27,7 @@ public class CoolBlockReplacerGlassesItem extends CoolGlassesItem {
         BlockPos lookAtPos = traceResult.getBlockPos();
         BlockState lookAtState = world.getBlockState(lookAtPos);
 
-        if (!lookAtState.isAir(world, lookAtPos)) {
+        if (!lookAtState.isAir(world, lookAtPos) && lookAtState.getBlock() != blockSupplier.get() && !lookAtState.getCollisionShape(world, lookAtPos).isEmpty()) {
             if (world.getBlockEntity(lookAtPos) != null) {
                 TileEntity tileEntity = world.getBlockEntity(lookAtPos);
 
