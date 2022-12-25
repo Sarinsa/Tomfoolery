@@ -2,6 +2,7 @@ package com.sarinsa.tomfoolery.common.event;
 
 import com.sarinsa.tomfoolery.common.capability.CapabilityHelper;
 import com.sarinsa.tomfoolery.common.core.registry.TomEffects;
+import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
 import com.sarinsa.tomfoolery.common.entity.living.ai.CreeperChestHideGoal;
 import com.sarinsa.tomfoolery.common.item.CoolGlassesItem;
 import com.sarinsa.tomfoolery.common.network.NetworkHelper;
@@ -10,16 +11,22 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.ChestContainer;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.Effect;
+import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
@@ -33,6 +40,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -168,6 +176,27 @@ public class EntityEvents {
 
                         serverWorld.sendParticles(ParticleTypes.CLOUD, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 10, random.nextGaussian(), random.nextGaussian(), random.nextGaussian(), 0.1D);
                     }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onCatInteract(PlayerInteractEvent.EntityInteract event) {
+        if (event.getTarget() instanceof CatEntity) {
+            CatEntity cat = (CatEntity) event.getTarget();
+
+            if (cat.hasEffect(Effects.DAMAGE_BOOST)) {
+                if (event.getItemStack().getItem() == Items.GOLDEN_APPLE) {
+                    event.setCancellationResult(ActionResultType.CONSUME);
+
+                    if (event.getWorld() instanceof ServerWorld) {
+                        ServerWorld world = (ServerWorld) event.getWorld();
+                        TomEntities.BUFFCAT.get().spawn(world, cat.saveWithoutId(new CompoundNBT()), null, event.getPlayer(), cat.blockPosition(), SpawnReason.TRIGGERED, true, false);
+                        cat.remove();
+                    }
+                    Random random = event.getWorld().getRandom();
+                    event.getWorld().playSound(event.getPlayer(), cat.blockPosition(), SoundEvents.ZOMBIE_VILLAGER_CURE, SoundCategory.NEUTRAL, 1.0F + random.nextFloat(), random.nextFloat() * 0.7F + 0.3F );
                 }
             }
         }

@@ -2,8 +2,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"texture": "tomfoolery:item/grenade_launcher",
-		"particle": "grenade_launcher"
+		"texture": "tomfoolery:item/grenade_launcher"
 	},
 	"elements": [
 		{

@@ -4,6 +4,7 @@ import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.entity.CactusBlockEntity;
 import com.sarinsa.tomfoolery.common.entity.GrenadeRoundEntity;
 import com.sarinsa.tomfoolery.common.entity.InstaSaplingEntity;
+import com.sarinsa.tomfoolery.common.entity.living.BuffcatEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -30,12 +31,16 @@ public class TomEntities {
             .clientTrackingRange(6)
             .updateInterval(20));
 
+    public static final RegistryObject<EntityType<BuffcatEntity>> BUFFCAT = register("buffcat", EntityType.Builder.of(BuffcatEntity::new, EntityClassification.CREATURE)
+                    .sized(1.4F, 2.0F));
+
+
     /**
      * Called during the EntityAttributeCreationEvent.
      * Our entities' attributes are created here.
      */
     public static void createEntityAttributes(EntityAttributeCreationEvent event) {
-
+        event.put(BUFFCAT.get(), BuffcatEntity.createBuffcatAttributes().build());
     }
 
     /**

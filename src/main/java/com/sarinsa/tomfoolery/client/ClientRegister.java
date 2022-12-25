@@ -1,5 +1,6 @@
 package com.sarinsa.tomfoolery.client;
 
+import com.sarinsa.tomfoolery.client.render.entity.buffcat.BuffcatEntityRenderer;
 import com.sarinsa.tomfoolery.client.render.entity.cactus.CactusEntityRenderer;
 import com.sarinsa.tomfoolery.client.render.entity.grenade.GrenadeRoundRenderer;
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
@@ -45,6 +46,7 @@ public class ClientRegister {
     }
 
     private static void registerEntityRenderers(Supplier<Minecraft> mc) {
+        RenderingRegistry.registerEntityRenderingHandler(TomEntities.BUFFCAT.get(), BuffcatEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(TomEntities.CACTUS_BLOCK_ENTITY.get(), CactusEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(TomEntities.GRENADE_ROUND.get(), GrenadeRoundRenderer::new);
         registerSpriteRenderer(TomEntities.INSTA_SAPLING.get(), mc, 1.75F, false);
