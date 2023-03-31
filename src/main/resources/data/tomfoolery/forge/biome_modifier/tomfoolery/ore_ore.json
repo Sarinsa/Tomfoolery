@@ -1,0 +1,6 @@
+{
+  "type":"tomfoolery:add_ore",
+  "biomes":"#minecraft:is_overworld",
+  "ore":"ore_ore",
+  "step":"underground_ores"
+}

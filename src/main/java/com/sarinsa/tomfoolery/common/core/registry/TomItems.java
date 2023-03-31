@@ -3,15 +3,18 @@ package com.sarinsa.tomfoolery.common.core.registry;
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.core.registry.types.GrenadeType;
 import com.sarinsa.tomfoolery.common.item.*;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.ForgeSpawnEggItem;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +31,14 @@ public class TomItems {
     public static final RegistryObject<GrenadeRoundItem> EXPLOSIVE_GRENADE_ROUND = registerGrenadeAmmo(TomGrenadeTypes.EXPLOSIVE);
     public static final RegistryObject<GrenadeRoundItem> DOOM_GRENADE_ROUND = registerGrenadeAmmo(TomGrenadeTypes.DOOM);
 
-    public static final RegistryObject<Item> NETHERAIGHT_HELMET = registerItem("netheraight_helmet", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlotType.HEAD, new Item.Properties()));
-    public static final RegistryObject<Item> NETHERAIGHT_CHESTPLATE = registerItem("netheraight_chestplate", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlotType.CHEST, new Item.Properties()));
-    public static final RegistryObject<Item> NETHERAIGHT_LEGGINGS = registerItem("netheraight_leggings", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlotType.LEGS, new Item.Properties()));
-    public static final RegistryObject<Item> NETHERAIGHT_BOOTS = registerItem("netheraight_boots", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlotType.FEET, new Item.Properties()));
+    public static final RegistryObject<Item> NETHERAIGHT_HELMET = registerItem("netheraight_helmet", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlot.HEAD, new Item.Properties()));
+    public static final RegistryObject<Item> NETHERAIGHT_CHESTPLATE = registerItem("netheraight_chestplate", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlot.CHEST, new Item.Properties()));
+    public static final RegistryObject<Item> NETHERAIGHT_LEGGINGS = registerItem("netheraight_leggings", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlot.LEGS, new Item.Properties()));
+    public static final RegistryObject<Item> NETHERAIGHT_BOOTS = registerItem("netheraight_boots", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, EquipmentSlot.FEET, new Item.Properties()));
 
     public static final RegistryObject<Item> COOL_DIRT_GLASSES = registerItem("cool_dirt_glasses", () -> new CoolBlockReplacerGlassesItem(() -> Blocks.DIRT));
 
-    public static final RegistryObject<SpawnEggItem> BUFFCAT_SPAWN_EGG = registerSpawnEgg(TomEntities.BUFFCAT, 0x4E7EA4, 0x714B34);
+    //public static final RegistryObject<ForgeSpawnEggItem> BUFFCAT_SPAWN_EGG = registerSpawnEgg(TomEntities.BUFFCAT, 0x4E7EA4, 0x714B34);
 
 
     private static <T extends Item> RegistryObject<T> registerItem(String name, Supplier<T> itemSupplier) {
@@ -46,12 +49,12 @@ public class TomItems {
         return ITEMS.register(name, () -> new Item(properties));
     }
 
-    private static RegistryObject<Item> registerSimple(String name, ItemGroup creativeTab) {
+    private static RegistryObject<Item> registerSimple(String name, CreativeModeTab creativeTab) {
         return ITEMS.register(name, () -> new Item(new Item.Properties().tab(creativeTab)));
     }
 
-    private static <T extends LivingEntity> RegistryObject<SpawnEggItem> registerSpawnEgg(RegistryObject<EntityType<T>> registryObject, int primaryColor, int spotColor) {
-        return ITEMS.register(registryObject.getId().getPath() + "_spawn_egg", () -> new ForgeSpawnEggItem(registryObject, primaryColor, spotColor, new Item.Properties().tab(ItemGroup.TAB_MISC)));
+    private static <T extends Mob> RegistryObject<ForgeSpawnEggItem> registerSpawnEgg(RegistryObject<EntityType<T>> registryObject, int primaryColor, int spotColor) {
+        return ITEMS.register(registryObject.getId().getPath() + "_spawn_egg", () -> new ForgeSpawnEggItem(registryObject, primaryColor, spotColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
     }
 
     protected static RegistryObject<GrenadeRoundItem> registerGrenadeAmmo(RegistryObject<GrenadeType> grenadeType) {

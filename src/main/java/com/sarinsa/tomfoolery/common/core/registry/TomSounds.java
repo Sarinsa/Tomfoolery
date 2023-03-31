@@ -1,10 +1,10 @@
 package com.sarinsa.tomfoolery.common.core.registry;
 
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class TomSounds {
 

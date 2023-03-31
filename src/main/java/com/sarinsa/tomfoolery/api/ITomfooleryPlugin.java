@@ -1,6 +1,7 @@
 package com.sarinsa.tomfoolery.api;
 
-import net.minecraft.util.ResourceLocation;
+
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Modders must implement this interface in order

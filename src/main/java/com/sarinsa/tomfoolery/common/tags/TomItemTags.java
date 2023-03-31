@@ -1,16 +1,17 @@
 package com.sarinsa.tomfoolery.common.tags;
 
-import net.minecraft.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.common.Tags;
 
 public class TomItemTags {
 
-    public static final Tags.IOptionalNamedTag<Item> CAKES = forgeTag("cakes");
+    public static final TagKey<Item> CAKES = forgeTag("cakes");
 
-    private static Tags.IOptionalNamedTag<Item> forgeTag(String path) {
-        return ItemTags.createOptional(new ResourceLocation("forge", path));
+    private static TagKey<Item> forgeTag(String path) {
+        return ItemTags.create(new ResourceLocation("forge", path));
     }
 
     public static void init() {}

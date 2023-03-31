@@ -1,14 +1,15 @@
 package com.sarinsa.tomfoolery.client.render.entity.buffcat;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.sarinsa.tomfoolery.common.entity.living.BuffcatEntity;
-import net.minecraft.client.renderer.entity.model.*;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
 
 public class BuffcatEntityModel extends EntityModel<BuffcatEntity> {
 
+    /*
     private final ModelRenderer left_ear;
     private final ModelRenderer right_ear;
     private final ModelRenderer neck;
@@ -30,7 +31,10 @@ public class BuffcatEntityModel extends EntityModel<BuffcatEntity> {
     private final ModelRenderer body_sub_9;
     private final ModelRenderer bone5;
 
+     */
+
     public BuffcatEntityModel() {
+        /*
         texWidth = 128;
         texHeight = 128;
 
@@ -152,24 +156,32 @@ public class BuffcatEntityModel extends EntityModel<BuffcatEntity> {
         cat.addChild(bone5);
         setRotationAngle(bone5, 0.3927F, 0.0F, 0.0F);
         bone5.texOffs(0, 0).addBox(8.0F, -3.5907F, -5.1815F, 1.0F, 1.0F, 3.0F, 0.0F, false);
+
+         */
     }
 
     @Override
     public void setupAnim(BuffcatEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
+        /*
         body_sub_9.yRot = netHeadYaw * ((float)Math.PI / 180F);
         body_sub_9.xRot = headPitch * ((float)Math.PI / 180F);
+
+         */
     }
 
     @Override
-    public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+    public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+        /*
         left_ear.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         right_ear.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         neck.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         mane.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+
+         */
     }
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
         modelRenderer.xRot = x;
         modelRenderer.yRot = y;
         modelRenderer.zRot = z;

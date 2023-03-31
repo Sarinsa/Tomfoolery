@@ -7,17 +7,17 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.datafix.fixes.ItemLoreFix;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * Copy-paste of {@link net.minecraft.data.ShapedRecipeBuilder},
+ * Copy-paste of {@link net.minecraft.data.recipes.ShapedRecipeBuilder},
  * modified to not fail when the result item
  * has no item group/creative tab.
  */
@@ -40,24 +40,24 @@ public class ShapedRecipeBuilderNoTab {
     private final Advancement.Builder advancement = Advancement.Builder.advancement();
     private String group;
 
-    public ShapedRecipeBuilderNoTab(IItemProvider result, int count) {
+    public ShapedRecipeBuilderNoTab(ItemLike result, int count) {
         this.result = result.asItem();
         this.count = count;
     }
 
-    public static ShapedRecipeBuilderNoTab shaped(IItemProvider result) {
+    public static ShapedRecipeBuilderNoTab shaped(ItemLike result) {
         return shaped(result, 1);
     }
 
-    public static ShapedRecipeBuilderNoTab shaped(IItemProvider result, int count) {
+    public static ShapedRecipeBuilderNoTab shaped(ItemLike result, int count) {
         return new ShapedRecipeBuilderNoTab(result, count);
     }
 
-    public ShapedRecipeBuilderNoTab define(Character key, ITag<Item> ingredient) {
+    public ShapedRecipeBuilderNoTab define(Character key, TagKey<Item> ingredient) {
         return this.define(key, Ingredient.of(ingredient));
     }
 
-    public ShapedRecipeBuilderNoTab define(Character key, IItemProvider ingredient) {
+    public ShapedRecipeBuilderNoTab define(Character key, ItemLike ingredient) {
         return this.define(key, Ingredient.of(ingredient));
     }
 
@@ -81,7 +81,7 @@ public class ShapedRecipeBuilderNoTab {
         }
     }
 
-    public ShapedRecipeBuilderNoTab unlockedBy(String conditionName, ICriterionInstance criterion) {
+    public ShapedRecipeBuilderNoTab unlockedBy(String conditionName, CriterionTriggerInstance criterion) {
         this.advancement.addCriterion(conditionName, criterion);
         return this;
     }
@@ -91,11 +91,11 @@ public class ShapedRecipeBuilderNoTab {
         return this;
     }
 
-    public void save(Consumer<IFinishedRecipe> consumer) {
+    public void save(Consumer<FinishedRecipe> consumer) {
         this.save(consumer, ForgeRegistries.ITEMS.getKey(this.result));
     }
 
-    public void save(Consumer<IFinishedRecipe> consumer, String id) {
+    public void save(Consumer<FinishedRecipe> consumer, String id) {
         ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result);
         if ((new ResourceLocation(id)).equals(resourcelocation)) {
             throw new IllegalStateException("Shaped Recipe " + id + " should remove its 'save' argument");
@@ -105,12 +105,12 @@ public class ShapedRecipeBuilderNoTab {
         }
     }
 
-    public void save(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
+    public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
         this.ensureValid(id);
         this.advancement.parent(new ResourceLocation("recipes/root"))
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                 .rewards(AdvancementRewards.Builder.recipe(id))
-                .requirements(IRequirementsStrategy.OR);
+                .requirements(RequirementsStrategy.OR);
 
         String category = result.getItemCategory() == null ? "unspecified" : result.getItemCategory().getRecipeFolderName();
 
@@ -154,7 +154,7 @@ public class ShapedRecipeBuilderNoTab {
         }
     }
 
-    public static class Result implements IFinishedRecipe {
+    public static class Result implements FinishedRecipe {
         private final ResourceLocation id;
         private final Item result;
         private final int count;
@@ -195,7 +195,7 @@ public class ShapedRecipeBuilderNoTab {
 
             jsonObject.add("key", jsonobject);
             JsonObject jsonobject1 = new JsonObject();
-            jsonobject1.addProperty("item", Registry.ITEM.getKey(this.result).toString());
+            jsonobject1.addProperty("item", ForgeRegistries.ITEMS.getKey(this.result).toString());
             if (this.count > 1) {
                 jsonobject1.addProperty("count", this.count);
             }
@@ -203,8 +203,8 @@ public class ShapedRecipeBuilderNoTab {
             jsonObject.add("result", jsonobject1);
         }
 
-        public IRecipeSerializer<?> getType() {
-            return IRecipeSerializer.SHAPED_RECIPE;
+        public RecipeSerializer<?> getType() {
+            return RecipeSerializer.SHAPED_RECIPE;
         }
 
         public ResourceLocation getId() {

@@ -1,62 +1,67 @@
 package com.sarinsa.tomfoolery.client.render.entity.cactus;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.sarinsa.tomfoolery.common.entity.CactusBlockEntity;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
+import com.sarinsa.tomfoolery.common.entity.CactusBlockEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.FallingBlockRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.model.data.ModelData;
+
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class CactusEntityRenderer<T extends CactusBlockEntity> extends EntityRenderer<T> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation("textures/block/cactus.png");
-    private static final Random random = new Random();
+    private final BlockRenderDispatcher dispatcher;
 
-    public CactusEntityRenderer(EntityRendererManager rendererManager) {
-        super(rendererManager);
-        this.shadowRadius = 0.5F;
+
+    public CactusEntityRenderer(EntityRendererProvider.Context context) {
+        super(context);
+        shadowRadius = 0.5F;
+        dispatcher = context.getBlockRenderDispatcher();
     }
 
     @Override
-    public void render(T cactusEntity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
+    public void render(T entity, float p_114635_, float p_114636_, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         BlockState state = Blocks.CACTUS.defaultBlockState();
 
-        if (state.getRenderShape() == BlockRenderType.MODEL) {
-            World world = cactusEntity.getCommandSenderWorld();
+        if (state.getRenderShape() == RenderShape.MODEL) {
+            Level level = entity.getLevel();
 
-            if (state != world.getBlockState(cactusEntity.blockPosition()) && state.getRenderShape() != BlockRenderType.INVISIBLE) {
-                matrixStack.pushPose();
-                BlockPos pos = new BlockPos(cactusEntity.getX(), cactusEntity.getBoundingBox().maxY, cactusEntity.getZ());
-                matrixStack.translate(-0.5D, 0.0D, -0.5D);
-                BlockRendererDispatcher rendererDispatcher = Minecraft.getInstance().getBlockRenderer();
+            if (state != level.getBlockState(entity.blockPosition()) && state.getRenderShape() != RenderShape.INVISIBLE) {
+                poseStack.pushPose();
+                BlockPos pos = new BlockPos(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
+                poseStack.translate(-0.5D, 0.0D, -0.5D);
+                var model = dispatcher.getBlockModel(state);
 
-                for (RenderType type : RenderType.chunkBufferLayers()) {
-                    if (RenderTypeLookup.canRenderInLayer(state, type)) {
-                        ForgeHooksClient.setRenderLayer(type);
-                        rendererDispatcher.getModelRenderer().tesselateBlock(world, rendererDispatcher.getBlockModel(state), state, pos, matrixStack, buffer.getBuffer(type), false, random, state.getSeed(pos), OverlayTexture.NO_OVERLAY);
-                    }
-                }
-                ForgeHooksClient.setRenderLayer(null);
-                matrixStack.popPose();
-                super.render(cactusEntity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+                for (var renderType : model.getRenderTypes(state, RandomSource.create(state.getSeed(entity.getStartPos())), ModelData.EMPTY))
+                    dispatcher.getModelRenderer().tesselateBlock(level, model, state, pos, poseStack, bufferSource.getBuffer(renderType), false, RandomSource.create(), state.getSeed(entity.getStartPos()), OverlayTexture.NO_OVERLAY, ModelData.EMPTY, renderType);
+
+                poseStack.popPose();
+                super.render(entity, p_114635_, p_114636_, poseStack, bufferSource, packedLight);
             }
         }
     }
 
     @Override
+    @Nonnull
     public ResourceLocation getTextureLocation(T cactusEntity) {
         return TEXTURE;
     }

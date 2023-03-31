@@ -4,19 +4,16 @@ import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.core.registry.types.GrenadeType;
 import com.sarinsa.tomfoolery.common.grenades.DoomGrenadeType;
 import com.sarinsa.tomfoolery.common.grenades.ExplosiveGrenadeType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.*;
 
 import java.util.function.Supplier;
 
 public class TomGrenadeTypes {
 
-    public static final DeferredRegister<GrenadeType> GRENADE_TYPES = DeferredRegister.create(GrenadeType.class, Tomfoolery.MODID);
-    public static final Supplier<IForgeRegistry<GrenadeType>> GRENADE_TYPE_REGISTRY = GRENADE_TYPES.makeRegistry("grenade_types", () -> {
-        return (new RegistryBuilder<GrenadeType>()).setType(GrenadeType.class).setDefaultKey(Tomfoolery.resourceLoc("empty"));
+    public static final DeferredRegister<GrenadeType> GRENADE_TYPES = DeferredRegister.create(new ResourceLocation(Tomfoolery.MODID, "grenade_types"), Tomfoolery.MODID);
+    public static final Supplier<IForgeRegistry<GrenadeType>> GRENADE_TYPE_REGISTRY = GRENADE_TYPES.makeRegistry(() -> {
+        return (new RegistryBuilder<GrenadeType>()).setDefaultKey(Tomfoolery.resourceLoc("empty"));
     });
 
 
@@ -31,7 +28,7 @@ public class TomGrenadeTypes {
 
     public static GrenadeType getOrDefault(ResourceLocation id) {
         for (Supplier<GrenadeType> type : GRENADE_TYPES.getEntries()) {
-            if (type.get().getRegistryName().equals(id))
+            if (GRENADE_TYPE_REGISTRY.get().getKey(type.get()).equals(id))
                 return type.get();
         }
         return EXPLOSIVE.get();

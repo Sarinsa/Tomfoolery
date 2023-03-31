@@ -1,6 +1,7 @@
 package com.sarinsa.tomfoolery.api;
 
-import net.minecraft.item.Item;
+
+import net.minecraft.world.item.Item;
 
 /**
  * Helper interface for registering various things

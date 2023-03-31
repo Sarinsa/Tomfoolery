@@ -1,22 +1,26 @@
 package com.sarinsa.tomfoolery.common.core.registry;
 
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.*;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
 public class TomPotions {
 
-    public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTION_TYPES, Tomfoolery.MODID);
+    public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, Tomfoolery.MODID);
 
     public static final RegistryObject<Potion> CACTUS_ATTRACTION = registerPotion("cactus_attraction", TomEffects.CACTUS_ATTRACTION, 900, 0);
     public static final RegistryObject<Potion> CACTUS_ATTRACTION_LONG = registerPotion("cactus_attraction_long", TomEffects.CACTUS_ATTRACTION, 1800, 0);
@@ -36,7 +40,7 @@ public class TomPotions {
         ));
     }
 
-    private static RegistryObject<Potion> registerPotion(String name, Supplier<Effect> effectSupplier, int duration, int amplifier) {
-        return POTIONS.register(name, () -> new Potion(new EffectInstance(effectSupplier.get(), duration, amplifier)));
+    private static RegistryObject<Potion> registerPotion(String name, Supplier<MobEffect> effectSupplier, int duration, int amplifier) {
+        return POTIONS.register(name, () -> new Potion(new MobEffectInstance(effectSupplier.get(), duration, amplifier)));
     }
 }

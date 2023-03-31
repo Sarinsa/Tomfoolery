@@ -3,14 +3,20 @@ package com.sarinsa.tomfoolery.datagen.recipe;
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.core.registry.TomBlocks;
 import com.sarinsa.tomfoolery.common.core.registry.TomItems;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.*;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -21,7 +27,7 @@ public class TomRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         smeltingRecipe(TomBlocks.CAKE_ORE.get(), Blocks.STONE, 0.1F, consumer);
         smeltingRecipe(TomBlocks.ORE_ORE.get(), TomItems.NETHERAIGHT_INGOT.get(), 0.3F, consumer);
 
@@ -69,16 +75,16 @@ public class TomRecipeProvider extends RecipeProvider {
                 .save(consumer);
     }
 
-    protected void smeltingRecipe(IItemProvider ingredient, IItemProvider result, float experience, Consumer<IFinishedRecipe> consumer) {
-        String ingredientName = Objects.requireNonNull(itemName(ingredient));
-        String resultName = Objects.requireNonNull(itemName(result));
+    protected void smeltingRecipe(ItemLike ingredient, ItemLike result, float experience, Consumer<FinishedRecipe> consumer) {
+        String ingredientName = itemName(ingredient);
+        String resultName = itemName(result);
 
         CookingRecipeBuilderNoTab.smelting(Ingredient.of(ingredient), result, experience, 200)
                 .unlockedBy("has_" + ingredientName, has(ingredient))
                 .save(consumer, Tomfoolery.resourceLoc(resultName + "_from_" + ingredientName + "_smelting"));
     }
 
-    protected void blastingRecipe(IItemProvider ingredient, IItemProvider result, float experience, Consumer<IFinishedRecipe> consumer) {
+    protected void blastingRecipe(ItemLike ingredient, ItemLike result, float experience, Consumer<FinishedRecipe> consumer) {
         String ingredientName = itemName(ingredient);
         String resultName = itemName(result);
 
@@ -88,17 +94,23 @@ public class TomRecipeProvider extends RecipeProvider {
     }
 
     @SuppressWarnings("ConstantConditions")
-    protected void smithingRecipe(IItemProvider ingredient, IItemProvider alloy, Item result, Consumer<IFinishedRecipe> consumer) {
+    protected void smithingRecipe(ItemLike ingredient, ItemLike alloy, Item result, Consumer<FinishedRecipe> consumer) {
         SmithingRecipeBuilderNoTab.smithing(Ingredient.of(ingredient), Ingredient.of(alloy), result)
-                .unlocks("has_" + alloy.asItem().getRegistryName().getPath(), has(alloy))
-                .save(consumer, result.getRegistryName());
+                .unlocks("has_" + itemName(alloy), has(alloy))
+                .save(consumer, regName(result));
     }
 
-    protected static String itemName(IItemProvider criterionItem) {
-        return Objects.requireNonNull(criterionItem.asItem().getRegistryName()).getPath();
+    @Nonnull
+    protected static String itemName(ItemLike itemLike) {
+        return Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(itemLike.asItem())).getPath();
     }
 
-    private static String unlockName(IItemProvider itemProvider) {
+    @Nonnull
+    protected static ResourceLocation regName(ItemLike itemLike) {
+        return Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(itemLike.asItem()));
+    }
+
+    private static String unlockName(ItemLike itemProvider) {
         return "has_" + itemName(itemProvider);
     }
 }

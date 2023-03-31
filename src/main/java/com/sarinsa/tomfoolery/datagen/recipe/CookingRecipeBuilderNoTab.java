@@ -3,25 +3,24 @@ package com.sarinsa.tomfoolery.datagen.recipe;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.data.CookingRecipeBuilder;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.AbstractCookingRecipe;
-import net.minecraft.item.crafting.CookingRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCookingSerializer;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 /**
- * Copy-paste of {@link CookingRecipeBuilder},
+ * Copy-paste of {@link net.minecraft.data.recipes.SimpleCookingRecipeBuilder},
  * modified to not fail when the result item
  * has no item group/creative tab.
  */
@@ -33,9 +32,9 @@ public class CookingRecipeBuilderNoTab {
     private final int cookingTime;
     private final Advancement.Builder advancement = Advancement.Builder.advancement();
     private String group;
-    private final CookingRecipeSerializer<?> serializer;
+    private final SimpleCookingSerializer<?> serializer;
 
-    private CookingRecipeBuilderNoTab(IItemProvider ingredient, Ingredient result, float xp, int cookingTime, CookingRecipeSerializer<?> serializer) {
+    private CookingRecipeBuilderNoTab(ItemLike ingredient, Ingredient result, float xp, int cookingTime, SimpleCookingSerializer<?> serializer) {
         this.result = ingredient.asItem();
         this.ingredient = result;
         this.experience = xp;
@@ -43,28 +42,28 @@ public class CookingRecipeBuilderNoTab {
         this.serializer = serializer;
     }
 
-    public static CookingRecipeBuilderNoTab cooking(Ingredient ingredient, IItemProvider result, float xp, int cookingTime, CookingRecipeSerializer<?> serializer) {
+    public static CookingRecipeBuilderNoTab cooking(Ingredient ingredient, ItemLike result, float xp, int cookingTime, SimpleCookingSerializer<?> serializer) {
         return new CookingRecipeBuilderNoTab(result, ingredient, xp, cookingTime, serializer);
     }
 
-    public static CookingRecipeBuilderNoTab blasting(Ingredient ingredient, IItemProvider result, float xp, int cookingTime) {
-        return cooking(ingredient, result, xp, cookingTime, IRecipeSerializer.BLASTING_RECIPE);
+    public static CookingRecipeBuilderNoTab blasting(Ingredient ingredient, ItemLike result, float xp, int cookingTime) {
+        return cooking(ingredient, result, xp, cookingTime, RecipeSerializer.BLASTING_RECIPE);
     }
 
-    public static CookingRecipeBuilderNoTab smelting(Ingredient ingredient, IItemProvider result, float xp, int cookingTime) {
-        return cooking(ingredient, result, xp, cookingTime, IRecipeSerializer.SMELTING_RECIPE);
+    public static CookingRecipeBuilderNoTab smelting(Ingredient ingredient, ItemLike result, float xp, int cookingTime) {
+        return cooking(ingredient, result, xp, cookingTime, RecipeSerializer.SMELTING_RECIPE);
     }
 
-    public CookingRecipeBuilderNoTab unlockedBy(String criterionName, ICriterionInstance instance) {
+    public CookingRecipeBuilderNoTab unlockedBy(String criterionName, CriterionTriggerInstance instance) {
         this.advancement.addCriterion(criterionName, instance);
         return this;
     }
 
-    public void save(Consumer<IFinishedRecipe> consumer) {
+    public void save(Consumer<FinishedRecipe> consumer) {
         this.save(consumer, ForgeRegistries.ITEMS.getKey(this.result));
     }
 
-    public void save(Consumer<IFinishedRecipe> consumer, String name) {
+    public void save(Consumer<FinishedRecipe> consumer, String name) {
         ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result);
         ResourceLocation resourcelocation1 = new ResourceLocation(name);
 
@@ -72,16 +71,16 @@ public class CookingRecipeBuilderNoTab {
             throw new IllegalStateException("Recipe " + resourcelocation1 + " should remove its 'save' argument");
         }
         else {
-            this.save(consumer, resourcelocation1);
+            save(consumer, resourcelocation1);
         }
     }
 
-    public void save(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
+    public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
         this.ensureValid(id);
         this.advancement.parent(new ResourceLocation("recipes/root"))
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                 .rewards(AdvancementRewards.Builder.recipe(id))
-                .requirements(IRequirementsStrategy.OR);
+                .requirements(RequirementsStrategy.OR);
 
         String category = result.getItemCategory() == null ? "unspecified" : result.getItemCategory().getRecipeFolderName();
 
@@ -104,7 +103,7 @@ public class CookingRecipeBuilderNoTab {
         }
     }
 
-    public static class Result implements IFinishedRecipe {
+    public static class Result implements FinishedRecipe {
         private final ResourceLocation id;
         private final String group;
         private final Ingredient ingredient;
@@ -113,9 +112,9 @@ public class CookingRecipeBuilderNoTab {
         private final int cookingTime;
         private final Advancement.Builder advancement;
         private final ResourceLocation advancementId;
-        private final IRecipeSerializer<? extends AbstractCookingRecipe> serializer;
+        private final RecipeSerializer<? extends AbstractCookingRecipe> serializer;
 
-        public Result(ResourceLocation id, String group, Ingredient ingredient, Item result, float experience, int cookingTime, Advancement.Builder advancement, ResourceLocation advancementId, IRecipeSerializer<? extends AbstractCookingRecipe> serializer) {
+        public Result(ResourceLocation id, String group, Ingredient ingredient, Item result, float experience, int cookingTime, Advancement.Builder advancement, ResourceLocation advancementId, RecipeSerializer<? extends AbstractCookingRecipe> serializer) {
             this.id = id;
             this.group = group;
             this.ingredient = ingredient;
@@ -138,7 +137,7 @@ public class CookingRecipeBuilderNoTab {
             jsonObject.addProperty("cookingtime", this.cookingTime);
         }
 
-        public IRecipeSerializer<?> getType() {
+        public RecipeSerializer<?> getType() {
             return this.serializer;
         }
 

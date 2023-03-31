@@ -8,8 +8,8 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 @JeiPlugin
 public class TomfooleryJEI implements IModPlugin {
@@ -40,7 +40,7 @@ public class TomfooleryJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        registration.addIngredientInfo(new ItemStack(TomItems.GRENADE_LAUNCHER.get()), VanillaTypes.ITEM, TranslationReferences.LAUNCHER_JEI_DESC);
+        registration.addIngredientInfo(new ItemStack(TomItems.GRENADE_LAUNCHER.get()), VanillaTypes.ITEM_STACK, TranslationReferences.LAUNCHER_JEI_DESC);
     }
 
     @Override

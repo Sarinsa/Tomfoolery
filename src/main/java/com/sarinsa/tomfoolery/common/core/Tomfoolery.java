@@ -5,16 +5,14 @@ import com.sarinsa.tomfoolery.api.ITomfooleryPlugin;
 import com.sarinsa.tomfoolery.api.TomfooleryPlugin;
 import com.sarinsa.tomfoolery.api.impl.RegistryHelper;
 import com.sarinsa.tomfoolery.api.impl.TomfooleryAPI;
-import com.sarinsa.tomfoolery.common.capability.TomCapabilities;
 import com.sarinsa.tomfoolery.common.core.config.TomClientConfig;
 import com.sarinsa.tomfoolery.common.core.registry.*;
-import com.sarinsa.tomfoolery.common.event.BiomeEvents;
 import com.sarinsa.tomfoolery.common.event.CapabilityEvents;
 import com.sarinsa.tomfoolery.common.event.EntityEvents;
 import com.sarinsa.tomfoolery.common.network.PacketHandler;
 import com.sarinsa.tomfoolery.common.tags.TomItemTags;
 import com.sarinsa.tomfoolery.common.worldgen.TomConfiguredFeatures;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
@@ -52,7 +50,6 @@ public class Tomfoolery {
         eventBus.addListener(this::onCommonSetup);
         eventBus.addListener(this::onLoadComplete);
 
-        MinecraftForge.EVENT_BUS.register(new BiomeEvents());
         MinecraftForge.EVENT_BUS.register(new CapabilityEvents());
         MinecraftForge.EVENT_BUS.register(new EntityEvents());
 
@@ -66,6 +63,9 @@ public class Tomfoolery {
         TomPotions.POTIONS.register(eventBus);
         TomGrenadeTypes.GRENADE_TYPES.register(eventBus);
         TomLootMods.LOOT_MODIFIERS.register(eventBus);
+        TomBiomeModifiers.BIOME_MODS.register(eventBus);
+        TomConfiguredFeatures.CF_REGISTRY.register(eventBus);
+        TomConfiguredFeatures.P_REGISTRY.register(eventBus);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TomClientConfig.CLIENT_SPEC);
     }
@@ -73,8 +73,6 @@ public class Tomfoolery {
 
     public void onCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            TomCapabilities.registerCapabilities();
-            TomConfiguredFeatures.registerFeatures();
             TomPotions.registerBrewingRecipes();
             TomEntities.registerEntitySpawnPlacement();
         });
@@ -93,22 +91,22 @@ public class Tomfoolery {
             scanData.getAnnotations().forEach(annotationData -> {
 
                 // Look for classes annotated with @ApocalypsePlugin
-                if (annotationData.getAnnotationType().getClassName().equals(TomfooleryPlugin.class.getName())) {
-                    String modid = (String) annotationData.getAnnotationData().getOrDefault("modid", "");
+                if (annotationData.annotationType().getClassName().equals(TomfooleryPlugin.class.getName())) {
+                    String modid = (String) annotationData.annotationData().getOrDefault("modid", "");
 
                     if (ModList.get().isLoaded(modid) || modid.isEmpty()) {
                         try {
-                            Class<?> pluginClass = Class.forName(annotationData.getMemberName());
+                            Class<?> pluginClass = Class.forName(annotationData.memberName());
 
                             if (ITomfooleryPlugin.class.isAssignableFrom(pluginClass)) {
                                 ITomfooleryPlugin plugin = (ITomfooleryPlugin) pluginClass.newInstance();
                                 registryHelper.setCurrentPluginId(plugin.getPluginId());
                                 plugin.onLoad(getApi());
-                                LOGGER.info("Found Tomfoolery plugin at {} with plugin ID: {}", annotationData.getMemberName(), plugin.getPluginId());
+                                LOGGER.info("Found Tomfoolery plugin at {} with plugin ID: {}", annotationData.memberName(), plugin.getPluginId());
                             }
                         }
                         catch (Exception e) {
-                            LOGGER.error("Failed to load Tomfoolery plugin at {}! Damn dag nabit damnit!", annotationData.getMemberName());
+                            LOGGER.error("Failed to load Tomfoolery plugin at {}! Damn dag nabit damnit!", annotationData.memberName());
                             e.printStackTrace();
                         }
                     }

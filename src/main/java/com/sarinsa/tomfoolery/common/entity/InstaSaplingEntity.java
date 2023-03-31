@@ -1,62 +1,60 @@
 package com.sarinsa.tomfoolery.common.entity;
 
 import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.trees.Tree;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.EndGatewayTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.projectile.ItemSupplier;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.entity.projectile.ThrownEgg;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
+import net.minecraft.world.level.block.grower.AbstractTreeGrower;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
-@OnlyIn(
-        value = Dist.CLIENT,
-        _interface = IRendersAsItem.class
-)
-public class InstaSaplingEntity extends ProjectileEntity implements IEntityAdditionalSpawnData, IRendersAsItem {
+public class InstaSaplingEntity extends Projectile implements IEntityAdditionalSpawnData, ItemSupplier {
 
-    private static final DataParameter<ItemStack> ITEM_STACK = EntityDataManager.defineId(InstaSaplingEntity.class, DataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<ItemStack> ITEM_STACK = SynchedEntityData.defineId(InstaSaplingEntity.class, EntityDataSerializers.ITEM_STACK);
 
-    private Tree tree;
+    private AbstractTreeGrower tree;
 
-    public InstaSaplingEntity(EntityType<? extends ProjectileEntity> entityType, World world) {
-        super(entityType, world);
+    public InstaSaplingEntity(EntityType<? extends Projectile> entityType, Level level) {
+        super(entityType, level);
     }
 
-    public InstaSaplingEntity(double x, double y, double z, World world, Tree tree) {
-        this(TomEntities.INSTA_SAPLING.get(), world);
-        moveTo(x, y, z, yRot, xRot);
+    public InstaSaplingEntity(double x, double y, double z, Level level, AbstractTreeGrower tree) {
+        this(TomEntities.INSTA_SAPLING.get(), level);
+        moveTo(x, y, z, getYRot(), getXRot());
         reapplyPosition();
         this.tree = tree;
     }
 
-    public InstaSaplingEntity(LivingEntity shooter, World world, Tree tree) {
-        this(shooter.getX(), shooter.getEyeY(), shooter.getZ(), world, tree);
+    public InstaSaplingEntity(LivingEntity shooter, Level level, AbstractTreeGrower tree) {
+        this(shooter.getX(), shooter.getEyeY(), shooter.getZ(), level, tree);
         setOwner(shooter);
-        setRot(shooter.yRot, shooter.xRot);
+        setRot(shooter.getYRot(), shooter.getXRot());
     }
 
     @Override
@@ -72,11 +70,11 @@ public class InstaSaplingEntity extends ProjectileEntity implements IEntityAddit
     public void tick() {
         super.tick();
 
-        RayTraceResult traceResult = ProjectileHelper.getHitResult(this, this::canHitEntity);
+        HitResult hitResult = ProjectileUtil.getHitResult(this, this::canHitEntity);
         boolean teleporting = false;
 
-        if (traceResult.getType() == RayTraceResult.Type.BLOCK) {
-            BlockPos blockpos = ((BlockRayTraceResult)traceResult).getBlockPos();
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockPos blockpos = ((BlockHitResult)hitResult).getBlockPos();
             BlockState blockstate = level.getBlockState(blockpos);
 
             if (blockstate.is(Blocks.NETHER_PORTAL)) {
@@ -84,27 +82,27 @@ public class InstaSaplingEntity extends ProjectileEntity implements IEntityAddit
                 teleporting = true;
             }
             else if (blockstate.is(Blocks.END_GATEWAY)) {
-                TileEntity tileentity = level.getBlockEntity(blockpos);
+                BlockEntity blockEntity = level.getBlockEntity(blockpos);
 
-                if (tileentity instanceof EndGatewayTileEntity && EndGatewayTileEntity.canEntityTeleport(this)) {
-                    ((EndGatewayTileEntity)tileentity).teleportEntity(this);
+                if (blockEntity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport(this)) {
+                    TheEndGatewayBlockEntity.teleportEntity(level, blockpos, blockstate, this, (TheEndGatewayBlockEntity) blockEntity);
                 }
                 teleporting = true;
             }
         }
 
-        if (traceResult.getType() != RayTraceResult.Type.MISS && !teleporting && !ForgeEventFactory.onProjectileImpact(this, traceResult)) {
-            onHit(traceResult);
+        if (hitResult.getType() != HitResult.Type.MISS && !teleporting && !ForgeEventFactory.onProjectileImpact(this, hitResult)) {
+            onHit(hitResult);
         }
         checkInsideBlocks();
-        Vector3d deltaMovement = getDeltaMovement();
+        Vec3 deltaMovement = getDeltaMovement();
         double x = getX() + deltaMovement.x;
         double y = getY() + deltaMovement.y;
         double z = getZ() + deltaMovement.z;
         updateRotation();
         float motionScale;
 
-        IParticleData traceParticle;
+        SimpleParticleType traceParticle;
 
         if (isInWater()) {
             traceParticle = ParticleTypes.BUBBLE;
@@ -118,18 +116,18 @@ public class InstaSaplingEntity extends ProjectileEntity implements IEntityAddit
         setDeltaMovement(deltaMovement.scale(motionScale));
 
         if (!isNoGravity()) {
-            Vector3d deltaMovement1 = getDeltaMovement();
+            Vec3 deltaMovement1 = getDeltaMovement();
             setDeltaMovement(deltaMovement1.x, deltaMovement1.y - getGravity(), deltaMovement1.z);
         }
         setPos(x, y, z);
     }
 
     @Override
-    protected void onHitBlock(BlockRayTraceResult result) {
+    protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
 
         if (result.getBlockPos().getY() < 3) {
-            remove();
+            discard();
             return;
         }
 
@@ -141,10 +139,10 @@ public class InstaSaplingEntity extends ProjectileEntity implements IEntityAddit
             level.setBlock(result.getBlockPos().north().west(), Blocks.DIRT.defaultBlockState(), 2);
         }
         if (!level.isClientSide && tree != null) {
-            ServerWorld serverWorld = (ServerWorld) level;
-            tree.growTree(serverWorld, serverWorld.getChunkSource().getGenerator(), result.getBlockPos().above(), level.getBlockState(result.getBlockPos().above()), serverWorld.random);
+            ServerLevel serverLevel = (ServerLevel) level;
+            tree.growTree(serverLevel, serverLevel.getChunkSource().getGenerator(), result.getBlockPos().above(), level.getBlockState(result.getBlockPos().above()), serverLevel.random);
         }
-        remove();
+        discard();
     }
 
     protected double getGravity() {
@@ -152,17 +150,17 @@ public class InstaSaplingEntity extends ProjectileEntity implements IEntityAddit
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
 
     }
 
     @Override
-    public void readSpawnData(PacketBuffer additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
 
     }
 

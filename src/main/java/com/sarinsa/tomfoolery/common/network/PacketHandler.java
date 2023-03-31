@@ -2,10 +2,10 @@ package com.sarinsa.tomfoolery.common.network;
 
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.network.message.S2CUpdateEntityCactusAttract;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PacketHandler {
 
@@ -34,7 +34,7 @@ public class PacketHandler {
      * @param player The player client that should receive this message.
      * @param <MSG> Packet type.
      */
-    public static <MSG> void sendToClient(MSG message, ServerPlayerEntity player) {
+    public static <MSG> void sendToClient(MSG message, ServerPlayer player) {
         CHANNEL.sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
     }
 }

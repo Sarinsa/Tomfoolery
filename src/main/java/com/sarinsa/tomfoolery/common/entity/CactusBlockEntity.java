@@ -2,45 +2,70 @@ package com.sarinsa.tomfoolery.common.entity;
 
 import com.sarinsa.tomfoolery.common.capability.CapabilityHelper;
 import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import com.sarinsa.tomfoolery.common.util.NBTHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
+
 
 public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnData {
+
+    protected static final EntityDataAccessor<BlockPos> DATA_START_POS = SynchedEntityData.defineId(CactusBlockEntity.class, EntityDataSerializers.BLOCK_POS);
 
     private LivingEntity followTarget;
     /** Makes sure the cactus entity doesn't revert to being a block the moment it is spawned */
     private int gracePeriod = 40;
 
-    public CactusBlockEntity(EntityType<? extends CactusBlockEntity> entityType, World world) {
-        super(entityType, world);
+    public CactusBlockEntity(EntityType<? extends CactusBlockEntity> entityType, Level level) {
+        super(entityType, level);
     }
 
-    public CactusBlockEntity(World world, LivingEntity followTarget, double x, double y, double z) {
-        super(TomEntities.CACTUS_BLOCK_ENTITY.get(), world);
-        this.setPos(x, y, z);
-        this.setFollowTarget(followTarget);
-        this.noCulling = true;
+    public CactusBlockEntity(Level level, LivingEntity followTarget, double x, double y, double z) {
+        super(TomEntities.CACTUS_BLOCK_ENTITY.get(), level);
+        setPos(x, y, z);
+        setFollowTarget(followTarget);
+        noCulling = true;
+        setStartPos(blockPosition());
     }
 
     @Override
     protected void defineSynchedData() {
+        entityData.define(DATA_START_POS, BlockPos.ZERO);
     }
 
+
     public void setFollowTarget(LivingEntity livingEntity) {
-        this.followTarget = livingEntity;
+        followTarget = livingEntity;
+    }
+
+    public void setStartPos(BlockPos pos) {
+        entityData.set(DATA_START_POS, pos);
+    }
+
+    public BlockPos getStartPos() {
+        return entityData.get(DATA_START_POS);
+    }
+
+    @Override
+    protected Entity.MovementEmission getMovementEmission() {
+        return Entity.MovementEmission.NONE;
     }
 
     @Override
@@ -50,12 +75,12 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
         if (gracePeriod > 0)
             --gracePeriod;
 
-        if (followTarget != null && followTarget.isAlive() && CapabilityHelper.getCactusAttract(followTarget)) {
+        if (followTarget != null && followTarget.isAlive() && NBTHelper.isEntityCactusMarked(followTarget)) {
             double xMotion = followTarget.getX() - getX();
             double yMotion = (followTarget.getY() + followTarget.getEyeHeight()) - getY();
             double zMotion = followTarget.getZ() - getZ();
 
-            Vector3d deltaMovement = new Vector3d(xMotion, yMotion, zMotion).normalize().scale(0.7);
+            Vec3 deltaMovement = new Vec3(xMotion, yMotion, zMotion).normalize().scale(0.7);
             setDeltaMovement(deltaMovement);
 
             if (distanceToSqr(followTarget) > 600) {
@@ -77,7 +102,7 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
 
         if (onGround && gracePeriod <= 0) {
             level.setBlock(blockPosition(), Blocks.CACTUS.defaultBlockState(), 3);
-            remove();
+            discard();
         }
     }
 
@@ -92,13 +117,8 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    protected boolean isMovementNoisy() {
-        return false;
-    }
-
-    @Override
-    protected void readAdditionalSaveData(CompoundNBT compoundNBT) {
-        Entity entity = level.getEntity(compoundNBT.getInt("FollowTarget"));
+    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+        Entity entity = level.getEntity(compoundTag.getInt("FollowTarget"));
 
         if (entity instanceof LivingEntity) {
             followTarget = (LivingEntity) entity;
@@ -106,8 +126,8 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compoundNBT) {
-        compoundNBT.putInt("FollowTarget", followTarget == null ? getId() : followTarget.getId());
+    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+        compoundTag.putInt("FollowTarget", followTarget == null ? getId() : followTarget.getId());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -117,17 +137,17 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeInt(followTarget == null ? getId() : followTarget.getId());
     }
 
     @Override
-    public void readSpawnData(PacketBuffer additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         Entity entity = level.getEntity(additionalData.readInt());
 
         if (entity instanceof LivingEntity) {

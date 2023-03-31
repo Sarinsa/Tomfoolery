@@ -2,11 +2,10 @@ package com.sarinsa.tomfoolery.common.grenades;
 
 import com.sarinsa.tomfoolery.common.core.registry.types.GrenadeType;
 import com.sarinsa.tomfoolery.common.entity.GrenadeRoundEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 
 public class DoomGrenadeType extends GrenadeType {
 
@@ -17,10 +16,10 @@ public class DoomGrenadeType extends GrenadeType {
     /**
      * Called when the grenade collides with something.
      */
-    public <T extends GrenadeRoundEntity> void generalImpact(T entity, World world, RayTraceResult result) {
-        if (!world.isClientSide) {
-            world.explode(entity, entity.getX(), entity.getY(), entity.getZ(), 20.0F, Explosion.Mode.DESTROY);
+    public <T extends GrenadeRoundEntity> void generalImpact(T entity, Level level, HitResult result) {
+        if (!level.isClientSide) {
+            level.explode(entity, entity.getX(), entity.getY(), entity.getZ(), 20.0F, Explosion.BlockInteraction.DESTROY);
         }
-        entity.remove();
+        entity.discard();
     }
 }

@@ -1,8 +1,8 @@
 package com.sarinsa.tomfoolery.common.item;
 
 import com.sarinsa.tomfoolery.common.core.registry.types.GrenadeType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
 
@@ -13,7 +13,7 @@ public class GrenadeRoundItem extends Item {
     public GrenadeRoundItem(Supplier<GrenadeType> grenadeType) {
         super(new Item.Properties()
                 .stacksTo(6)
-                .tab(ItemGroup.TAB_COMBAT));
+                .tab(CreativeModeTab.TAB_COMBAT));
 
         this.grenadeType = grenadeType;
     }

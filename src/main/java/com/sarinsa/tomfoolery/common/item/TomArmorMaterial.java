@@ -1,20 +1,19 @@
 package com.sarinsa.tomfoolery.common.item;
 
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class TomArmorMaterial implements IArmorMaterial {
+public class TomArmorMaterial implements ArmorMaterial {
 
-    private final Function<EquipmentSlotType, Integer> durabilityMultiplier;
+    private final Function<EquipmentSlot, Integer> durabilityMultiplier;
     private final int[] defenseForSlot;
     private final int enchantmentValue;
     private final Supplier<SoundEvent> sound;
@@ -50,7 +49,7 @@ public class TomArmorMaterial implements IArmorMaterial {
 
 
 
-    private TomArmorMaterial(Function<EquipmentSlotType, Integer> durabilityMultiplier, int[] defenseForSlot, int enchantmentValue, Supplier<SoundEvent> sound, Supplier<Ingredient> repairMaterial, String name, float toughness, float knockbackRes) {
+    private TomArmorMaterial(Function<EquipmentSlot, Integer> durabilityMultiplier, int[] defenseForSlot, int enchantmentValue, Supplier<SoundEvent> sound, Supplier<Ingredient> repairMaterial, String name, float toughness, float knockbackRes) {
         this.durabilityMultiplier = durabilityMultiplier;
         this.defenseForSlot = defenseForSlot;
         this.enchantmentValue = enchantmentValue;
@@ -63,12 +62,12 @@ public class TomArmorMaterial implements IArmorMaterial {
 
 
     @Override
-    public int getDurabilityForSlot(EquipmentSlotType equipmentSlotType) {
+    public int getDurabilityForSlot(EquipmentSlot equipmentSlotType) {
         return durabilityMultiplier.apply(equipmentSlotType);
     }
 
     @Override
-    public int getDefenseForSlot(EquipmentSlotType equipmentSlotType) {
+    public int getDefenseForSlot(EquipmentSlot equipmentSlotType) {
         return defenseForSlot[equipmentSlotType.getIndex()];
     }
 

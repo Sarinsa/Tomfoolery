@@ -1,8 +1,8 @@
 package com.sarinsa.tomfoolery.common.network.message;
 
 import com.sarinsa.tomfoolery.common.network.work.ClientWork;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -25,11 +25,11 @@ public class S2CUpdateEntityCactusAttract {
         context.setPacketHandled(true);
     }
 
-    public static S2CUpdateEntityCactusAttract decode(PacketBuffer buffer) {
+    public static S2CUpdateEntityCactusAttract decode(FriendlyByteBuf buffer) {
         return new S2CUpdateEntityCactusAttract(buffer.readBoolean(), buffer.readInt());
     }
 
-    public static void encode(S2CUpdateEntityCactusAttract message, PacketBuffer buffer) {
+    public static void encode(S2CUpdateEntityCactusAttract message, FriendlyByteBuf buffer) {
         buffer.writeBoolean(message.marked);
         buffer.writeInt(message.entityId);
     }

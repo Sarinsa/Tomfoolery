@@ -1,6 +1,7 @@
 package com.sarinsa.tomfoolery.common.block;
 
-import net.minecraft.block.Block;
+
+import net.minecraft.world.level.block.Block;
 
 public class OreOreBlock extends Block {
 

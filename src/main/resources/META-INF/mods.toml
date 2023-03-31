@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[36,)"
+loaderVersion="[43,)"
 license="GNU General Public License v3"
 
 [[mods]]
@@ -14,13 +14,13 @@ license="GNU General Public License v3"
 [[dependencies.tomfoolery]]
     modId="forge"
     mandatory=true
-    versionRange="[36.1.4,)"
+    versionRange="[43.2.1,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.tomfoolery]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.5,1.17)"
+    versionRange="[1.19.2,)"
     ordering="NONE"
     side="BOTH"

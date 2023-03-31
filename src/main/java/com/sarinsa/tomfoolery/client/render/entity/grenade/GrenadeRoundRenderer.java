@@ -1,28 +1,30 @@
 package com.sarinsa.tomfoolery.client.render.entity.grenade;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.sarinsa.tomfoolery.client.TomfooleryModelLayers;
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.entity.GrenadeRoundEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.TippedArrowRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class GrenadeRoundRenderer extends EntityRenderer<GrenadeRoundEntity> {
 
     private static final ResourceLocation TEXTURE = Tomfoolery.resourceLoc("textures/entity/grenade/grenade.png");
-    private final GrenadeRoundModel model = new GrenadeRoundModel();
+    private GrenadeRoundModel model;
 
-    public GrenadeRoundRenderer(EntityRendererManager rendererManager) {
-        super(rendererManager);
+    public GrenadeRoundRenderer(EntityRendererProvider.Context context) {
+        super(context);
+        model = new GrenadeRoundModel(context.bakeLayer(TomfooleryModelLayers.GRENADE_ROUND));
     }
 
-    public void render(GrenadeRoundEntity entity, float limbRot, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
-        matrixStack.pushPose();
-        matrixStack.translate(0.0D, -1.25D, 0.0D);
+    public void render(GrenadeRoundEntity entity, float limbRot, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        poseStack.pushPose();
+        poseStack.translate(0.0D, -1.25D, 0.0D);
 
         int color = entity.getGrenadeType().getColor(1);
 
@@ -30,11 +32,11 @@ public class GrenadeRoundRenderer extends EntityRenderer<GrenadeRoundEntity> {
         float g = (float)(color >> 8 & 255) / 255.0F;
         float b = (float)(color & 255) / 255.0F;
 
-        IVertexBuilder vertexBuilder = buffer.getBuffer(model.renderType(TEXTURE));
-        model.renderToBuffer(matrixStack, vertexBuilder, packedLight, OverlayTexture.NO_OVERLAY, r, g, b, 1.0F);
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(TEXTURE));
+        model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, r, g, b, 1.0F);
 
-        matrixStack.popPose();
-        super.render(entity, limbRot, partialTick, matrixStack, buffer, packedLight);
+        poseStack.popPose();
+        super.render(entity, limbRot, partialTick, poseStack, bufferSource, packedLight);
     }
 
     @Override

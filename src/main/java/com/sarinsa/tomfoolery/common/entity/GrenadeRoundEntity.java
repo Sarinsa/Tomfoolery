@@ -3,51 +3,51 @@ package com.sarinsa.tomfoolery.common.entity;
 import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
 import com.sarinsa.tomfoolery.common.core.registry.TomGrenadeTypes;
 import com.sarinsa.tomfoolery.common.core.registry.types.GrenadeType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.EndGatewayTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
-public class GrenadeRoundEntity extends ProjectileEntity implements IEntityAdditionalSpawnData {
+public class GrenadeRoundEntity extends Projectile implements IEntityAdditionalSpawnData {
 
     private BlockPos initialPos = BlockPos.ZERO;
     private GrenadeType grenadeType = TomGrenadeTypes.EXPLOSIVE.get();
 
-    public GrenadeRoundEntity(EntityType<? extends ProjectileEntity> entityType, World world) {
-        super(entityType, world);
+    public GrenadeRoundEntity(EntityType<? extends Projectile> entityType, Level level) {
+        super(entityType, level);
     }
 
-    public GrenadeRoundEntity(double x, double y, double z, World world) {
-        this(TomEntities.GRENADE_ROUND.get(), world);
-        moveTo(x, y, z, yRot, xRot);
+    public GrenadeRoundEntity(double x, double y, double z, Level level) {
+        this(TomEntities.GRENADE_ROUND.get(), level);
+        moveTo(x, y, z, getYRot(), getXRot());
         initialPos = new BlockPos(x, y, z);
         reapplyPosition();
     }
 
-    public GrenadeRoundEntity(LivingEntity shooter, World world) {
-        this(shooter.getX(), shooter.getEyeY(), shooter.getZ(), world);
+    public GrenadeRoundEntity(LivingEntity shooter, Level level) {
+        this(shooter.getX(), shooter.getEyeY(), shooter.getZ(), level);
         setOwner(shooter);
-        setRot(shooter.yRot, shooter.xRot);
+        setRot(shooter.getYRot(), shooter.getXRot());
     }
 
     @Override
@@ -59,11 +59,11 @@ public class GrenadeRoundEntity extends ProjectileEntity implements IEntityAddit
     public void tick() {
         super.tick();
 
-        RayTraceResult traceResult = ProjectileHelper.getHitResult(this, this::canHitEntity);
+        HitResult hitResult = ProjectileUtil.getHitResult(this, this::canHitEntity);
         boolean teleporting = false;
 
-        if (traceResult.getType() == RayTraceResult.Type.BLOCK) {
-            BlockPos blockpos = ((BlockRayTraceResult)traceResult).getBlockPos();
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockPos blockpos = ((BlockHitResult)hitResult).getBlockPos();
             BlockState blockstate = level.getBlockState(blockpos);
 
             if (blockstate.is(Blocks.NETHER_PORTAL)) {
@@ -71,27 +71,27 @@ public class GrenadeRoundEntity extends ProjectileEntity implements IEntityAddit
                 teleporting = true;
             }
             else if (blockstate.is(Blocks.END_GATEWAY)) {
-                TileEntity tileentity = level.getBlockEntity(blockpos);
+                BlockEntity blockEntity = level.getExistingBlockEntity(blockpos);
 
-                if (tileentity instanceof EndGatewayTileEntity && EndGatewayTileEntity.canEntityTeleport(this)) {
-                    ((EndGatewayTileEntity)tileentity).teleportEntity(this);
+                if (blockEntity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport(this)) {
+                    TheEndGatewayBlockEntity.teleportEntity(level, blockpos, level.getBlockState(blockpos), this, (TheEndGatewayBlockEntity) blockEntity);
                 }
                 teleporting = true;
             }
         }
 
-        if (traceResult.getType() != RayTraceResult.Type.MISS && !teleporting && !ForgeEventFactory.onProjectileImpact(this, traceResult)) {
-            onHit(traceResult);
+        if (hitResult.getType() != HitResult.Type.MISS && !teleporting && !ForgeEventFactory.onProjectileImpact(this, hitResult)) {
+            onHit(hitResult);
         }
         checkInsideBlocks();
-        Vector3d deltaMovement = getDeltaMovement();
+        Vec3 deltaMovement = getDeltaMovement();
         double x = this.getX() + deltaMovement.x;
         double y = this.getY() + deltaMovement.y;
         double z = this.getZ() + deltaMovement.z;
         updateRotation();
         float motionScale;
 
-        IParticleData traceParticle;
+        SimpleParticleType traceParticle;
 
         if (isInWater()) {
             traceParticle = ParticleTypes.BUBBLE;
@@ -105,7 +105,7 @@ public class GrenadeRoundEntity extends ProjectileEntity implements IEntityAddit
         setDeltaMovement(deltaMovement.scale(motionScale));
 
         if (!isNoGravity()) {
-            Vector3d deltaMovement1 = getDeltaMovement();
+            Vec3 deltaMovement1 = getDeltaMovement();
             setDeltaMovement(deltaMovement1.x, deltaMovement1.y - getGravity(), deltaMovement1.z);
         }
         setPos(x, y, z);
@@ -128,39 +128,39 @@ public class GrenadeRoundEntity extends ProjectileEntity implements IEntityAddit
     }
 
     @Override
-    protected void onHit(RayTraceResult traceResult) {
+    protected void onHit(HitResult traceResult) {
         if (grenadeType == null)
             return;
 
         if (distanceToSqr(initialPos.getX(), initialPos.getY(), initialPos.getZ()) > grenadeType.getSafetyDist()) {
-            RayTraceResult.Type resultType = traceResult.getType();
+            HitResult.Type resultType = traceResult.getType();
 
-            if (resultType == RayTraceResult.Type.ENTITY) {
-                grenadeType.onEntityImpact(this, level, (EntityRayTraceResult) traceResult);
+            if (resultType == HitResult.Type.ENTITY) {
+                grenadeType.onEntityImpact(this, level, (EntityHitResult) traceResult);
             }
-            else if (resultType == RayTraceResult.Type.BLOCK) {
-                grenadeType.onBlockImpact(this, level, (BlockRayTraceResult) traceResult);
+            else if (resultType == HitResult.Type.BLOCK) {
+                grenadeType.onBlockImpact(this, level, (BlockHitResult) traceResult);
             }
             grenadeType.generalImpact(this, level, traceResult);
         }
-        remove();
+        discard();
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
-        super.addAdditionalSaveData(compoundNBT);
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
 
         if (grenadeType != null) {
-            compoundNBT.putString("GrenadeType", grenadeType.getRegistryName().toString());
+            compoundTag.putString("GrenadeType", TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().getKey(grenadeType).toString());
         }
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
-        super.readAdditionalSaveData(compoundNBT);
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
 
-        if (compoundNBT.contains("GrenadeType", Constants.NBT.TAG_STRING)) {
-            ResourceLocation id = ResourceLocation.tryParse(compoundNBT.getString("GrenadeType"));
+        if (compoundTag.contains("GrenadeType", Tag.TAG_STRING)) {
+            ResourceLocation id = ResourceLocation.tryParse(compoundTag.getString("GrenadeType"));
 
             if (id != null && TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().containsKey(id)) {
                 grenadeType = TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().getValue(id);
@@ -172,18 +172,27 @@ public class GrenadeRoundEntity extends ProjectileEntity implements IEntityAddit
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
-        buffer.writeResourceLocation(grenadeType == null ? new ResourceLocation("") : grenadeType.getRegistryName());
+    public void writeSpawnData(FriendlyByteBuf buffer) {
+        if (grenadeType != null) {
+            ResourceLocation id = TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().containsValue(grenadeType)
+                    ? TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().getKey(grenadeType)
+                    : new ResourceLocation("");
+
+            buffer.writeResourceLocation(id);
+        }
+        else {
+            buffer.writeResourceLocation(new ResourceLocation(""));
+        }
     }
 
     @Override
-    public void readSpawnData(PacketBuffer additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         ResourceLocation grenadeTypeId = additionalData.readResourceLocation();
         setGrenadeType(TomGrenadeTypes.getOrDefault(grenadeTypeId));
     }

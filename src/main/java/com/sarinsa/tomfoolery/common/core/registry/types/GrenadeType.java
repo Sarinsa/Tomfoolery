@@ -1,25 +1,23 @@
 package com.sarinsa.tomfoolery.common.core.registry.types;
 
 import com.sarinsa.tomfoolery.common.entity.GrenadeRoundEntity;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nullable;
 
-public class GrenadeType implements IForgeRegistryEntry<GrenadeType> {
+public class GrenadeType {
 
-    private ResourceLocation registryId;
     private final int safetyDist;
-    private final IParticleData traceParticle;
+    private final SimpleParticleType traceParticle;
     private final int shellColor;
     private final int topColor;
 
-    public GrenadeType(int safetyDist, IParticleData traceParticle, int shellColor, int topColor) {
+    public GrenadeType(int safetyDist, SimpleParticleType traceParticle, int shellColor, int topColor) {
         this.safetyDist = safetyDist;
         this.traceParticle = traceParticle;
         this.shellColor = shellColor;
@@ -27,18 +25,18 @@ public class GrenadeType implements IForgeRegistryEntry<GrenadeType> {
     }
 
 
-    public <T extends GrenadeRoundEntity> void onBlockImpact(T entity, World world, BlockRayTraceResult result) {
+    public <T extends GrenadeRoundEntity> void onBlockImpact(T entity, Level level, BlockHitResult result) {
 
     }
 
-    public <T extends GrenadeRoundEntity> void onEntityImpact(T entity, World world, EntityRayTraceResult result) {
+    public <T extends GrenadeRoundEntity> void onEntityImpact(T entity, Level level, EntityHitResult result) {
 
     }
 
     /**
      * Called when the grenade collides with something.
      */
-    public <T extends GrenadeRoundEntity> void generalImpact(T entity, World world, RayTraceResult result) {
+    public <T extends GrenadeRoundEntity> void generalImpact(T entity, Level level, HitResult result) {
 
     }
 
@@ -49,28 +47,11 @@ public class GrenadeType implements IForgeRegistryEntry<GrenadeType> {
         return safetyDist;
     }
 
-    public IParticleData getTraceParticle() {
+    public SimpleParticleType getTraceParticle() {
         return traceParticle;
     }
 
     public final int getColor(int color) {
         return color == 0 ? shellColor : topColor;
-    }
-
-    @Override
-    public GrenadeType setRegistryName(ResourceLocation name) {
-        this.registryId = name;
-        return this;
-    }
-
-    @Nullable
-    @Override
-    public ResourceLocation getRegistryName() {
-        return registryId;
-    }
-
-    @Override
-    public Class<GrenadeType> getRegistryType() {
-        return GrenadeType.class;
     }
 }

@@ -1,15 +1,14 @@
 package com.sarinsa.tomfoolery.common.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.function.Supplier;
 
@@ -23,19 +22,19 @@ public class CoolBlockReplacerGlassesItem extends CoolGlassesItem {
     }
 
     @Override
-    public void gaze(PlayerEntity player, World world, BlockRayTraceResult traceResult) {
-        BlockPos lookAtPos = traceResult.getBlockPos();
-        BlockState lookAtState = world.getBlockState(lookAtPos);
+    public void gaze(Player player, Level level, BlockHitResult hitResult) {
+        BlockPos lookAtPos = hitResult.getBlockPos();
+        BlockState lookAtState = level.getBlockState(lookAtPos);
 
-        if (!lookAtState.isAir(world, lookAtPos) && lookAtState.getBlock() != blockSupplier.get() && !lookAtState.getCollisionShape(world, lookAtPos).isEmpty()) {
-            if (world.getBlockEntity(lookAtPos) != null) {
-                TileEntity tileEntity = world.getBlockEntity(lookAtPos);
+        if (!lookAtState.isAir() && lookAtState.getBlock() != blockSupplier.get() && !lookAtState.getCollisionShape(level, lookAtPos).isEmpty()) {
+            if (level.getBlockEntity(lookAtPos) != null) {
+                BlockEntity blockEntity = level.getBlockEntity(lookAtPos);
 
-                if (tileEntity instanceof IInventory) {
-                    InventoryHelper.dropContents(world, lookAtPos, (IInventory) tileEntity);
+                if (blockEntity instanceof Container) {
+                    Containers.dropContents(level, lookAtPos, (Container) blockEntity);
                 }
             }
-            world.setBlock(lookAtPos, blockSupplier.get().defaultBlockState(), 2);
+            level.setBlock(lookAtPos, blockSupplier.get().defaultBlockState(), 2);
         }
     }
 
