@@ -1,6 +1,5 @@
 package com.sarinsa.tomfoolery.common.entity;
 
-import com.sarinsa.tomfoolery.common.capability.CapabilityHelper;
 import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
 import com.sarinsa.tomfoolery.common.util.NBTHelper;
 import net.minecraft.core.BlockPos;
@@ -15,7 +14,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -23,6 +21,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
+
+import javax.annotation.Nonnull;
 
 
 public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnData {
@@ -50,7 +50,6 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
         entityData.define(DATA_START_POS, BlockPos.ZERO);
     }
 
-
     public void setFollowTarget(LivingEntity livingEntity) {
         followTarget = livingEntity;
     }
@@ -63,9 +62,10 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
         return entityData.get(DATA_START_POS);
     }
 
+    @Nonnull
     @Override
-    protected Entity.MovementEmission getMovementEmission() {
-        return Entity.MovementEmission.NONE;
+    protected MovementEmission getMovementEmission() {
+        return MovementEmission.NONE;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
             }
         }
 
-        if (onGround && gracePeriod <= 0) {
+        if (!level.isClientSide && onGround && gracePeriod <= 0) {
             level.setBlock(blockPosition(), Blocks.CACTUS.defaultBlockState(), 3);
             discard();
         }
@@ -136,6 +136,7 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
         return false;
     }
 
+    @Nonnull
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);

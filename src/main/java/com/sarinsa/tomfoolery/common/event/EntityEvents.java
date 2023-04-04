@@ -16,6 +16,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.CompoundContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
@@ -115,23 +117,33 @@ public class EntityEvents {
     @SubscribeEvent
     public void onChestOpen(PlayerContainerEvent.Open event) {
         if (event.getContainer() instanceof ChestMenu chestMenu) {
-            if (chestMenu.getContainer() instanceof ChestBlockEntity chestBlockEntity) {
+            ChestBlockEntity chestBlockEntity = null;
+
+            if (chestMenu.getContainer() instanceof ChestBlockEntity chest && chest.getPersistentData().contains(CreeperChestHideGoal.HIDDEN_CREEPER_TAG, Tag.TAG_BYTE)) {
+                chestBlockEntity = chest;
+            }
+            else if (chestMenu.getContainer() instanceof CompoundContainer compoundContainer) {
+                Container container = event.getEntity().level.random.nextBoolean() ? compoundContainer.container1 : compoundContainer.container2;
+
+                if (container instanceof ChestBlockEntity chest && chest.getPersistentData().contains(CreeperChestHideGoal.HIDDEN_CREEPER_TAG, Tag.TAG_BYTE)) {
+                    chestBlockEntity = chest;
+                }
+            }
+            if (chestBlockEntity != null) {
                 CompoundTag data = chestBlockEntity.getPersistentData();
 
-                if (data.contains(CreeperChestHideGoal.HIDDEN_CREEPER_TAG, Tag.TAG_BYTE)) {
-                    if (data.getBoolean(CreeperChestHideGoal.HIDDEN_CREEPER_TAG)) {
-                        data.putBoolean(CreeperChestHideGoal.HIDDEN_CREEPER_TAG, false);
-                        BlockPos pos = chestBlockEntity.getBlockPos().above();
-                        Player player = event.getEntity();
+                if (data.getBoolean(CreeperChestHideGoal.HIDDEN_CREEPER_TAG)) {
+                    data.putBoolean(CreeperChestHideGoal.HIDDEN_CREEPER_TAG, false);
+                    BlockPos pos = chestBlockEntity.getBlockPos().above();
+                    Player player = event.getEntity();
 
-                        if (!player.level.isClientSide) {
-                            ServerLevel serverLevel = (ServerLevel) player.level;
-                            EntityType.CREEPER.spawn(serverLevel, null, null, player, pos, MobSpawnType.TRIGGERED, true, false);
+                    if (!player.level.isClientSide) {
+                        ServerLevel serverLevel = (ServerLevel) player.level;
+                        EntityType.CREEPER.spawn(serverLevel, null, null, player, pos, MobSpawnType.TRIGGERED, true, false);
 
-                            RandomSource random = player.level.random;
+                        RandomSource random = player.level.random;
 
-                            serverLevel.sendParticles(ParticleTypes.CLOUD, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 10, random.nextGaussian(), random.nextGaussian(), random.nextGaussian(), 0.1D);
-                        }
+                        serverLevel.sendParticles(ParticleTypes.CLOUD, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 10, random.nextGaussian(), random.nextGaussian(), random.nextGaussian(), 0.1D);
                     }
                 }
             }

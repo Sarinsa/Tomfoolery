@@ -1,22 +1,29 @@
 package com.sarinsa.tomfoolery.common.entity;
 
 import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
-import com.sarinsa.tomfoolery.common.core.registry.TomGrenadeTypes;
-import com.sarinsa.tomfoolery.common.core.registry.types.GrenadeType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.TallGrassBlock;
+import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,23 +35,24 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.network.NetworkHooks;
 
-public class GrenadeRoundEntity extends Projectile implements IEntityAdditionalSpawnData {
+public class LaunchedTorchEntity extends Projectile implements IEntityAdditionalSpawnData, ItemSupplier {
+
+    private static final ItemStack renderedItem = new ItemStack(Items.TORCH);
 
     private BlockPos initialPos = BlockPos.ZERO;
-    private GrenadeType grenadeType = TomGrenadeTypes.EXPLOSIVE.get();
 
-    public GrenadeRoundEntity(EntityType<? extends Projectile> entityType, Level level) {
+    public LaunchedTorchEntity(EntityType<? extends Projectile> entityType, Level level) {
         super(entityType, level);
     }
 
-    public GrenadeRoundEntity(double x, double y, double z, Level level) {
-        this(TomEntities.GRENADE_ROUND.get(), level);
+    public LaunchedTorchEntity(double x, double y, double z, Level level) {
+        this(TomEntities.LAUNCHED_TORCH.get(), level);
         moveTo(x, y, z, getYRot(), getXRot());
         initialPos = new BlockPos(x, y, z);
         reapplyPosition();
     }
 
-    public GrenadeRoundEntity(LivingEntity shooter, Level level) {
+    public LaunchedTorchEntity(LivingEntity shooter, Level level) {
         this(shooter.getX(), shooter.getEyeY(), shooter.getZ(), level);
         setOwner(shooter);
         setRot(shooter.getYRot(), shooter.getXRot());
@@ -89,38 +97,26 @@ public class GrenadeRoundEntity extends Projectile implements IEntityAdditionalS
         double y = getY() + deltaMovement.y;
         double z = getZ() + deltaMovement.z;
         updateRotation();
-        float motionScale;
 
-        SimpleParticleType traceParticle;
-
-        if (isInWater()) {
-            traceParticle = ParticleTypes.BUBBLE;
-            motionScale = 0.8F;
-        }
-        else {
-            traceParticle = grenadeType.getTraceParticle();
-            motionScale = 0.99F;
-        }
-        level.addParticle(traceParticle, x - deltaMovement.x * 0.25D, y - deltaMovement.y * 0.25D, z - deltaMovement.z * 0.25D, deltaMovement.x, deltaMovement.y, deltaMovement.z);
-        setDeltaMovement(deltaMovement.scale(motionScale));
+        setDeltaMovement(deltaMovement.scale(0.99F));
 
         if (!isNoGravity()) {
             Vec3 deltaMovement1 = getDeltaMovement();
             setDeltaMovement(deltaMovement1.x, deltaMovement1.y - getGravity(), deltaMovement1.z);
         }
         setPos(x, y, z);
+
+        if (isInWater()) {
+            discard();
+
+            if (!level.isClientSide) {
+                level.addFreshEntity(new ItemEntity(level, x, y, z, new ItemStack(Items.TORCH)));
+            }
+        }
     }
 
     protected double getGravity() {
         return 0.08D;
-    }
-
-    public void setGrenadeType(GrenadeType grenadeType) {
-        this.grenadeType = grenadeType;
-    }
-
-    public GrenadeType getGrenadeType() {
-        return grenadeType;
     }
 
     public BlockPos getInitialPos() {
@@ -128,21 +124,33 @@ public class GrenadeRoundEntity extends Projectile implements IEntityAdditionalS
     }
 
     @Override
-    protected void onHit(HitResult traceResult) {
-        if (grenadeType == null)
-            return;
+    protected void onHitBlock(BlockHitResult hitResult) {
+        BlockPos pos = hitResult.getBlockPos();
+        Direction direction = hitResult.getDirection();
+        boolean placed = false;
 
-        if (traceResult.getType() == HitResult.Type.ENTITY) {
-            grenadeType.onEntityImpact(this, getOwner(), level, (EntityHitResult) traceResult);
-        }
-
-        if (distanceToSqr(initialPos.getX(), initialPos.getY(), initialPos.getZ()) > grenadeType.getSafetyDist()) {
-            HitResult.Type resultType = traceResult.getType();
-
-            if (resultType == HitResult.Type.BLOCK) {
-                grenadeType.onBlockImpact(this, getOwner(), level, (BlockHitResult) traceResult);
+        if (direction == Direction.UP) {
+            if (level.getBlockState(pos.relative(direction)).isAir()) {
+                level.setBlock(pos.relative(direction), Blocks.TORCH.defaultBlockState(), 3);
+                placed = true;
             }
-            grenadeType.generalImpact(this, getOwner(), level, traceResult);
+        }
+        else if (direction != Direction.DOWN) {
+            if (level.getBlockState(pos.relative(direction)).isAir()) {
+                level.setBlock(pos.relative(direction), Blocks.WALL_TORCH.defaultBlockState().setValue(WallTorchBlock.FACING, direction), 3);
+                placed = true;
+            }
+        }
+        if (!level.isClientSide && !placed) {
+            level.addFreshEntity(new ItemEntity(level, getX(), getY(), getZ(), new ItemStack(Items.TORCH)));
+        }
+        discard();
+    }
+
+    @Override
+    protected void onHitEntity(EntityHitResult hitResult) {
+        if (hitResult.getEntity() instanceof LivingEntity livingEntity && !livingEntity.getType().fireImmune()) {
+            livingEntity.setSecondsOnFire(3);
         }
         discard();
     }
@@ -150,26 +158,11 @@ public class GrenadeRoundEntity extends Projectile implements IEntityAdditionalS
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-
-        if (grenadeType != null) {
-            compoundTag.putString("GrenadeType", TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().getKey(grenadeType).toString());
-        }
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-
-        if (compoundTag.contains("GrenadeType", Tag.TAG_STRING)) {
-            ResourceLocation id = ResourceLocation.tryParse(compoundTag.getString("GrenadeType"));
-
-            if (id != null && TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().containsKey(id)) {
-                grenadeType = TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().getValue(id);
-            }
-            else {
-                grenadeType = TomGrenadeTypes.EXPLOSIVE.get();
-            }
-        }
     }
 
     @Override
@@ -177,24 +170,18 @@ public class GrenadeRoundEntity extends Projectile implements IEntityAdditionalS
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
-        if (grenadeType != null) {
-            ResourceLocation id = TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().containsValue(grenadeType)
-                    ? TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().getKey(grenadeType)
-                    : new ResourceLocation("");
 
-            buffer.writeResourceLocation(id);
-        }
-        else {
-            buffer.writeResourceLocation(new ResourceLocation(""));
-        }
     }
 
     @Override
     public void readSpawnData(FriendlyByteBuf additionalData) {
-        ResourceLocation grenadeTypeId = additionalData.readResourceLocation();
-        setGrenadeType(TomGrenadeTypes.getOrDefault(grenadeTypeId));
+
+    }
+
+    @Override
+    public ItemStack getItem() {
+        return renderedItem;
     }
 }

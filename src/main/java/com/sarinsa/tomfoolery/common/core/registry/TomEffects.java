@@ -1,7 +1,7 @@
 package com.sarinsa.tomfoolery.common.core.registry;
 
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
-import com.sarinsa.tomfoolery.common.effect.CactusAttractionEffect;
+import com.sarinsa.tomfoolery.common.mob_effect.CactusAttractionEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

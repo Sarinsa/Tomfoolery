@@ -1,4 +1,7 @@
 {
+  "death.attack.tomfoolery.grenade_impact": "%1$s was hit by a grenade",
+  "death.attack.tomfoolery.grenade_impact.player": "%1$s was hit by a grenade whilst trying to escape %2$s",
+
   "block.tomfoolery.ore_ore": "Ore Ore",
   "block.tomfoolery.cake_ore": "Cake Ore",
 
@@ -32,5 +35,7 @@
   "item.minecraft.tipped_arrow.effect.cactus_attraction_long": "Arrow of Cactus Attraction",
   "item.minecraft.tipped_arrow.effect.cactus_attraction_strong": "Arrow of Cactus Attraction",
 
-  "item.tomfoolery.grenade_launcher.jei_desc": "The Ridicu-Launcher is a versatile launcher that supports many types of ammo. It can launch normal grenade rounds, potions, pistons and torches etc. While it cannot be crafted, it can be rarely found various places in the world."
+  "item.tomfoolery.grenade_launcher.ammo": "Ammunition",
+  "item.tomfoolery.grenade_launcher.empty": "Empty",
+  "item.tomfoolery.grenade_launcher.jei_desc": "The Ridicu-Launcher is a versatile launcher that supports many types of ammo. It can launch normal grenade rounds, potions and torches etc. While it cannot be crafted, it can be rarely found various places in the world."
 }

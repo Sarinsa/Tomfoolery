@@ -27,9 +27,9 @@ public class TomGrenadeTypes {
     }
 
     public static GrenadeType getOrDefault(ResourceLocation id) {
-        for (Supplier<GrenadeType> type : GRENADE_TYPES.getEntries()) {
-            if (GRENADE_TYPE_REGISTRY.get().getKey(type.get()).equals(id))
-                return type.get();
+        for (GrenadeType type : GRENADE_TYPE_REGISTRY.get().getValues()) {
+            if (GRENADE_TYPE_REGISTRY.get().getKey(type).equals(id))
+                return type;
         }
         return EXPLOSIVE.get();
     }

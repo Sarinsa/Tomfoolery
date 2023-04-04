@@ -50,8 +50,8 @@ public class TomConfiguredFeatures {
 
 
     //------------------------------- PLACED ------------------------------------
-    public static final RegistryObject<PlacedFeature> PLACED_ORE_ORE = registerOre(ModOres.ORE_ORE, "ore_ore", ORE_ORE, () -> commonOrePlacement(2, HeightRangePlacement.triangle(VerticalAnchor.absolute(-16), VerticalAnchor.absolute(70))));
-    public static final RegistryObject<PlacedFeature> PLACED_CAKE_ORE = registerOre(ModOres.CAKE, "cake_ore", CAKE_ORE, () -> commonOrePlacement(5, HeightRangePlacement.triangle(VerticalAnchor.absolute(-16), VerticalAnchor.absolute(70))));
+    public static final RegistryObject<PlacedFeature> PLACED_ORE_ORE = registerOre(ModOres.ORE_ORE, "ore_ore", ORE_ORE, () -> rareOrePlacement(3, HeightRangePlacement.triangle(VerticalAnchor.absolute(-16), VerticalAnchor.absolute(40))));
+    public static final RegistryObject<PlacedFeature> PLACED_CAKE_ORE = registerOre(ModOres.CAKE, "cake_ore", CAKE_ORE, () -> rareOrePlacement(6, HeightRangePlacement.triangle(VerticalAnchor.absolute(-16), VerticalAnchor.absolute(70))));
 
 
 

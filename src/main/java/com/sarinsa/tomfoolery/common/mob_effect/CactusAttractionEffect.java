@@ -1,4 +1,4 @@
-package com.sarinsa.tomfoolery.common.effect;
+package com.sarinsa.tomfoolery.common.mob_effect;
 
 import com.sarinsa.tomfoolery.common.entity.CactusBlockEntity;
 import net.minecraft.core.BlockPos;

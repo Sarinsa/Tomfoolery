@@ -4,6 +4,7 @@ import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.entity.CactusBlockEntity;
 import com.sarinsa.tomfoolery.common.entity.GrenadeRoundEntity;
 import com.sarinsa.tomfoolery.common.entity.InstaSaplingEntity;
+import com.sarinsa.tomfoolery.common.entity.LaunchedTorchEntity;
 import com.sarinsa.tomfoolery.common.entity.living.BuffcatEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -17,7 +18,13 @@ public class TomEntities {
 
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Tomfoolery.MODID);
 
+
     public static final RegistryObject<EntityType<CactusBlockEntity>> CACTUS_BLOCK_ENTITY = register("cactus_block_entity", EntityType.Builder.<CactusBlockEntity>of(CactusBlockEntity::new, MobCategory.MISC)
+            .noSummon()
+            .sized(1.0F, 1.0F)
+            .clientTrackingRange(10)
+            .updateInterval(5));
+    public static final RegistryObject<EntityType<LaunchedTorchEntity>> LAUNCHED_TORCH = register("launched_torch", EntityType.Builder.<LaunchedTorchEntity>of(LaunchedTorchEntity::new, MobCategory.MISC)
             .noSummon()
             .sized(1.0F, 1.0F)
             .clientTrackingRange(10)
@@ -30,7 +37,6 @@ public class TomEntities {
             .sized(0.2F, 0.2F)
             .clientTrackingRange(6)
             .updateInterval(20));
-
     public static final RegistryObject<EntityType<BuffcatEntity>> BUFFCAT = register("buffcat", EntityType.Builder.of(BuffcatEntity::new, MobCategory.CREATURE)
             .sized(1.4F, 2.0F)
             .noSummon());

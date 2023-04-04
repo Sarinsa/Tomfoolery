@@ -2,7 +2,8 @@ package com.sarinsa.tomfoolery.common.core.registry.types;
 
 import com.sarinsa.tomfoolery.common.entity.GrenadeRoundEntity;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -25,18 +26,18 @@ public class GrenadeType {
     }
 
 
-    public <T extends GrenadeRoundEntity> void onBlockImpact(T entity, Level level, BlockHitResult result) {
+    public <T extends Projectile> void onBlockImpact(T entity, @Nullable Entity shooter, Level level, BlockHitResult result) {
 
     }
 
-    public <T extends GrenadeRoundEntity> void onEntityImpact(T entity, Level level, EntityHitResult result) {
+    public <T extends Projectile> void onEntityImpact(T entity, @Nullable Entity shooter, Level level, EntityHitResult result) {
 
     }
 
     /**
      * Called when the grenade collides with something.
      */
-    public <T extends GrenadeRoundEntity> void generalImpact(T entity, Level level, HitResult result) {
+    public <T extends Projectile> void generalImpact(T entity, @Nullable Entity shooter, Level level, HitResult result) {
 
     }
 
