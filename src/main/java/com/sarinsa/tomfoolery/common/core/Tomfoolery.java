@@ -8,8 +8,9 @@ import com.sarinsa.tomfoolery.api.impl.TomfooleryAPI;
 import com.sarinsa.tomfoolery.common.core.config.TomClientConfig;
 import com.sarinsa.tomfoolery.common.core.config.TomCommonConfig;
 import com.sarinsa.tomfoolery.common.core.registry.*;
-import com.sarinsa.tomfoolery.common.event.CapabilityEvents;
-import com.sarinsa.tomfoolery.common.event.EntityEvents;
+import com.sarinsa.tomfoolery.common.event.CapabilityEventsListener;
+import com.sarinsa.tomfoolery.common.event.EntityEventsListener;
+import com.sarinsa.tomfoolery.common.event.ServerEventListener;
 import com.sarinsa.tomfoolery.common.network.PacketHandler;
 import com.sarinsa.tomfoolery.common.tags.TomItemTags;
 import com.sarinsa.tomfoolery.common.worldgen.TomConfiguredFeatures;
@@ -51,14 +52,13 @@ public class Tomfoolery {
         eventBus.addListener(this::onCommonSetup);
         eventBus.addListener(this::onLoadComplete);
 
-        MinecraftForge.EVENT_BUS.register(new CapabilityEvents());
-        MinecraftForge.EVENT_BUS.register(new EntityEvents());
-        MinecraftForge.EVENT_BUS.register(new ServerEventManager());
+        MinecraftForge.EVENT_BUS.register(new CapabilityEventsListener());
+        MinecraftForge.EVENT_BUS.register(new EntityEventsListener());
+        MinecraftForge.EVENT_BUS.register(new ServerEventListener());
 
         eventBus.addListener(TomEntities::createEntityAttributes);
         eventBus.addListener(TomEntities::registerEntitySpawnPlacement);
         eventBus.addListener(TomItems::onCreativeTabPopulate);
-
 
         TomBlocks.BLOCKS.register(eventBus);
         TomItems.ITEMS.register(eventBus);

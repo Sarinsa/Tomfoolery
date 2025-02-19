@@ -1,4 +1,4 @@
-package com.sarinsa.tomfoolery.common.core;
+package com.sarinsa.tomfoolery.common.event;
 
 import com.sarinsa.tomfoolery.common.core.config.TomCommonConfig;
 import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
@@ -20,7 +20,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.Collections;
 import java.util.List;
 
-public class ServerEventManager {
+public class ServerEventListener {
 
     private MinecraftServer server = null;
 

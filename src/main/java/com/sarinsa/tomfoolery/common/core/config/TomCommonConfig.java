@@ -28,7 +28,6 @@ public class TomCommonConfig {
         private ForgeConfigSpec.ConfigValue<List<? extends String>> spawningOres;
 
         public ForgeConfigSpec.BooleanValue spawnGhastinators;
-        public ForgeConfigSpec.BooleanValue enableCreeperHiding;
 
         public ForgeConfigSpec.DoubleValue grenadeLauncherZombieChance;
 
@@ -38,9 +37,6 @@ public class TomCommonConfig {
 
             allowedGrenades = configBuilder.comment("A list of grenade types for the Redicu-Launcher that are allowed to be used and crafted.")
                     .define("allowed_grenades", defaultAllowedGrenades(), (o) -> existInRegistry(o, TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get()));
-
-            enableCreeperHiding = configBuilder.comment("If enabled, creepers can hide in nearby chests and pop out when the chest is opened")
-                    .define("enable_creeper_hiding", true);
 
             spawnGhastinators = configBuilder.comment("If enabled, the almighty Ghastinator will spawn at night when it is a new moon. This is a friggin massive ghast that can see you from really far away" +
                     " and shoots mega fireballs. Not recommended if you enjoy your base not being exploded!")

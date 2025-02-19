@@ -1,9 +1,8 @@
 package com.sarinsa.tomfoolery.common.item;
 
-import net.minecraft.world.entity.EquipmentSlot;
+import com.sarinsa.tomfoolery.common.event.EntityEventsListener;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
@@ -17,7 +16,7 @@ public abstract class CoolGlassesItem extends ArmorItem {
     }
 
     /**
-     * Called from {@link com.sarinsa.tomfoolery.common.event.EntityEvents#onPlayerUpdate(LivingEvent.LivingTickEvent)}
+     * Called from {@link EntityEventsListener#onPlayerUpdate(LivingEvent.LivingTickEvent)}
      * every tick when the player is wearing this item on their head.
      */
     public abstract void gaze(Player player, Level level, BlockHitResult hitResult);
