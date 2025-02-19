@@ -30,6 +30,8 @@ public class TomCommonConfig {
         public ForgeConfigSpec.BooleanValue spawnGhastinators;
         public ForgeConfigSpec.BooleanValue enableCreeperHiding;
 
+        public ForgeConfigSpec.DoubleValue grenadeLauncherZombieChance;
+
 
         private Common(ForgeConfigSpec.Builder configBuilder) {
             spawningOres = configBuilder.defineList("spawning_ores", defaultSpawningOres(), (o) -> existInRegistry(o, ForgeRegistries.BLOCKS));
@@ -43,6 +45,9 @@ public class TomCommonConfig {
             spawnGhastinators = configBuilder.comment("If enabled, the almighty Ghastinator will spawn at night when it is a new moon. This is a friggin massive ghast that can see you from really far away" +
                     " and shoots mega fireballs. Not recommended if you enjoy your base not being exploded!")
                     .define("spawn_ghastinators", false);
+
+            grenadeLauncherZombieChance = configBuilder.comment("The chance for zombies to spawn with a grenade launcher. Set to 0 to disable this altogether")
+                    .defineInRange("grenade_launcher_zombie_chance", 0.05, 0.0, 1.0);
         }
 
         private static boolean existInRegistry(Object o, IForgeRegistry<?> registry) {
