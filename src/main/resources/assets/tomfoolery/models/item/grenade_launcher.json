@@ -249,7 +249,12 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"rotation": [21, 73, -18],
+			"rotation": [21, 73, -17],
+			"translation": [0, 0, -5],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [20, -101, 17],
 			"translation": [0, 0, -5],
 			"scale": [0.7, 0.7, 0.7]
 		},

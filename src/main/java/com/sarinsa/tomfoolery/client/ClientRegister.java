@@ -1,5 +1,6 @@
 package com.sarinsa.tomfoolery.client;
 
+import com.sarinsa.tomfoolery.client.render.entity.TomArmPoses;
 import com.sarinsa.tomfoolery.client.render.entity.cactus.CactusEntityRenderer;
 import com.sarinsa.tomfoolery.client.render.entity.ghastinator.GhastinatorModel;
 import com.sarinsa.tomfoolery.client.render.entity.ghastinator.GhastinatorRenderer;
@@ -30,6 +31,7 @@ public class ClientRegister {
     public static void onClientSetup(FMLClientSetupEvent event) {
         TomfooleryModelLayers.init();
         setBlockRenderTypes();
+        TomArmPoses.init();
     }
 
     @SubscribeEvent

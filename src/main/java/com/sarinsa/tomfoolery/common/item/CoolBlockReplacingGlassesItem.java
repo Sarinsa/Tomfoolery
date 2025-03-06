@@ -12,11 +12,11 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.function.Supplier;
 
-public class CoolBlockReplacerGlassesItem extends CoolGlassesItem {
+public class CoolBlockReplacingGlassesItem extends CoolGlassesItem {
 
     private final Supplier<Block> blockSupplier;
 
-    public CoolBlockReplacerGlassesItem(Supplier<Block> blockSupplier) {
+    public CoolBlockReplacingGlassesItem(Supplier<Block> blockSupplier) {
         super();
         this.blockSupplier = blockSupplier;
     }

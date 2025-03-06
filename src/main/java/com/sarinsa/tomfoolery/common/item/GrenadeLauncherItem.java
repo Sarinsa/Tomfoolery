@@ -1,6 +1,7 @@
 package com.sarinsa.tomfoolery.common.item;
 
 import com.sarinsa.tomfoolery.api.ILauncherLogic;
+import com.sarinsa.tomfoolery.client.render.entity.TomArmPoses;
 import com.sarinsa.tomfoolery.common.core.registry.TomItems;
 import com.sarinsa.tomfoolery.common.core.registry.TomSounds;
 import com.sarinsa.tomfoolery.common.entity.GrenadeRound;
@@ -16,6 +17,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
@@ -245,6 +247,10 @@ public class GrenadeLauncherItem extends ProjectileWeaponItem {
                 new IClientItemExtensions() {
                     @Override
                     public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
+                        if (entityLiving.getItemBySlot(EquipmentSlot.MAINHAND).is(TomItems.GRENADE_LAUNCHER.get())
+                        && entityLiving.getItemBySlot(EquipmentSlot.OFFHAND).is(TomItems.GRENADE_LAUNCHER.get()))
+                            return TomArmPoses.STRAIGHT_ARM;
+
                         return HumanoidModel.ArmPose.CROSSBOW_HOLD;
                     }
                 }

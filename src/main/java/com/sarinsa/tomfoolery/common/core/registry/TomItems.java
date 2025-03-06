@@ -5,8 +5,6 @@ import com.sarinsa.tomfoolery.common.core.registry.types.GrenadeType;
 import com.sarinsa.tomfoolery.common.item.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -43,7 +41,7 @@ public class TomItems {
     public static final RegistryObject<Item> NETHERAIGHT_LEGGINGS = registerItem("netheraight_leggings", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, ArmorItem.Type.LEGGINGS, new Item.Properties()));
     public static final RegistryObject<Item> NETHERAIGHT_BOOTS = registerItem("netheraight_boots", () -> new ArmorItem(TomArmorMaterial.NETHERAIGHT, ArmorItem.Type.BOOTS, new Item.Properties()));
 
-    public static final RegistryObject<Item> COOL_DIRT_GLASSES = registerItem("cool_dirt_glasses", () -> new CoolBlockReplacerGlassesItem(() -> Blocks.DIRT), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final RegistryObject<Item> COOL_DIRT_GLASSES = registerItem("cool_dirt_glasses", () -> new CoolBlockReplacingGlassesItem(() -> Blocks.DIRT), CreativeModeTabs.TOOLS_AND_UTILITIES);
 
     //public static final RegistryObject<ForgeSpawnEggItem> BUFFCAT_SPAWN_EGG = registerSpawnEgg(TomEntities.BUFFCAT, 0x4E7EA4, 0x714B34);
 
