@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public interface ILauncherLogic {
-
+    
     /**
      * Called when the grenade launcher is fired. This method
      * is responsible for the logic for the ammo item associated
@@ -14,5 +14,5 @@ public interface ILauncherLogic {
      *
      * @param player The player using the launcher.
      */
-    void onLaunch(Level level, Player player, InteractionHand hand);
+    void onLaunch( Level level, Player player, InteractionHand hand );
 }

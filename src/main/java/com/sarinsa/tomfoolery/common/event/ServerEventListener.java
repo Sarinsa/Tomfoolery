@@ -21,71 +21,70 @@ import java.util.Collections;
 import java.util.List;
 
 public class ServerEventListener {
-
+    
     private MinecraftServer server = null;
-
+    
     private int timeNextGhastinatorSpawnCheck = 60;
-
-
-
+    
+    
     @SubscribeEvent
-    public void onServerStarted(ServerStartedEvent event) {
+    public void onServerStarted( ServerStartedEvent event ) {
         server = event.getServer();
     }
-
+    
     @SubscribeEvent
-    public void onServerStopped(ServerStoppedEvent event) {
+    public void onServerStopped( ServerStoppedEvent event ) {
         server = null;
     }
-
+    
     @SubscribeEvent
-    public void serverTick(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-
-            if (TomCommonConfig.COMMON.spawnGhastinators.get()) {
-                if (--timeNextGhastinatorSpawnCheck <= 0) {
+    public void serverTick( TickEvent.ServerTickEvent event ) {
+        if( event.phase == TickEvent.Phase.START ) {
+            
+            if( TomCommonConfig.COMMON.spawnGhastinators.get() ) {
+                if( --timeNextGhastinatorSpawnCheck <= 0 ) {
                     timeNextGhastinatorSpawnCheck = 900;
-
-                    if (server.overworld().getDifficulty() == Difficulty.PEACEFUL)
+                    
+                    if( server.overworld().getDifficulty() == Difficulty.PEACEFUL )
                         return;
-
+                    
                     List<ServerPlayer> players = server.overworld().players();
-                    Collections.shuffle(players);
-
-                    for (ServerPlayer player : players) {
-                        checkGhastinatorSpawn(server, player);
+                    Collections.shuffle( players );
+                    
+                    for( ServerPlayer player : players ) {
+                        checkGhastinatorSpawn( server, player );
                     }
                 }
             }
         }
     }
-
-    private static void checkGhastinatorSpawn(MinecraftServer server, ServerPlayer player) {
+    
+    private static void checkGhastinatorSpawn( MinecraftServer server, ServerPlayer player ) {
         ServerLevel level = server.overworld();
-
-        if (level.isNight() && level.getMoonPhase() == 4) {
-            List<Ghastinator> existingGhastinators = level.getEntitiesOfClass(Ghastinator.class, player.getBoundingBox().inflate(200, 200, 200));
-
-            if (existingGhastinators.isEmpty()) {
+        
+        if( level.isNight() && level.getMoonPhase() == 4 ) {
+            List<Ghastinator> existingGhastinators = level.getEntitiesOfClass( Ghastinator.class, player.getBoundingBox().inflate( 200, 200, 200 ) );
+            
+            if( existingGhastinators.isEmpty() ) {
                 RandomSource random = player.getRandom();
                 int spawnY = 200;
-                int spawnX = (int) player.getX() + random.nextInt(100) - random.nextInt(100);
-                int spawnZ = (int) player.getZ() + random.nextInt(100) - random.nextInt(100);
-
-                BlockPos spawnPos = new BlockPos(spawnX, spawnY, spawnZ);
-
-                if (!level.isLoaded(spawnPos))
+                int spawnX = (int) player.getX() + random.nextInt( 100 ) - random.nextInt( 100 );
+                int spawnZ = (int) player.getZ() + random.nextInt( 100 ) - random.nextInt( 100 );
+                
+                BlockPos spawnPos = new BlockPos( spawnX, spawnY, spawnZ );
+                
+                if( !level.isLoaded( spawnPos ) )
                     return;
-
-                if (!level.noCollision(TomEntities.GHASTINATOR.get().getAABB((double) spawnPos.getX() + 0.5D, spawnPos.getY(), (double) spawnPos.getZ() + 0.5D))) {
+                
+                if( !level.noCollision( TomEntities.GHASTINATOR.get().getAABB( (double) spawnPos.getX() + 0.5D, spawnPos.getY(), (double) spawnPos.getZ() + 0.5D ) ) ) {
                     return;
                 }
-
-                Ghastinator ghastinator = TomEntities.GHASTINATOR.get().create(level, null, null, spawnPos, MobSpawnType.EVENT, true, true);
-
-                if (ghastinator != null) {
-                    level.addFreshEntity(ghastinator);
-                    level.playSound(null, spawnPos, SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 15.0F, 0.8F);
+                
+                Ghastinator ghastinator = TomEntities.GHASTINATOR.get().create( level, null, null, spawnPos, MobSpawnType.EVENT, true, true );
+                
+                if( ghastinator != null ) {
+                    level.addFreshEntity( ghastinator );
+                    level.playSound( null, spawnPos, SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 15.0F, 0.8F );
                 }
             }
         }

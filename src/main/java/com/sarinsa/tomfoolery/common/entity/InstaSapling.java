@@ -32,64 +32,64 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.network.NetworkHooks;
 
 public class InstaSapling extends Projectile implements IEntityAdditionalSpawnData, ItemSupplier {
-
-    private static final EntityDataAccessor<ItemStack> ITEM_STACK = SynchedEntityData.defineId(InstaSapling.class, EntityDataSerializers.ITEM_STACK);
-
+    
+    private static final EntityDataAccessor<ItemStack> ITEM_STACK = SynchedEntityData.defineId( InstaSapling.class, EntityDataSerializers.ITEM_STACK );
+    
     private AbstractTreeGrower tree;
-
-    public InstaSapling(EntityType<? extends Projectile> entityType, Level level) {
-        super(entityType, level);
+    
+    public InstaSapling( EntityType<? extends Projectile> entityType, Level level ) {
+        super( entityType, level );
     }
-
-    public InstaSapling(double x, double y, double z, Level level, AbstractTreeGrower tree) {
-        this(TomEntities.INSTA_SAPLING.get(), level);
-        moveTo(x, y, z, getYRot(), getXRot());
+    
+    public InstaSapling( double x, double y, double z, Level level, AbstractTreeGrower tree ) {
+        this( TomEntities.INSTA_SAPLING.get(), level );
+        moveTo( x, y, z, getYRot(), getXRot() );
         reapplyPosition();
         this.tree = tree;
     }
-
-    public InstaSapling(LivingEntity shooter, Level level, AbstractTreeGrower tree) {
-        this(shooter.getX(), shooter.getEyeY(), shooter.getZ(), level, tree);
-        setOwner(shooter);
-        setRot(shooter.getYRot(), shooter.getXRot());
+    
+    public InstaSapling( LivingEntity shooter, Level level, AbstractTreeGrower tree ) {
+        this( shooter.getX(), shooter.getEyeY(), shooter.getZ(), level, tree );
+        setOwner( shooter );
+        setRot( shooter.getYRot(), shooter.getXRot() );
     }
-
+    
     @Override
     protected void defineSynchedData() {
-        entityData.define(ITEM_STACK, new ItemStack(Items.OAK_SAPLING));
+        entityData.define( ITEM_STACK, new ItemStack( Items.OAK_SAPLING ) );
     }
-
-    public void setItem(ItemStack itemStack) {
-        entityData.set(ITEM_STACK, itemStack);
+    
+    public void setItem( ItemStack itemStack ) {
+        entityData.set( ITEM_STACK, itemStack );
     }
-
+    
     @Override
     public void tick() {
         super.tick();
-
-        HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        
+        HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector( this, this::canHitEntity );
         boolean teleporting = false;
-
-        if (hitResult.getType() == HitResult.Type.BLOCK) {
-            BlockPos blockpos = ((BlockHitResult)hitResult).getBlockPos();
-            BlockState blockstate = level().getBlockState(blockpos);
-
-            if (blockstate.is(Blocks.NETHER_PORTAL)) {
-                handleInsidePortal(blockpos);
+        
+        if( hitResult.getType() == HitResult.Type.BLOCK ) {
+            BlockPos blockpos = ((BlockHitResult) hitResult).getBlockPos();
+            BlockState blockstate = level().getBlockState( blockpos );
+            
+            if( blockstate.is( Blocks.NETHER_PORTAL ) ) {
+                handleInsidePortal( blockpos );
                 teleporting = true;
             }
-            else if (blockstate.is(Blocks.END_GATEWAY)) {
-                BlockEntity blockEntity = level().getBlockEntity(blockpos);
-
-                if (blockEntity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport(this)) {
-                    TheEndGatewayBlockEntity.teleportEntity(level(), blockpos, blockstate, this, (TheEndGatewayBlockEntity) blockEntity);
+            else if( blockstate.is( Blocks.END_GATEWAY ) ) {
+                BlockEntity blockEntity = level().getBlockEntity( blockpos );
+                
+                if( blockEntity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport( this ) ) {
+                    TheEndGatewayBlockEntity.teleportEntity( level(), blockpos, blockstate, this, (TheEndGatewayBlockEntity) blockEntity );
                 }
                 teleporting = true;
             }
         }
-
-        if (hitResult.getType() != HitResult.Type.MISS && !teleporting && !ForgeEventFactory.onProjectileImpact(this, hitResult)) {
-            onHit(hitResult);
+        
+        if( hitResult.getType() != HitResult.Type.MISS && !teleporting && !ForgeEventFactory.onProjectileImpact( this, hitResult ) ) {
+            onHit( hitResult );
         }
         checkInsideBlocks();
         Vec3 deltaMovement = getDeltaMovement();
@@ -98,10 +98,10 @@ public class InstaSapling extends Projectile implements IEntityAdditionalSpawnDa
         double z = getZ() + deltaMovement.z;
         updateRotation();
         float motionScale;
-
+        
         SimpleParticleType traceParticle;
-
-        if (isInWater()) {
+        
+        if( isInWater() ) {
             traceParticle = ParticleTypes.BUBBLE;
             motionScale = 0.8F;
         }
@@ -109,60 +109,60 @@ public class InstaSapling extends Projectile implements IEntityAdditionalSpawnDa
             traceParticle = ParticleTypes.CLOUD;
             motionScale = 0.99F;
         }
-        level().addParticle(traceParticle, x - deltaMovement.x * 0.25D, y - deltaMovement.y * 0.25D, z - deltaMovement.z * 0.25D, deltaMovement.x, deltaMovement.y, deltaMovement.z);
-        setDeltaMovement(deltaMovement.scale(motionScale));
-
-        if (!isNoGravity()) {
+        level().addParticle( traceParticle, x - deltaMovement.x * 0.25D, y - deltaMovement.y * 0.25D, z - deltaMovement.z * 0.25D, deltaMovement.x, deltaMovement.y, deltaMovement.z );
+        setDeltaMovement( deltaMovement.scale( motionScale ) );
+        
+        if( !isNoGravity() ) {
             Vec3 deltaMovement1 = getDeltaMovement();
-            setDeltaMovement(deltaMovement1.x, deltaMovement1.y - getGravity(), deltaMovement1.z);
+            setDeltaMovement( deltaMovement1.x, deltaMovement1.y - getGravity(), deltaMovement1.z );
         }
-        setPos(x, y, z);
+        setPos( x, y, z );
     }
-
+    
     @Override
-    protected void onHitBlock(BlockHitResult result) {
-        super.onHitBlock(result);
-
-        if (result.getBlockPos().getY() < 3) {
+    protected void onHitBlock( BlockHitResult result ) {
+        super.onHitBlock( result );
+        
+        if( result.getBlockPos().getY() < 3 ) {
             discard();
             return;
         }
-
-        level().setBlock(result.getBlockPos(), Blocks.DIRT.defaultBlockState(), 2);
-
-        if (getItem().getItem() == Items.DARK_OAK_SAPLING) {
-            level().setBlock(result.getBlockPos().north(), Blocks.DIRT.defaultBlockState(), 2);
-            level().setBlock(result.getBlockPos().west(), Blocks.DIRT.defaultBlockState(), 2);
-            level().setBlock(result.getBlockPos().north().west(), Blocks.DIRT.defaultBlockState(), 2);
+        
+        level().setBlock( result.getBlockPos(), Blocks.DIRT.defaultBlockState(), 2 );
+        
+        if( getItem().getItem() == Items.DARK_OAK_SAPLING ) {
+            level().setBlock( result.getBlockPos().north(), Blocks.DIRT.defaultBlockState(), 2 );
+            level().setBlock( result.getBlockPos().west(), Blocks.DIRT.defaultBlockState(), 2 );
+            level().setBlock( result.getBlockPos().north().west(), Blocks.DIRT.defaultBlockState(), 2 );
         }
-        if (!level().isClientSide && tree != null) {
+        if( !level().isClientSide && tree != null ) {
             ServerLevel serverLevel = (ServerLevel) level();
-            tree.growTree(serverLevel, serverLevel.getChunkSource().getGenerator(), result.getBlockPos().above(), level().getBlockState(result.getBlockPos().above()), serverLevel.random);
+            tree.growTree( serverLevel, serverLevel.getChunkSource().getGenerator(), result.getBlockPos().above(), level().getBlockState( result.getBlockPos().above() ), serverLevel.random );
         }
         discard();
     }
-
+    
     protected double getGravity() {
         return 0.08D;
     }
-
+    
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        return NetworkHooks.getEntitySpawningPacket( this );
     }
-
+    
     @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-
+    public void writeSpawnData( FriendlyByteBuf buffer ) {
+    
     }
-
+    
     @Override
-    public void readSpawnData(FriendlyByteBuf additionalData) {
-
+    public void readSpawnData( FriendlyByteBuf additionalData ) {
+    
     }
-
+    
     @Override
     public ItemStack getItem() {
-        return entityData.get(ITEM_STACK);
+        return entityData.get( ITEM_STACK );
     }
 }

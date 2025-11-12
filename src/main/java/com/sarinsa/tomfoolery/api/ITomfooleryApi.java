@@ -6,7 +6,7 @@ package com.sarinsa.tomfoolery.api;
  * API implementation should be exposed here.
  */
 public interface ITomfooleryApi {
-
+    
     /**
      * @return The IRegistryHelper instance from Tomfoolery
      */

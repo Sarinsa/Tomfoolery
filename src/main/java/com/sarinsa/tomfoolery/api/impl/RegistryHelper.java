@@ -16,48 +16,48 @@ import net.minecraftforge.registries.IForgeRegistry;
 import java.util.function.Supplier;
 
 public class RegistryHelper implements IRegistryHelper {
-
+    
     private ResourceLocation currentPluginId = null;
-
+    
     @Override
-    public void registerLauncherLogic(Item item, ILauncherLogic launcherLogic, boolean override) {
-        if (item == null || launcherLogic == null) {
-            Tomfoolery.LOGGER.warn("Mod plugin with ID {} attempted to register grenade launcher logic with either a missing item or missing logic instance.", currentPluginId == null ? "None :(" : currentPluginId);
-
-            String regName = ForgeRegistries.ITEMS.containsValue(item) ? ForgeRegistries.ITEMS.getKey(item).toString() : "null";
-            Tomfoolery.LOGGER.warn("Item type: {}", regName);
-            Tomfoolery.LOGGER.warn("Logic instance: {}", launcherLogic == null ? "null" : launcherLogic);
+    public void registerLauncherLogic( Item item, ILauncherLogic launcherLogic, boolean override ) {
+        if( item == null || launcherLogic == null ) {
+            Tomfoolery.LOGGER.warn( "Mod plugin with ID {} attempted to register grenade launcher logic with either a missing item or missing logic instance.", currentPluginId == null ? "None :(" : currentPluginId );
+            
+            String regName = ForgeRegistries.ITEMS.containsValue( item ) ? ForgeRegistries.ITEMS.getKey( item ).toString() : "null";
+            Tomfoolery.LOGGER.warn( "Item type: {}", regName );
+            Tomfoolery.LOGGER.warn( "Logic instance: {}", launcherLogic == null ? "null" : launcherLogic );
             return;
         }
-
-        if (override) {
-            GrenadeLauncherItem.LAUNCHER_LOGICS.put(item, launcherLogic);
+        
+        if( override ) {
+            GrenadeLauncherItem.LAUNCHER_LOGICS.put( item, launcherLogic );
         }
         else {
-            if (!GrenadeLauncherItem.LAUNCHER_LOGICS.containsKey(item)) {
-                GrenadeLauncherItem.LAUNCHER_LOGICS.put(item, launcherLogic);
+            if( !GrenadeLauncherItem.LAUNCHER_LOGICS.containsKey( item ) ) {
+                GrenadeLauncherItem.LAUNCHER_LOGICS.put( item, launcherLogic );
             }
         }
     }
-
+    
     @Override
     public Supplier<IForgeRegistry<GrenadeType>> getGrenadeTypeRegistry() {
         return TomGrenadeTypes.GRENADE_TYPE_REGISTRY;
     }
-
+    
     public void registerDefaults() {
         registerLauncherLogic(
                 Items.TORCH,
-                (level, player, hand) -> {
-                    LaunchedTorch torchEntity = new LaunchedTorch(player, level);
-                    torchEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 2.5F, 2.5F, 2.5F);
-                    level.addFreshEntity(torchEntity);
+                ( level, player, hand ) -> {
+                    LaunchedTorch torchEntity = new LaunchedTorch( player, level );
+                    torchEntity.shootFromRotation( player, player.getXRot(), player.getYRot(), 2.5F, 2.5F, 2.5F );
+                    level.addFreshEntity( torchEntity );
                 },
                 false
         );
     }
-
-    public void setCurrentPluginId(ResourceLocation id) {
+    
+    public void setCurrentPluginId( ResourceLocation id ) {
         currentPluginId = id;
     }
 }

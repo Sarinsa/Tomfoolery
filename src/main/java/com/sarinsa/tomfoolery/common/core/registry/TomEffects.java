@@ -10,13 +10,13 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 public class TomEffects {
-
-    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Tomfoolery.MODID);
-
-    public static final RegistryObject<MobEffect> CACTUS_ATTRACTION = registerEffect("cactus_attraction", CactusAttractionEffect::new);
-
-
-    private static <T extends MobEffect> RegistryObject<T> registerEffect(String name, Supplier<T> effectSuppler) {
-        return EFFECTS.register(name, effectSuppler);
+    
+    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create( ForgeRegistries.MOB_EFFECTS, Tomfoolery.MODID );
+    
+    public static final RegistryObject<MobEffect> CACTUS_ATTRACTION = registerEffect( "cactus_attraction", CactusAttractionEffect::new );
+    
+    
+    private static <T extends MobEffect> RegistryObject<T> registerEffect( String name, Supplier<T> effectSuppler ) {
+        return EFFECTS.register( name, effectSuppler );
     }
 }

@@ -13,23 +13,23 @@ import net.minecraft.world.phys.HitResult;
 import javax.annotation.Nullable;
 
 public class ExplosiveGrenadeType extends GrenadeType {
-
+    
     public ExplosiveGrenadeType() {
-        super(80, ParticleTypes.CLOUD, 0xFFDD66, 0x6066C4);
+        super( 80, ParticleTypes.CLOUD, 0xFFDD66, 0x6066C4 );
     }
-
+    
     @Override
-    public <T extends Projectile> void generalImpact(T entity, @Nullable Entity shooter, Level level, HitResult result) {
-        if (!level.isClientSide) {
-            level.explode(entity, entity.getX(), entity.getY(), entity.getZ(), 6.0F, Level.ExplosionInteraction.NONE);
+    public <T extends Projectile> void generalImpact( T entity, @Nullable Entity shooter, Level level, HitResult result ) {
+        if( !level.isClientSide ) {
+            level.explode( entity, entity.getX(), entity.getY(), entity.getZ(), 6.0F, Level.ExplosionInteraction.NONE );
         }
         entity.discard();
     }
-
+    
     @Override
-    public <T extends Projectile> void onEntityImpact(T entity, @Nullable Entity shooter, Level level, EntityHitResult result) {
-        if (result.getEntity() instanceof LivingEntity) {
-            result.getEntity().hurt(TomDamageTypes.of(level, TomDamageTypes.GRENADE, entity, shooter), 4.0F);
+    public <T extends Projectile> void onEntityImpact( T entity, @Nullable Entity shooter, Level level, EntityHitResult result ) {
+        if( result.getEntity() instanceof LivingEntity ) {
+            result.getEntity().hurt( TomDamageTypes.of( level, TomDamageTypes.GRENADE, entity, shooter ), 4.0F );
         }
     }
 }

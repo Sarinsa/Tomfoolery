@@ -20,42 +20,42 @@ import net.minecraftforge.client.model.data.ModelData;
 import javax.annotation.Nonnull;
 
 public class CactusEntityRenderer<T extends CactusBlockEntity> extends EntityRenderer<T> {
-
-    private static final ResourceLocation TEXTURE = new ResourceLocation("textures/block/cactus.png");
+    
+    private static final ResourceLocation TEXTURE = new ResourceLocation( "textures/block/cactus.png" );
     private final BlockRenderDispatcher dispatcher;
-
-
-    public CactusEntityRenderer(EntityRendererProvider.Context context) {
-        super(context);
+    
+    
+    public CactusEntityRenderer( EntityRendererProvider.Context context ) {
+        super( context );
         shadowRadius = 0.5F;
         dispatcher = context.getBlockRenderDispatcher();
     }
-
+    
     @Override
-    public void render(T entity, float p_114635_, float p_114636_, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    public void render( T entity, float p_114635_, float p_114636_, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight ) {
         BlockState state = Blocks.CACTUS.defaultBlockState();
-
-        if (state.getRenderShape() == RenderShape.MODEL) {
+        
+        if( state.getRenderShape() == RenderShape.MODEL ) {
             Level level = entity.level();
-
-            if (state != level.getBlockState(entity.blockPosition()) && state.getRenderShape() != RenderShape.INVISIBLE) {
+            
+            if( state != level.getBlockState( entity.blockPosition() ) && state.getRenderShape() != RenderShape.INVISIBLE ) {
                 poseStack.pushPose();
-                BlockPos pos = new BlockPos((int) entity.getX(), (int) entity.getBoundingBox().maxY, (int) entity.getZ());
-                poseStack.translate(-0.5D, 0.0D, -0.5D);
-                var model = dispatcher.getBlockModel(state);
-
-                for (var renderType : model.getRenderTypes(state, RandomSource.create(state.getSeed(entity.getStartPos())), ModelData.EMPTY))
-                    dispatcher.getModelRenderer().tesselateBlock(level, model, state, pos, poseStack, bufferSource.getBuffer(renderType), false, RandomSource.create(), state.getSeed(entity.getStartPos()), OverlayTexture.NO_OVERLAY, ModelData.EMPTY, renderType);
-
+                BlockPos pos = new BlockPos( (int) entity.getX(), (int) entity.getBoundingBox().maxY, (int) entity.getZ() );
+                poseStack.translate( -0.5D, 0.0D, -0.5D );
+                var model = dispatcher.getBlockModel( state );
+                
+                for( var renderType : model.getRenderTypes( state, RandomSource.create( state.getSeed( entity.getStartPos() ) ), ModelData.EMPTY ) )
+                    dispatcher.getModelRenderer().tesselateBlock( level, model, state, pos, poseStack, bufferSource.getBuffer( renderType ), false, RandomSource.create(), state.getSeed( entity.getStartPos() ), OverlayTexture.NO_OVERLAY, ModelData.EMPTY, renderType );
+                
                 poseStack.popPose();
-                super.render(entity, p_114635_, p_114636_, poseStack, bufferSource, packedLight);
+                super.render( entity, p_114635_, p_114636_, poseStack, bufferSource, packedLight );
             }
         }
     }
-
+    
     @Override
     @Nonnull
-    public ResourceLocation getTextureLocation(T cactusEntity) {
+    public ResourceLocation getTextureLocation( T cactusEntity ) {
         return TEXTURE;
     }
 }

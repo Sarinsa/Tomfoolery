@@ -14,7 +14,7 @@ license="GNU General Public License v3"
 [[dependencies.tomfoolery]]
     modId="forge"
     mandatory=true
-    versionRange="[47.2.32,)"
+    versionRange="[47.4.0,)"
     ordering="NONE"
     side="BOTH"
 

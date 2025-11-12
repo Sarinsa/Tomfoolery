@@ -16,18 +16,18 @@ import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class TomItemTagsProvider extends ItemTagsProvider {
-
-    public TomItemTagsProvider(DataGenerator dataGenerator, CompletableFuture<HolderLookup.Provider> provider, CompletableFuture<TagsProvider.TagLookup<Block>> blockTagProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(dataGenerator.getPackOutput(), provider, blockTagProvider, Tomfoolery.MODID, existingFileHelper);
+    
+    public TomItemTagsProvider( DataGenerator dataGenerator, CompletableFuture<HolderLookup.Provider> provider, CompletableFuture<TagsProvider.TagLookup<Block>> blockTagProvider, @Nullable ExistingFileHelper existingFileHelper ) {
+        super( dataGenerator.getPackOutput(), provider, blockTagProvider, Tomfoolery.MODID, existingFileHelper );
     }
-
-    protected void addTags(HolderLookup.Provider provider) {
-        this.tag(Tags.Items.ORES).add(
+    
+    protected void addTags( HolderLookup.Provider provider ) {
+        this.tag( Tags.Items.ORES ).add(
                 TomBlocks.ORE_ORE.get().asItem(),
                 TomBlocks.CAKE_ORE.get().asItem()
         );
-
-        this.tag(TomItemTags.CAKES).add(
+        
+        this.tag( TomItemTags.CAKES ).add(
                 Items.CAKE
         );
     }

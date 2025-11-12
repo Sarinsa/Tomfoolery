@@ -8,7 +8,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 
 public class BuffcatEntityModel extends EntityModel<Buffcat> {
-
+ 
     /*
     private final ModelRenderer left_ear;
     private final ModelRenderer right_ear;
@@ -32,7 +32,7 @@ public class BuffcatEntityModel extends EntityModel<Buffcat> {
     private final ModelRenderer bone5;
 
      */
-
+    
     public BuffcatEntityModel() {
         /*
         texWidth = 128;
@@ -159,18 +159,18 @@ public class BuffcatEntityModel extends EntityModel<Buffcat> {
 
          */
     }
-
+    
     @Override
-    public void setupAnim(Buffcat entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
+    public void setupAnim( Buffcat entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch ) {
         /*
         body_sub_9.yRot = netHeadYaw * ((float)Math.PI / 180F);
         body_sub_9.xRot = headPitch * ((float)Math.PI / 180F);
 
          */
     }
-
+    
     @Override
-    public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+    public void renderToBuffer( PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha ) {
         /*
         left_ear.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         right_ear.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -180,8 +180,8 @@ public class BuffcatEntityModel extends EntityModel<Buffcat> {
 
          */
     }
-
-    public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
+    
+    public void setRotationAngle( ModelPart modelRenderer, float x, float y, float z ) {
         modelRenderer.xRot = x;
         modelRenderer.yRot = y;
         modelRenderer.zRot = z;

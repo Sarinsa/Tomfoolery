@@ -13,15 +13,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class TomLootTableProvider extends LootTableProvider {
-
-    public TomLootTableProvider(DataGenerator dataGenerator) {
-        super(dataGenerator.getPackOutput(), null, List.of(
-                new SubProviderEntry(() -> new TomBlockLootTables(Set.of(), FeatureFlags.VANILLA_SET), LootContextParamSets.BLOCK)
-        ));
+    
+    public TomLootTableProvider( DataGenerator dataGenerator ) {
+        super( dataGenerator.getPackOutput(), null, List.of(
+                new SubProviderEntry( () -> new TomBlockLootTables( Set.of(), FeatureFlags.VANILLA_SET ), LootContextParamSets.BLOCK )
+        ) );
     }
-
+    
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext context) {
+    protected void validate( Map<ResourceLocation, LootTable> map, ValidationContext context ) {
         // Not validating
     }
 }

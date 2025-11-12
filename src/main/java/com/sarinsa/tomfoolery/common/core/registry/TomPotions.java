@@ -19,28 +19,28 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 public class TomPotions {
-
-    public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, Tomfoolery.MODID);
-
-    public static final RegistryObject<Potion> CACTUS_ATTRACTION = registerPotion("cactus_attraction", TomEffects.CACTUS_ATTRACTION, 900, 0);
-    public static final RegistryObject<Potion> CACTUS_ATTRACTION_LONG = registerPotion("cactus_attraction_long", TomEffects.CACTUS_ATTRACTION, 1800, 0);
-    public static final RegistryObject<Potion> CACTUS_ATTRACTION_STRONG = registerPotion("cactus_attraction_strong", TomEffects.CACTUS_ATTRACTION, 700, 1);
-
+    
+    public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create( ForgeRegistries.POTIONS, Tomfoolery.MODID );
+    
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION = registerPotion( "cactus_attraction", TomEffects.CACTUS_ATTRACTION, 900, 0 );
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION_LONG = registerPotion( "cactus_attraction_long", TomEffects.CACTUS_ATTRACTION, 1800, 0 );
+    public static final RegistryObject<Potion> CACTUS_ATTRACTION_STRONG = registerPotion( "cactus_attraction_strong", TomEffects.CACTUS_ATTRACTION, 700, 1 );
+    
     public static void registerBrewingRecipes() {
-        registerBrewingRecipe(CACTUS_ATTRACTION.get(), Potions.SLOW_FALLING, Ingredient.of(Items.CACTUS));
-        registerBrewingRecipe(CACTUS_ATTRACTION_LONG.get(), CACTUS_ATTRACTION.get(), Ingredient.of(Tags.Items.DUSTS_REDSTONE));
-        registerBrewingRecipe(CACTUS_ATTRACTION_STRONG.get(), CACTUS_ATTRACTION.get(), Ingredient.of(Tags.Items.DUSTS_GLOWSTONE));
+        registerBrewingRecipe( CACTUS_ATTRACTION.get(), Potions.SLOW_FALLING, Ingredient.of( Items.CACTUS ) );
+        registerBrewingRecipe( CACTUS_ATTRACTION_LONG.get(), CACTUS_ATTRACTION.get(), Ingredient.of( Tags.Items.DUSTS_REDSTONE ) );
+        registerBrewingRecipe( CACTUS_ATTRACTION_STRONG.get(), CACTUS_ATTRACTION.get(), Ingredient.of( Tags.Items.DUSTS_GLOWSTONE ) );
     }
-
-    private static void registerBrewingRecipe(Potion potionResult, Potion potionIngredient, Ingredient itemIngredient) {
-        BrewingRecipeRegistry.addRecipe(new BrewingRecipe(
-                Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), potionIngredient)),
+    
+    private static void registerBrewingRecipe( Potion potionResult, Potion potionIngredient, Ingredient itemIngredient ) {
+        BrewingRecipeRegistry.addRecipe( new BrewingRecipe(
+                Ingredient.of( PotionUtils.setPotion( new ItemStack( Items.POTION ), potionIngredient ) ),
                 itemIngredient,
-                PotionUtils.setPotion(new ItemStack(Items.POTION), potionResult)
-        ));
+                PotionUtils.setPotion( new ItemStack( Items.POTION ), potionResult )
+        ) );
     }
-
-    private static RegistryObject<Potion> registerPotion(String name, Supplier<MobEffect> effectSupplier, int duration, int amplifier) {
-        return POTIONS.register(name, () -> new Potion(new MobEffectInstance(effectSupplier.get(), duration, amplifier)));
+    
+    private static RegistryObject<Potion> registerPotion( String name, Supplier<MobEffect> effectSupplier, int duration, int amplifier ) {
+        return POTIONS.register( name, () -> new Potion( new MobEffectInstance( effectSupplier.get(), duration, amplifier ) ) );
     }
 }

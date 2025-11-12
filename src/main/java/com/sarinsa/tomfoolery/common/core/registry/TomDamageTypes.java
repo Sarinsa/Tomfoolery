@@ -13,34 +13,34 @@ import net.minecraftforge.registries.DeferredRegister;
 import javax.annotation.Nullable;
 
 public class TomDamageTypes {
-
-    public static final DeferredRegister<DamageType> DAMAGE_TYPES = DeferredRegister.create(Registries.DAMAGE_TYPE, Tomfoolery.MODID);
-
-
-    public static final ResourceKey<DamageType> GRENADE = create("grenade");
-
-
-    public static DamageSource of(Level level, ResourceKey<DamageType> key) {
-        return new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key));
+    
+    public static final DeferredRegister<DamageType> DAMAGE_TYPES = DeferredRegister.create( Registries.DAMAGE_TYPE, Tomfoolery.MODID );
+    
+    
+    public static final ResourceKey<DamageType> GRENADE = create( "grenade" );
+    
+    
+    public static DamageSource of( Level level, ResourceKey<DamageType> key ) {
+        return new DamageSource( level.registryAccess().registryOrThrow( Registries.DAMAGE_TYPE ).getHolderOrThrow( key ) );
     }
-
-    public static DamageSource of(Level level, ResourceKey<DamageType> key, Entity entity, @Nullable Entity shooter) {
-        return new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key), entity, shooter);
+    
+    public static DamageSource of( Level level, ResourceKey<DamageType> key, Entity entity, @Nullable Entity shooter ) {
+        return new DamageSource( level.registryAccess().registryOrThrow( Registries.DAMAGE_TYPE ).getHolderOrThrow( key ), entity, shooter );
     }
-
-    private static ResourceKey<DamageType> create(String name) {
-        return ResourceKey.create(Registries.DAMAGE_TYPE, Tomfoolery.resourceLoc(name));
+    
+    private static ResourceKey<DamageType> create( String name ) {
+        return ResourceKey.create( Registries.DAMAGE_TYPE, Tomfoolery.resourceLoc( name ) );
     }
-
-    public static void bootstrap(BootstapContext<DamageType> context) {
-        register(context, GRENADE, new DamageType(msg("quicksand"), 0.0F));
+    
+    public static void bootstrap( BootstapContext<DamageType> context ) {
+        register( context, GRENADE, new DamageType( msg( "quicksand" ), 0.0F ) );
     }
-
-    protected static void register(BootstapContext<DamageType> context, ResourceKey<DamageType> damageTypeKey, DamageType damageType) {
-        context.register(damageTypeKey, damageType);
+    
+    protected static void register( BootstapContext<DamageType> context, ResourceKey<DamageType> damageTypeKey, DamageType damageType ) {
+        context.register( damageTypeKey, damageType );
     }
-
-    private static String msg(String name) {
+    
+    private static String msg( String name ) {
         return Tomfoolery.MODID + "." + name;
     }
 }

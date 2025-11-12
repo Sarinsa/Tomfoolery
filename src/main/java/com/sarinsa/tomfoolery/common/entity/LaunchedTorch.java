@@ -30,60 +30,60 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.network.NetworkHooks;
 
 public class LaunchedTorch extends Projectile implements IEntityAdditionalSpawnData, ItemSupplier {
-
-    private static final ItemStack renderedItem = new ItemStack(Items.TORCH);
-
+    
+    private static final ItemStack renderedItem = new ItemStack( Items.TORCH );
+    
     private BlockPos initialPos = BlockPos.ZERO;
-
-    public LaunchedTorch(EntityType<? extends Projectile> entityType, Level level) {
-        super(entityType, level);
+    
+    public LaunchedTorch( EntityType<? extends Projectile> entityType, Level level ) {
+        super( entityType, level );
     }
-
-    public LaunchedTorch(double x, double y, double z, Level level) {
-        this(TomEntities.LAUNCHED_TORCH.get(), level);
-        moveTo(x, y, z, getYRot(), getXRot());
-        initialPos = new BlockPos((int) x, (int) y, (int) z);
+    
+    public LaunchedTorch( double x, double y, double z, Level level ) {
+        this( TomEntities.LAUNCHED_TORCH.get(), level );
+        moveTo( x, y, z, getYRot(), getXRot() );
+        initialPos = new BlockPos( (int) x, (int) y, (int) z );
         reapplyPosition();
     }
-
-    public LaunchedTorch(LivingEntity shooter, Level level) {
-        this(shooter.getX(), shooter.getEyeY(), shooter.getZ(), level);
-        setOwner(shooter);
-        setRot(shooter.getYRot(), shooter.getXRot());
+    
+    public LaunchedTorch( LivingEntity shooter, Level level ) {
+        this( shooter.getX(), shooter.getEyeY(), shooter.getZ(), level );
+        setOwner( shooter );
+        setRot( shooter.getYRot(), shooter.getXRot() );
     }
-
+    
     @Override
     protected void defineSynchedData() {
-
+    
     }
-
+    
     @Override
     public void tick() {
         super.tick();
-
-        HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        
+        HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector( this, this::canHitEntity );
         boolean teleporting = false;
-
-        if (hitResult.getType() == HitResult.Type.BLOCK) {
-            BlockPos blockpos = ((BlockHitResult)hitResult).getBlockPos();
-            BlockState blockstate = level().getBlockState(blockpos);
-
-            if (blockstate.is(Blocks.NETHER_PORTAL)) {
-                handleInsidePortal(blockpos);
+        
+        if( hitResult.getType() == HitResult.Type.BLOCK ) {
+            BlockPos blockpos = ((BlockHitResult) hitResult).getBlockPos();
+            BlockState blockstate = level().getBlockState( blockpos );
+            
+            if( blockstate.is( Blocks.NETHER_PORTAL ) ) {
+                handleInsidePortal( blockpos );
                 teleporting = true;
             }
-            else if (blockstate.is(Blocks.END_GATEWAY)) {
-                BlockEntity blockEntity = level().getExistingBlockEntity(blockpos);
-
-                if (blockEntity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport(this)) {
-                    TheEndGatewayBlockEntity.teleportEntity(level(), blockpos, level().getBlockState(blockpos), this, (TheEndGatewayBlockEntity) blockEntity);
+            else if( blockstate.is( Blocks.END_GATEWAY ) ) {
+                BlockEntity blockEntity = level().getExistingBlockEntity( blockpos );
+                
+                if( blockEntity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport( this ) ) {
+                    TheEndGatewayBlockEntity.teleportEntity( level(), blockpos, level().getBlockState( blockpos ), this, (TheEndGatewayBlockEntity) blockEntity );
                 }
                 teleporting = true;
             }
         }
-
-        if (hitResult.getType() != HitResult.Type.MISS && !teleporting && !ForgeEventFactory.onProjectileImpact(this, hitResult)) {
-            onHit(hitResult);
+        
+        if( hitResult.getType() != HitResult.Type.MISS && !teleporting && !ForgeEventFactory.onProjectileImpact( this, hitResult ) ) {
+            onHit( hitResult );
         }
         checkInsideBlocks();
         Vec3 deltaMovement = getDeltaMovement();
@@ -91,91 +91,92 @@ public class LaunchedTorch extends Projectile implements IEntityAdditionalSpawnD
         double y = getY() + deltaMovement.y;
         double z = getZ() + deltaMovement.z;
         updateRotation();
-
-        setDeltaMovement(deltaMovement.scale(0.99F));
-
-        if (!isNoGravity()) {
+        
+        setDeltaMovement( deltaMovement.scale( 0.99F ) );
+        
+        if( !isNoGravity() ) {
             Vec3 deltaMovement1 = getDeltaMovement();
-            setDeltaMovement(deltaMovement1.x, deltaMovement1.y - getGravity(), deltaMovement1.z);
+            setDeltaMovement( deltaMovement1.x, deltaMovement1.y - getGravity(), deltaMovement1.z );
         }
-        setPos(x, y, z);
-
-        if (isInWater()) {
+        setPos( x, y, z );
+        
+        if( isInWater() ) {
             discard();
-
-            if (!level().isClientSide) {
-                level().addFreshEntity(new ItemEntity(level(), x, y, z, new ItemStack(Items.TORCH)));
+            
+            if( !level().isClientSide ) {
+                level().addFreshEntity( new ItemEntity( level(), x, y, z, new ItemStack( Items.TORCH ) ) );
             }
         }
     }
-
+    
     protected double getGravity() {
         return 0.08D;
     }
-
+    
     public BlockPos getInitialPos() {
         return initialPos;
     }
-
+    
     @Override
-    protected void onHitBlock(BlockHitResult hitResult) {
+    protected void onHitBlock( BlockHitResult hitResult ) {
         BlockPos pos = hitResult.getBlockPos();
         Direction direction = hitResult.getDirection();
-
-        if (!level().isClientSide) {
+        
+        if( !level().isClientSide ) {
             boolean placed = false;
-
-            if (direction == Direction.UP) {
-                if (level().getBlockState(pos.relative(direction)).isAir() && level().getBlockState(pos).isFaceSturdy(level(), pos, direction)) {
-                    level().setBlock(pos.relative(direction), Blocks.TORCH.defaultBlockState(), 3);
-                    placed = true;
-                }
-            } else if (direction != Direction.DOWN) {
-                if (level().getBlockState(pos.relative(direction)).isAir()) {
-                    level().setBlock(pos.relative(direction), Blocks.WALL_TORCH.defaultBlockState().setValue(WallTorchBlock.FACING, direction), 3);
+            
+            if( direction == Direction.UP ) {
+                if( level().getBlockState( pos.relative( direction ) ).isAir() && level().getBlockState( pos ).isFaceSturdy( level(), pos, direction ) ) {
+                    level().setBlock( pos.relative( direction ), Blocks.TORCH.defaultBlockState(), 3 );
                     placed = true;
                 }
             }
-            if (!placed) {
-                level().addFreshEntity(new ItemEntity(level(), getX(), getY(), getZ(), new ItemStack(Items.TORCH)));
+            else if( direction != Direction.DOWN ) {
+                if( level().getBlockState( pos.relative( direction ) ).isAir() ) {
+                    level().setBlock( pos.relative( direction ), Blocks.WALL_TORCH.defaultBlockState().setValue( WallTorchBlock.FACING, direction ), 3 );
+                    placed = true;
+                }
+            }
+            if( !placed ) {
+                level().addFreshEntity( new ItemEntity( level(), getX(), getY(), getZ(), new ItemStack( Items.TORCH ) ) );
             }
         }
         discard();
     }
-
+    
     @Override
-    protected void onHitEntity(EntityHitResult hitResult) {
-        if (hitResult.getEntity() instanceof LivingEntity livingEntity && !livingEntity.getType().fireImmune()) {
-            livingEntity.setSecondsOnFire(3);
+    protected void onHitEntity( EntityHitResult hitResult ) {
+        if( hitResult.getEntity() instanceof LivingEntity livingEntity && !livingEntity.getType().fireImmune() ) {
+            livingEntity.setSecondsOnFire( 3 );
         }
         discard();
     }
-
+    
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
-        super.addAdditionalSaveData(compoundTag);
+    public void addAdditionalSaveData( CompoundTag compoundTag ) {
+        super.addAdditionalSaveData( compoundTag );
     }
-
+    
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
+    public void readAdditionalSaveData( CompoundTag compoundTag ) {
+        super.readAdditionalSaveData( compoundTag );
     }
-
+    
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        return NetworkHooks.getEntitySpawningPacket( this );
     }
-
+    
     @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-
+    public void writeSpawnData( FriendlyByteBuf buffer ) {
+    
     }
-
+    
     @Override
-    public void readSpawnData(FriendlyByteBuf additionalData) {
-
+    public void readSpawnData( FriendlyByteBuf additionalData ) {
+    
     }
-
+    
     @Override
     public ItemStack getItem() {
         return renderedItem;

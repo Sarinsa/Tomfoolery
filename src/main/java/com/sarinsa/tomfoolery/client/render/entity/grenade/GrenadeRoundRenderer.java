@@ -13,34 +13,34 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public class GrenadeRoundRenderer extends EntityRenderer<GrenadeRound> {
-
-    private static final ResourceLocation TEXTURE = Tomfoolery.resourceLoc("textures/entity/grenade/grenade.png");
+    
+    private static final ResourceLocation TEXTURE = Tomfoolery.resourceLoc( "textures/entity/grenade/grenade.png" );
     private GrenadeRoundModel model;
-
-    public GrenadeRoundRenderer(EntityRendererProvider.Context context) {
-        super(context);
-        model = new GrenadeRoundModel(context.bakeLayer(TomfooleryModelLayers.GRENADE_ROUND));
+    
+    public GrenadeRoundRenderer( EntityRendererProvider.Context context ) {
+        super( context );
+        model = new GrenadeRoundModel( context.bakeLayer( TomfooleryModelLayers.GRENADE_ROUND ) );
     }
-
-    public void render(GrenadeRound entity, float limbRot, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    
+    public void render( GrenadeRound entity, float limbRot, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight ) {
         poseStack.pushPose();
-        poseStack.translate(0.0D, -1.25D, 0.0D);
-
-        int color = entity.getGrenadeType().getColor(1);
-
-        float r = (float)(color >> 16 & 255) / 255.0F;
-        float g = (float)(color >> 8 & 255) / 255.0F;
-        float b = (float)(color & 255) / 255.0F;
-
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(TEXTURE));
-        model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, r, g, b, 1.0F);
-
+        poseStack.translate( 0.0D, -1.25D, 0.0D );
+        
+        int color = entity.getGrenadeType().getColor( 1 );
+        
+        float r = (float) (color >> 16 & 255) / 255.0F;
+        float g = (float) (color >> 8 & 255) / 255.0F;
+        float b = (float) (color & 255) / 255.0F;
+        
+        VertexConsumer vertexConsumer = bufferSource.getBuffer( model.renderType( TEXTURE ) );
+        model.renderToBuffer( poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, r, g, b, 1.0F );
+        
         poseStack.popPose();
-        super.render(entity, limbRot, partialTick, poseStack, bufferSource, packedLight);
+        super.render( entity, limbRot, partialTick, poseStack, bufferSource, packedLight );
     }
-
+    
     @Override
-    public ResourceLocation getTextureLocation(GrenadeRound entity) {
+    public ResourceLocation getTextureLocation( GrenadeRound entity ) {
         return TEXTURE;
     }
 }

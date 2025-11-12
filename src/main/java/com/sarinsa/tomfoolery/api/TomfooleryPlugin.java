@@ -10,18 +10,18 @@ import java.lang.annotation.Target;
  * detect mod plugins. Your Tomfoolery mod plugin class
  * must be annotated with this to be loaded.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.TYPE )
 public @interface TomfooleryPlugin {
-
+    
     /**
      * @return Your mod's modid or an empty String
-     *         if this plugin does not depend on
-     *         a mod being loaded.
-     *         <br><br>
-     *         This is used to make sure plugins doesn't
-     *         get loaded if the mod that adds them failed to load
-     *         itself.
+     * if this plugin does not depend on
+     * a mod being loaded.
+     * <br><br>
+     * This is used to make sure plugins doesn't
+     * get loaded if the mod that adds them failed to load
+     * itself.
      */
     String modid() default "";
 }
