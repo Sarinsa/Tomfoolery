@@ -16,7 +16,7 @@ public class PacketHandler {
     
     private static SimpleChannel createChannel() {
         return NetworkRegistry.ChannelBuilder
-                .named( Tomfoolery.resourceLoc( "channel" ) )
+                .named( Tomfoolery.rl( "channel" ) )
                 .serverAcceptedVersions( PROTOCOL_NAME::equals )
                 .clientAcceptedVersions( PROTOCOL_NAME::equals )
                 .networkProtocolVersion( () -> PROTOCOL_NAME )

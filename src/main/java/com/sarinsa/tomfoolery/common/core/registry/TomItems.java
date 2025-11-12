@@ -70,12 +70,15 @@ public class TomItems {
     }
     
     private static <T extends Mob> RegistryObject<ForgeSpawnEggItem> registerSpawnEgg( RegistryObject<EntityType<T>> registryObject, int primaryColor, int spotColor ) {
-        RegistryObject<ForgeSpawnEggItem> regObj = ITEMS.register( registryObject.getId().getPath() + "_spawn_egg", () -> new ForgeSpawnEggItem( registryObject, primaryColor, spotColor, new Item.Properties() ) );
+        // noinspection ConstantConditions
+        RegistryObject<ForgeSpawnEggItem> regObj = ITEMS.register( registryObject.getId().getPath() + "_spawn_egg",
+                () -> new ForgeSpawnEggItem( registryObject, primaryColor, spotColor, new Item.Properties() ) );
         queueForCreativeTabs( regObj, CreativeModeTabs.SPAWN_EGGS );
         return regObj;
     }
     
     protected static RegistryObject<GrenadeRoundItem> registerGrenadeAmmo( RegistryObject<GrenadeType> grenadeType ) {
+        // noinspection ConstantConditions
         String name = grenadeType.getId().getPath();
         RegistryObject<GrenadeRoundItem> regObj = ITEMS.register( name + "_grenade_round", () -> new GrenadeRoundItem( grenadeType ) );
         queueForCreativeTabs( regObj, CreativeModeTabs.COMBAT );

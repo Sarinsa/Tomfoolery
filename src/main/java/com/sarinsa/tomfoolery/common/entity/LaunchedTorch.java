@@ -61,22 +61,24 @@ public class LaunchedTorch extends Projectile implements IEntityAdditionalSpawnD
     public void tick() {
         super.tick();
         
+        // noinspection resource
+        final Level level = level();
         HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector( this, this::canHitEntity );
         boolean teleporting = false;
         
         if( hitResult.getType() == HitResult.Type.BLOCK ) {
             BlockPos blockpos = ((BlockHitResult) hitResult).getBlockPos();
-            BlockState blockstate = level().getBlockState( blockpos );
+            BlockState blockstate = level.getBlockState( blockpos );
             
             if( blockstate.is( Blocks.NETHER_PORTAL ) ) {
                 handleInsidePortal( blockpos );
                 teleporting = true;
             }
             else if( blockstate.is( Blocks.END_GATEWAY ) ) {
-                BlockEntity blockEntity = level().getExistingBlockEntity( blockpos );
+                BlockEntity blockEntity = level.getExistingBlockEntity( blockpos );
                 
                 if( blockEntity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport( this ) ) {
-                    TheEndGatewayBlockEntity.teleportEntity( level(), blockpos, level().getBlockState( blockpos ), this, (TheEndGatewayBlockEntity) blockEntity );
+                    TheEndGatewayBlockEntity.teleportEntity( level(), blockpos, level.getBlockState( blockpos ), this, (TheEndGatewayBlockEntity) blockEntity );
                 }
                 teleporting = true;
             }
@@ -103,8 +105,8 @@ public class LaunchedTorch extends Projectile implements IEntityAdditionalSpawnD
         if( isInWater() ) {
             discard();
             
-            if( !level().isClientSide ) {
-                level().addFreshEntity( new ItemEntity( level(), x, y, z, new ItemStack( Items.TORCH ) ) );
+            if( !level.isClientSide ) {
+                level.addFreshEntity( new ItemEntity( level(), x, y, z, new ItemStack( Items.TORCH ) ) );
             }
         }
     }
@@ -119,26 +121,28 @@ public class LaunchedTorch extends Projectile implements IEntityAdditionalSpawnD
     
     @Override
     protected void onHitBlock( BlockHitResult hitResult ) {
+        // noinspection resource
+        final Level level = level();
         BlockPos pos = hitResult.getBlockPos();
         Direction direction = hitResult.getDirection();
         
-        if( !level().isClientSide ) {
+        if( !level.isClientSide ) {
             boolean placed = false;
             
             if( direction == Direction.UP ) {
-                if( level().getBlockState( pos.relative( direction ) ).isAir() && level().getBlockState( pos ).isFaceSturdy( level(), pos, direction ) ) {
-                    level().setBlock( pos.relative( direction ), Blocks.TORCH.defaultBlockState(), 3 );
+                if( level.getBlockState( pos.relative( direction ) ).isAir() && level.getBlockState( pos ).isFaceSturdy( level(), pos, direction ) ) {
+                    level.setBlock( pos.relative( direction ), Blocks.TORCH.defaultBlockState(), 3 );
                     placed = true;
                 }
             }
             else if( direction != Direction.DOWN ) {
-                if( level().getBlockState( pos.relative( direction ) ).isAir() ) {
-                    level().setBlock( pos.relative( direction ), Blocks.WALL_TORCH.defaultBlockState().setValue( WallTorchBlock.FACING, direction ), 3 );
+                if( level.getBlockState( pos.relative( direction ) ).isAir() ) {
+                    level.setBlock( pos.relative( direction ), Blocks.WALL_TORCH.defaultBlockState().setValue( WallTorchBlock.FACING, direction ), 3 );
                     placed = true;
                 }
             }
             if( !placed ) {
-                level().addFreshEntity( new ItemEntity( level(), getX(), getY(), getZ(), new ItemStack( Items.TORCH ) ) );
+                level.addFreshEntity( new ItemEntity( level(), getX(), getY(), getZ(), new ItemStack( Items.TORCH ) ) );
             }
         }
         discard();

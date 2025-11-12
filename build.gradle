@@ -44,14 +44,6 @@ minecraft {
 
             arg "-mixin.config=tomfoolery.mixins.json"
 
-            // NOTE: comment out and regenerate runs when
-            // hot swapping is desired. Our subclass mixins
-            // breaks it, and it sucks.
-            // ALSO remember to comment out said mixins'
-            // @Mixin annotation and other decorators.
-
-            //arg "-mixin.config=tomfoolery.mixins.json"
-
             mods {
                 tomfoolery {
                     source sourceSets.main
@@ -118,8 +110,13 @@ dependencies {
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
+
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
+
+    // Crust; only implement the api, but include the entire mod at runtime
+    implementation "curse.maven:crust-873570:${crust_api_version}"
+    runtimeOnly "curse.maven:crust-873570:${crust_src_version}"
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
@@ -127,14 +124,14 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "Tomfoolery",
-            "Specification-Vendor": "Sarinsa",
-            "Specification-Version": "1",
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"Sarinsa",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "MixinConfigs": "tomfoolery.mixins.json"
+                "Specification-Title"     : "Tomfoolery",
+                "Specification-Vendor"    : "Sarinsa",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "Sarinsa",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs"            : "tomfoolery.mixins.json"
         ])
     }
 }

@@ -38,6 +38,7 @@ public class TomBlocks {
     }
     
     @SafeVarargs
+    @SuppressWarnings( "SameParameterValue" )
     private static <T extends Block> RegistryObject<T> registerBlock( String name, ResourceKey<CreativeModeTab> creativeTab, Supplier<T> blockSupplier, TagKey<Block>... tagKeys ) {
         RegistryObject<T> blockRegistryObject = BLOCKS.register( name, blockSupplier );
         TomItems.registerItem( name, () -> new BlockItem( blockRegistryObject.get(), new Item.Properties() ), creativeTab );

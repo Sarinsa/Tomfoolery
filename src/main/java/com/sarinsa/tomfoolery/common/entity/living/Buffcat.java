@@ -4,7 +4,6 @@ package com.sarinsa.tomfoolery.common.entity.living;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -62,12 +61,6 @@ public class Buffcat extends TamableAnimal {
     @Override
     protected SoundEvent getAmbientSound() {
         return SoundEvents.CAT_AMBIENT;
-    }
-    
-    @Nullable
-    @Override
-    protected SoundEvent getHurtSound( DamageSource damageSource ) {
-        return SoundEvents.GENERIC_HURT;
     }
     
     @Nullable

@@ -55,11 +55,11 @@ public class Ghastinator extends Ghast {
     @Override
     public void checkDespawn() {
         super.checkDespawn();
+        // noinspection resource
+        final Level level = level();
         
-        if( level().isDay() ) {
-            if( !level().isClientSide ) {
-                level().playSound( null, blockPosition(), SoundEvents.ZOMBIE_VILLAGER_CONVERTED, SoundSource.HOSTILE, 15.0F, 0.5F );
-            }
+        if( level.isDay() && !level.isClientSide ) {
+            level.playSound( null, blockPosition(), SoundEvents.ZOMBIE_VILLAGER_CONVERTED, SoundSource.HOSTILE, 15.0F, 0.5F );
             discard();
         }
     }
@@ -101,6 +101,7 @@ public class Ghastinator extends Ghast {
     
     @Override
     public boolean hasLineOfSight( Entity target ) {
+        // noinspection resource
         if( target.level() != level() ) {
             return false;
         }
@@ -112,6 +113,7 @@ public class Ghastinator extends Ghast {
                 return false;
             }
             else {
+                // noinspection resource
                 return level().clip( new ClipContext( pos, targetPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this ) ).getType() == HitResult.Type.MISS;
             }
         }
@@ -236,7 +238,9 @@ public class Ghastinator extends Ghast {
             if( targetType != Player.class && targetType != ServerPlayer.class ) {
                 return;
             }
+            // noinspection resource
             List<Player> nearbyPlayers = mob.level().getEntitiesOfClass( Player.class, mob.getBoundingBox().inflate( 200.0D, 300.0D, 200.0D ) );
+            // noinspection resource
             target = mob.level().getNearestEntity( nearbyPlayers, targetConditions, mob, mob.getX(), mob.getEyeY(), mob.getZ() );
             
             mob.setAggressive( target != null );

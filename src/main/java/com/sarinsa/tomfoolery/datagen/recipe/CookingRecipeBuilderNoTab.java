@@ -58,12 +58,13 @@ public class CookingRecipeBuilderNoTab {
     }
     
     public void save( Consumer<FinishedRecipe> consumer ) {
-        this.save( consumer, ForgeRegistries.ITEMS.getKey( this.result ) );
+        // noinspection ConstantConditions
+        this.save( consumer, ForgeRegistries.ITEMS.getKey( result ) );
     }
     
     public void save( Consumer<FinishedRecipe> consumer, String name ) {
         ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey( this.result );
-        ResourceLocation resourcelocation1 = new ResourceLocation( name );
+        ResourceLocation resourcelocation1 = ResourceLocation.parse( name );
         
         if( resourcelocation1.equals( resourcelocation ) ) {
             throw new IllegalStateException( "Recipe " + resourcelocation1 + " should remove its 'save' argument" );
@@ -75,7 +76,7 @@ public class CookingRecipeBuilderNoTab {
     
     public void save( Consumer<FinishedRecipe> consumer, ResourceLocation id ) {
         this.ensureValid( id );
-        this.advancement.parent( new ResourceLocation( "recipes/root" ) )
+        this.advancement.parent( ResourceLocation.withDefaultNamespace( "recipes/root" ) )
                 .addCriterion( "has_the_recipe", RecipeUnlockedTrigger.unlocked( id ) )
                 .rewards( AdvancementRewards.Builder.recipe( id ) )
                 .requirements( RequirementsStrategy.OR );
@@ -88,7 +89,7 @@ public class CookingRecipeBuilderNoTab {
                 this.experience,
                 this.cookingTime,
                 this.advancement,
-                new ResourceLocation( id.getNamespace(), "recipes/" + id.getPath() ),
+                ResourceLocation.fromNamespaceAndPath( id.getNamespace(), "recipes/" + id.getPath() ),
                 this.serializer )
         );
     }
@@ -128,6 +129,7 @@ public class CookingRecipeBuilderNoTab {
             }
             
             jsonObject.add( "ingredient", this.ingredient.toJson() );
+            // noinspection ConstantConditions
             jsonObject.addProperty( "result", ForgeRegistries.ITEMS.getKey( this.result ).toString() );
             jsonObject.addProperty( "experience", this.experience );
             jsonObject.addProperty( "cookingtime", this.cookingTime );

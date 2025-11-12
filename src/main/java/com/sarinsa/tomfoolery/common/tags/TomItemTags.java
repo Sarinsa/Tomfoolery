@@ -9,9 +9,8 @@ public class TomItemTags {
     
     public static final TagKey<Item> CAKES = forgeTag( "cakes" );
     
+    @SuppressWarnings( "SameParameterValue" )
     private static TagKey<Item> forgeTag( String path ) {
-        return ItemTags.create( new ResourceLocation( "forge", path ) );
+        return ItemTags.create( ResourceLocation.fromNamespaceAndPath( "forge", path ) );
     }
-    
-    public static void init() { }
 }

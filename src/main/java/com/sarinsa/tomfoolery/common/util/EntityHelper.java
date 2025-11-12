@@ -17,8 +17,16 @@ public class EntityHelper {
         launched.setDeltaMovement( launched.getDeltaMovement().add( vec3.x, launched.onGround() ? 0.0D : vec3.y, vec3.z ) );
     }
     
-    public static void shoot( Entity launched, double x, double y, double z, float p_37269_, float p_37270_ ) {
-        Vec3 vec3 = (new Vec3( x, y, z )).normalize().add( launched.level().random.triangle( 0.0D, 0.0172275D * (double) p_37270_ ), launched.level().random.triangle( 0.0D, 0.0172275D * (double) p_37270_ ), launched.level().random.triangle( 0.0D, 0.0172275D * (double) p_37270_ ) ).scale( (double) p_37269_ );
+    @SuppressWarnings( "resource" )
+    public static void shoot( Entity launched, double x, double y, double z, float power, float projVariance ) {
+        Vec3 vec3 = (new Vec3( x, y, z ))
+                .normalize()
+                .add(
+                        launched.level().random.triangle( 0.0D, 0.0172275D * (double) projVariance ),
+                        launched.level().random.triangle( 0.0D, 0.0172275D * (double) projVariance ),
+                        launched.level().random.triangle( 0.0D, 0.0172275D * (double) projVariance )
+                )
+                .scale( power );
         launched.setDeltaMovement( vec3 );
         double d0 = vec3.horizontalDistance();
         launched.setYRot( (float) (Mth.atan2( vec3.x, vec3.z ) * (double) (180F / (float) Math.PI)) );

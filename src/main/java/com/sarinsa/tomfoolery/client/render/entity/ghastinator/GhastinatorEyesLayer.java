@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
  */
 public class GhastinatorEyesLayer extends RenderLayer<Ghastinator, GhastinatorModel> {
     
-    private static final RenderType EYES = RenderType.entityCutout( Tomfoolery.resourceLoc( "textures/entity/ghastinator/ghastinator_eyes.png" ) );
+    private static final RenderType EYES = RenderType.entityCutout( Tomfoolery.rl( "textures/entity/ghastinator/ghastinator_eyes.png" ) );
     
     
     public GhastinatorEyesLayer( RenderLayerParent<Ghastinator, GhastinatorModel> parent ) {

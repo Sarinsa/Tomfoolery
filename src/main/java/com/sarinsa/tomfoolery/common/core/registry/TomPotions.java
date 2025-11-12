@@ -40,6 +40,7 @@ public class TomPotions {
         ) );
     }
     
+    @SuppressWarnings( "SameParameterValue" )
     private static RegistryObject<Potion> registerPotion( String name, Supplier<MobEffect> effectSupplier, int duration, int amplifier ) {
         return POTIONS.register( name, () -> new Potion( new MobEffectInstance( effectSupplier.get(), duration, amplifier ) ) );
     }

@@ -17,11 +17,9 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 
-import javax.annotation.Nonnull;
-
 public class CactusEntityRenderer<T extends CactusBlockEntity> extends EntityRenderer<T> {
     
-    private static final ResourceLocation TEXTURE = new ResourceLocation( "textures/block/cactus.png" );
+    private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace( "textures/block/cactus.png" );
     private final BlockRenderDispatcher dispatcher;
     
     
@@ -54,7 +52,6 @@ public class CactusEntityRenderer<T extends CactusBlockEntity> extends EntityRen
     }
     
     @Override
-    @Nonnull
     public ResourceLocation getTextureLocation( T cactusEntity ) {
         return TEXTURE;
     }

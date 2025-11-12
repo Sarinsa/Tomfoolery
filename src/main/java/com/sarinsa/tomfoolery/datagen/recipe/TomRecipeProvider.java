@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -82,7 +81,7 @@ public class TomRecipeProvider extends RecipeProvider {
         
         CookingRecipeBuilderNoTab.smelting( Ingredient.of( ingredient ), result, experience, 200 )
                 .unlockedBy( "has_" + ingredientName, has( ingredient ) )
-                .save( consumer, Tomfoolery.resourceLoc( resultName + "_from_" + ingredientName + "_smelting" ) );
+                .save( consumer, Tomfoolery.rl( resultName + "_from_" + ingredientName + "_smelting" ) );
     }
     
     protected void blastingRecipe( ItemLike ingredient, ItemLike result, float experience, Consumer<FinishedRecipe> consumer ) {
@@ -91,7 +90,7 @@ public class TomRecipeProvider extends RecipeProvider {
         
         CookingRecipeBuilderNoTab.blasting( Ingredient.of( ingredient ), result, experience, 100 )
                 .unlockedBy( "has_" + ingredientName, has( ingredient ) )
-                .save( consumer, Tomfoolery.resourceLoc( resultName + "_from_" + ingredientName + "_blasting" ) );
+                .save( consumer, Tomfoolery.rl( resultName + "_from_" + ingredientName + "_blasting" ) );
     }
     
     @SuppressWarnings( "ConstantConditions" )
@@ -101,12 +100,10 @@ public class TomRecipeProvider extends RecipeProvider {
                 .save( consumer, regName( result ) );
     }
     
-    @Nonnull
     protected static String itemName( ItemLike itemLike ) {
         return Objects.requireNonNull( ForgeRegistries.ITEMS.getKey( itemLike.asItem() ) ).getPath();
     }
     
-    @Nonnull
     protected static ResourceLocation regName( ItemLike itemLike ) {
         return Objects.requireNonNull( ForgeRegistries.ITEMS.getKey( itemLike.asItem() ) );
     }

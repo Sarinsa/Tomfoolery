@@ -16,6 +16,7 @@ public class TomEffects {
     public static final RegistryObject<MobEffect> CACTUS_ATTRACTION = registerEffect( "cactus_attraction", CactusAttractionEffect::new );
     
     
+    @SuppressWarnings( "SameParameterValue" )
     private static <T extends MobEffect> RegistryObject<T> registerEffect( String name, Supplier<T> effectSuppler ) {
         return EFFECTS.register( name, effectSuppler );
     }

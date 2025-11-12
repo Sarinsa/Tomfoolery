@@ -60,22 +60,24 @@ public class GrenadeRound extends Projectile implements IEntityAdditionalSpawnDa
     public void tick() {
         super.tick();
         
+        // noinspection resource
+        final Level level = level();
         HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector( this, this::canHitEntity );
         boolean teleporting = false;
         
         if( hitResult.getType() == HitResult.Type.BLOCK ) {
             BlockPos blockpos = ((BlockHitResult) hitResult).getBlockPos();
-            BlockState blockstate = level().getBlockState( blockpos );
+            BlockState blockstate = level.getBlockState( blockpos );
             
             if( blockstate.is( Blocks.NETHER_PORTAL ) ) {
                 handleInsidePortal( blockpos );
                 teleporting = true;
             }
             else if( blockstate.is( Blocks.END_GATEWAY ) ) {
-                BlockEntity blockEntity = level().getExistingBlockEntity( blockpos );
+                BlockEntity blockEntity = level.getExistingBlockEntity( blockpos );
                 
                 if( blockEntity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport( this ) ) {
-                    TheEndGatewayBlockEntity.teleportEntity( level(), blockpos, level().getBlockState( blockpos ), this, (TheEndGatewayBlockEntity) blockEntity );
+                    TheEndGatewayBlockEntity.teleportEntity( level(), blockpos, level.getBlockState( blockpos ), this, (TheEndGatewayBlockEntity) blockEntity );
                 }
                 teleporting = true;
             }
@@ -102,6 +104,7 @@ public class GrenadeRound extends Projectile implements IEntityAdditionalSpawnDa
             traceParticle = grenadeType.getTraceParticle();
             motionScale = 0.99F;
         }
+        // noinspection resource
         level().addParticle( traceParticle, x - deltaMovement.x * 0.25D, y - deltaMovement.y * 0.25D, z - deltaMovement.z * 0.25D, deltaMovement.x, deltaMovement.y, deltaMovement.z );
         setDeltaMovement( deltaMovement.scale( motionScale ) );
         
@@ -124,6 +127,7 @@ public class GrenadeRound extends Projectile implements IEntityAdditionalSpawnDa
         return grenadeType;
     }
     
+    @SuppressWarnings( "unused" )
     public BlockPos getInitialPos() {
         return initialPos;
     }
@@ -153,6 +157,7 @@ public class GrenadeRound extends Projectile implements IEntityAdditionalSpawnDa
         super.addAdditionalSaveData( compoundTag );
         
         if( grenadeType != null ) {
+            // noinspection ConstantConditions
             compoundTag.putString( "GrenadeType", TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().getKey( grenadeType ).toString() );
         }
     }
@@ -184,12 +189,12 @@ public class GrenadeRound extends Projectile implements IEntityAdditionalSpawnDa
         if( grenadeType != null ) {
             ResourceLocation id = TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().containsValue( grenadeType )
                     ? TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get().getKey( grenadeType )
-                    : new ResourceLocation( "" );
+                    : ResourceLocation.parse( "" );
             
             buffer.writeResourceLocation( id );
         }
         else {
-            buffer.writeResourceLocation( new ResourceLocation( "" ) );
+            buffer.writeResourceLocation( ResourceLocation.parse( "" ) );
         }
     }
     

@@ -67,19 +67,21 @@ public class InstaSapling extends Projectile implements IEntityAdditionalSpawnDa
     public void tick() {
         super.tick();
         
+        // noinspection resource
+        final Level level = level();
         HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector( this, this::canHitEntity );
         boolean teleporting = false;
         
         if( hitResult.getType() == HitResult.Type.BLOCK ) {
             BlockPos blockpos = ((BlockHitResult) hitResult).getBlockPos();
-            BlockState blockstate = level().getBlockState( blockpos );
+            BlockState blockstate = level.getBlockState( blockpos );
             
             if( blockstate.is( Blocks.NETHER_PORTAL ) ) {
                 handleInsidePortal( blockpos );
                 teleporting = true;
             }
             else if( blockstate.is( Blocks.END_GATEWAY ) ) {
-                BlockEntity blockEntity = level().getBlockEntity( blockpos );
+                BlockEntity blockEntity = level.getBlockEntity( blockpos );
                 
                 if( blockEntity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport( this ) ) {
                     TheEndGatewayBlockEntity.teleportEntity( level(), blockpos, blockstate, this, (TheEndGatewayBlockEntity) blockEntity );
@@ -109,7 +111,7 @@ public class InstaSapling extends Projectile implements IEntityAdditionalSpawnDa
             traceParticle = ParticleTypes.CLOUD;
             motionScale = 0.99F;
         }
-        level().addParticle( traceParticle, x - deltaMovement.x * 0.25D, y - deltaMovement.y * 0.25D, z - deltaMovement.z * 0.25D, deltaMovement.x, deltaMovement.y, deltaMovement.z );
+        level.addParticle( traceParticle, x - deltaMovement.x * 0.25D, y - deltaMovement.y * 0.25D, z - deltaMovement.z * 0.25D, deltaMovement.x, deltaMovement.y, deltaMovement.z );
         setDeltaMovement( deltaMovement.scale( motionScale ) );
         
         if( !isNoGravity() ) {
@@ -128,16 +130,18 @@ public class InstaSapling extends Projectile implements IEntityAdditionalSpawnDa
             return;
         }
         
-        level().setBlock( result.getBlockPos(), Blocks.DIRT.defaultBlockState(), 2 );
+        // noinspection resource
+        final Level level = level();
+        level.setBlock( result.getBlockPos(), Blocks.DIRT.defaultBlockState(), 2 );
         
         if( getItem().getItem() == Items.DARK_OAK_SAPLING ) {
-            level().setBlock( result.getBlockPos().north(), Blocks.DIRT.defaultBlockState(), 2 );
-            level().setBlock( result.getBlockPos().west(), Blocks.DIRT.defaultBlockState(), 2 );
-            level().setBlock( result.getBlockPos().north().west(), Blocks.DIRT.defaultBlockState(), 2 );
+            level.setBlock( result.getBlockPos().north(), Blocks.DIRT.defaultBlockState(), 2 );
+            level.setBlock( result.getBlockPos().west(), Blocks.DIRT.defaultBlockState(), 2 );
+            level.setBlock( result.getBlockPos().north().west(), Blocks.DIRT.defaultBlockState(), 2 );
         }
-        if( !level().isClientSide && tree != null ) {
+        if( !level.isClientSide && tree != null ) {
             ServerLevel serverLevel = (ServerLevel) level();
-            tree.growTree( serverLevel, serverLevel.getChunkSource().getGenerator(), result.getBlockPos().above(), level().getBlockState( result.getBlockPos().above() ), serverLevel.random );
+            tree.growTree( serverLevel, serverLevel.getChunkSource().getGenerator(), result.getBlockPos().above(), level.getBlockState( result.getBlockPos().above() ), serverLevel.random );
         }
         discard();
     }

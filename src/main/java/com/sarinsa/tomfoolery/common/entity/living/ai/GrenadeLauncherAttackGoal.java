@@ -31,7 +31,7 @@ public class GrenadeLauncherAttackGoal extends Goal {
     private final int attackInterval = 20;
     private long lastCanUseCheck;
     private int failedPathFindingPenalty = 0;
-    private boolean canPenalize = false;
+    private final boolean canPenalize = false;
     private int nadesShot = 0;
     private int cooldown = 0;
     
@@ -47,6 +47,7 @@ public class GrenadeLauncherAttackGoal extends Goal {
         if( mob.getItemBySlot( EquipmentSlot.MAINHAND ).getItem() != TomItems.GRENADE_LAUNCHER.get() )
             return false;
         
+        // noinspection resource
         long gameTime = mob.level().getGameTime();
         
         if( gameTime - lastCanUseCheck < 20L ) {
@@ -201,7 +202,9 @@ public class GrenadeLauncherAttackGoal extends Goal {
                 GrenadeRound entity = new GrenadeRound( mob, mob.level() );
                 entity.shootFromRotation( mob, mob.getXRot(), mob.getYRot(), 2.5F, 2.5F, 2.5F );
                 entity.setGrenadeType( TomGrenadeTypes.EXPLOSIVE.get() );
+                // noinspection resource
                 mob.level().addFreshEntity( entity );
+                // noinspection resource
                 mob.level().playSound( null, mob.getX(), mob.getY(), mob.getZ(), TomSounds.LAUNCHER_THUMP.get(), SoundSource.MASTER, 1.0F, 1.0F );
                 
                 if( nadesShot >= 6 ) {

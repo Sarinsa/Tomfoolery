@@ -25,9 +25,9 @@ public class TomLootModsProvider extends GlobalLootModifierProvider {
                 1,
                 1,
                 List.of(
-                        new ResourceLocation( "chests/abandoned_mineshaft" ),
-                        new ResourceLocation( "chests/bastion_treasure" ),
-                        new ResourceLocation( "chests/simple_dungeon" )
+                        ResourceLocation.withDefaultNamespace( "chests/abandoned_mineshaft" ),
+                        ResourceLocation.withDefaultNamespace( "chests/bastion_treasure" ),
+                        ResourceLocation.withDefaultNamespace( "chests/simple_dungeon" )
                 )
         ) );
         add( "add_launcher_igloo", new SimpleAddLootModifier(
@@ -36,7 +36,7 @@ public class TomLootModsProvider extends GlobalLootModifierProvider {
                 0.25,
                 1,
                 1,
-                List.of( new ResourceLocation( "chests/igloo_chest" ) )
+                List.of( ResourceLocation.withDefaultNamespace( "chests/igloo_chest" ) )
         ) );
     }
 }

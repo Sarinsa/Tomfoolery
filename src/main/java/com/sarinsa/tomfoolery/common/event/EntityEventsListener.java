@@ -73,6 +73,7 @@ public class EntityEventsListener {
     @SubscribeEvent
     public void onEntityJoinWorld( EntityJoinLevelEvent event ) {
         if( event.getEntity() instanceof LivingEntity livingEntity ) {
+            // noinspection resource
             Level level = livingEntity.level();
             
             if( level.isLoaded( livingEntity.blockPosition() ) ) {
@@ -123,6 +124,7 @@ public class EntityEventsListener {
                 Vec3 eyePosition = player.getEyePosition( 1.0F );
                 Vec3 viewVector = player.getViewVector( 1.0F );
                 Vec3 vector3d = eyePosition.add( viewVector.x * range, viewVector.y * range, viewVector.z * range );
+                // noinspection resource
                 BlockHitResult result = player.level().clip( new ClipContext( eyePosition, vector3d, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player ) );
                 
                 glasses.gaze( player, player.level(), result );

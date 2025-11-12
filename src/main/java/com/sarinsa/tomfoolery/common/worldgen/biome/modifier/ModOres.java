@@ -3,6 +3,8 @@ package com.sarinsa.tomfoolery.common.worldgen.biome.modifier;
 import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
 
+import javax.annotation.Nonnull;
+
 public enum ModOres implements StringRepresentable {
     ORE_ORE( "ore_ore" ),
     CAKE( "cake" );
@@ -15,6 +17,7 @@ public enum ModOres implements StringRepresentable {
     private final String name;
     
     @Override
+    @Nonnull
     public String getSerializedName() {
         return name;
     }

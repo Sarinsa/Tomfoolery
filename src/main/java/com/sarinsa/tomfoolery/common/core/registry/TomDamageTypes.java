@@ -28,8 +28,9 @@ public class TomDamageTypes {
         return new DamageSource( level.registryAccess().registryOrThrow( Registries.DAMAGE_TYPE ).getHolderOrThrow( key ), entity, shooter );
     }
     
+    @SuppressWarnings( "SameParameterValue" )
     private static ResourceKey<DamageType> create( String name ) {
-        return ResourceKey.create( Registries.DAMAGE_TYPE, Tomfoolery.resourceLoc( name ) );
+        return ResourceKey.create( Registries.DAMAGE_TYPE, Tomfoolery.rl( name ) );
     }
     
     public static void bootstrap( BootstapContext<DamageType> context ) {
@@ -40,6 +41,7 @@ public class TomDamageTypes {
         context.register( damageTypeKey, damageType );
     }
     
+    @SuppressWarnings( "SameParameterValue" )
     private static String msg( String name ) {
         return Tomfoolery.MODID + "." + name;
     }

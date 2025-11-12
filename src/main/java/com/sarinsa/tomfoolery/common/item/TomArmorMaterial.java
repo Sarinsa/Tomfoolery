@@ -97,7 +97,8 @@ public class TomArmorMaterial implements ArmorMaterial {
         return knockbackRes;
     }
     
+    @SuppressWarnings( "SameParameterValue" )
     private static String name( String name ) {
-        return Tomfoolery.resourceLoc( name ).toString();
+        return Tomfoolery.rl( name ).toString();
     }
 }

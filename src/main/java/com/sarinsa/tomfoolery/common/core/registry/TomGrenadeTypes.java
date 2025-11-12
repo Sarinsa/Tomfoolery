@@ -14,11 +14,11 @@ import java.util.function.Supplier;
 
 public class TomGrenadeTypes {
     
-    public static final DeferredRegister<GrenadeType> GRENADE_TYPES = DeferredRegister.create( new ResourceLocation( Tomfoolery.MODID, "grenade_types" ), Tomfoolery.MODID );
+    public static final DeferredRegister<GrenadeType> GRENADE_TYPES = DeferredRegister.create( Tomfoolery.rl( "grenade_types" ), Tomfoolery.MODID );
     
     public static final Supplier<IForgeRegistry<GrenadeType>> GRENADE_TYPE_REGISTRY = GRENADE_TYPES.makeRegistry(
             () -> (new RegistryBuilder<GrenadeType>())
-                    .setDefaultKey( Tomfoolery.resourceLoc( "empty" ) ) );
+                    .setDefaultKey( Tomfoolery.rl( "empty" ) ) );
     
     
     public static RegistryObject<GrenadeType> EXPLOSIVE = register( "explosive", ExplosiveGrenadeType::new );
@@ -31,6 +31,7 @@ public class TomGrenadeTypes {
     
     public static GrenadeType getOrDefault( ResourceLocation id ) {
         for( GrenadeType type : GRENADE_TYPE_REGISTRY.get().getValues() ) {
+            // noinspection ConstantConditions
             if( GRENADE_TYPE_REGISTRY.get().getKey( type ).equals( id ) )
                 return type;
         }

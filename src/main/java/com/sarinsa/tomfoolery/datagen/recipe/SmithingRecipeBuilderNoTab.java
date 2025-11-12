@@ -41,12 +41,12 @@ public class SmithingRecipeBuilderNoTab {
     }
     
     public void save( Consumer<FinishedRecipe> consumer, String id ) {
-        this.save( consumer, new ResourceLocation( id ) );
+        this.save( consumer, ResourceLocation.parse( id ) );
     }
     
     public void save( Consumer<FinishedRecipe> consumer, ResourceLocation id ) {
         this.ensureValid( id );
-        this.advancement.parent( new ResourceLocation( "recipes/root" ) )
+        this.advancement.parent( ResourceLocation.withDefaultNamespace( "recipes/root" ) )
                 .addCriterion( "has_the_recipe", RecipeUnlockedTrigger.unlocked( id ) )
                 .rewards( AdvancementRewards.Builder.recipe( id ) )
                 .requirements( RequirementsStrategy.OR );
@@ -58,7 +58,7 @@ public class SmithingRecipeBuilderNoTab {
                 this.addition,
                 this.result,
                 this.advancement,
-                new ResourceLocation( id.getNamespace(), "recipes/" + id.getPath() ) ) );
+                ResourceLocation.fromNamespaceAndPath( id.getNamespace(), "recipes/" + id.getPath() ) ) );
     }
     
     private void ensureValid( ResourceLocation id ) {
@@ -90,6 +90,7 @@ public class SmithingRecipeBuilderNoTab {
             jsonObject.add( "base", this.base.toJson() );
             jsonObject.add( "addition", this.addition.toJson() );
             JsonObject jsonobject = new JsonObject();
+            // noinspection ConstantConditions
             jsonobject.addProperty( "item", ForgeRegistries.ITEMS.getKey( result ).toString() );
             jsonObject.add( "result", jsonobject );
         }

@@ -17,7 +17,7 @@ public class TomBiomeModifiers {
     
     public static final RegistryObject<Codec<AddOreModifier>> ADD_ORE = register( "add_ore", AddOreModifier::create );
     
-    
+    @SuppressWarnings( "SameParameterValue" )
     private static <T extends BiomeModifier> RegistryObject<Codec<T>> register( String name, Supplier<Codec<T>> codecSupplier ) {
         return BIOME_MODS.register( name, codecSupplier );
     }

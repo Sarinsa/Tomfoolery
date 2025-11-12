@@ -8,13 +8,11 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
-
 public class GhastinatorRenderer extends MobRenderer<Ghastinator, GhastinatorModel> {
     
-    private static final ResourceLocation IDLE = Tomfoolery.resourceLoc( "textures/entity/ghastinator/idle.png" );
-    private static final ResourceLocation SEES_TARGET = Tomfoolery.resourceLoc( "textures/entity/ghastinator/sees_target.png" );
-    private static final ResourceLocation SHOOTING = Tomfoolery.resourceLoc( "textures/entity/ghastinator/shooting.png" );
+    private static final ResourceLocation IDLE = Tomfoolery.rl( "textures/entity/ghastinator/idle.png" );
+    private static final ResourceLocation SEES_TARGET = Tomfoolery.rl( "textures/entity/ghastinator/sees_target.png" );
+    private static final ResourceLocation SHOOTING = Tomfoolery.rl( "textures/entity/ghastinator/shooting.png" );
     
     public GhastinatorRenderer( EntityRendererProvider.Context context ) {
         super( context, new GhastinatorModel( context.bakeLayer( TomfooleryModelLayers.GHASTINATOR ) ), 0.0F );
@@ -22,12 +20,11 @@ public class GhastinatorRenderer extends MobRenderer<Ghastinator, GhastinatorMod
     }
     
     @Override
-    protected void scale( @Nonnull Ghastinator ghastinator, PoseStack poseStack, float partialTick ) {
+    protected void scale( Ghastinator ghastinator, PoseStack poseStack, float partialTick ) {
         poseStack.scale( 100F, 100F, 100F );
     }
     
     @Override
-    @Nonnull
     public ResourceLocation getTextureLocation( Ghastinator ghastinator ) {
         if( ghastinator.isAggressive() ) {
             return ghastinator.isCharging() ? SHOOTING : SEES_TARGET;

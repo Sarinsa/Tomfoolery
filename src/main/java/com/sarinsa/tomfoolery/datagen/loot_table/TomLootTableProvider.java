@@ -15,7 +15,7 @@ import java.util.Set;
 public class TomLootTableProvider extends LootTableProvider {
     
     public TomLootTableProvider( DataGenerator dataGenerator ) {
-        super( dataGenerator.getPackOutput(), null, List.of(
+        super( dataGenerator.getPackOutput(), Set.of(), List.of(
                 new SubProviderEntry( () -> new TomBlockLootTables( Set.of(), FeatureFlags.VANILLA_SET ), LootContextParamSets.BLOCK )
         ) );
     }

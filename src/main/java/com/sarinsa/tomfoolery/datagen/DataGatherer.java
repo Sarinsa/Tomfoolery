@@ -46,8 +46,5 @@ public class DataGatherer {
             dataGenerator.addProvider( true, new TomRecipeProvider( dataGenerator ) );
             dataGenerator.addProvider( true, new TomLootModsProvider( dataGenerator ) );
         }
-        if( event.includeClient() ) {
-        
-        }
     }
 }

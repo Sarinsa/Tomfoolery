@@ -69,11 +69,11 @@ public class TomConfiguredFeatures {
     }
     
     public static ResourceKey<ConfiguredFeature<?, ?>> configuredKey( String name ) {
-        return ResourceKey.create( Registries.CONFIGURED_FEATURE, Tomfoolery.resourceLoc( name ) );
+        return ResourceKey.create( Registries.CONFIGURED_FEATURE, Tomfoolery.rl( name ) );
     }
     
     public static ResourceKey<PlacedFeature> placedKey( String name ) {
-        return ResourceKey.create( Registries.PLACED_FEATURE, Tomfoolery.resourceLoc( name ) );
+        return ResourceKey.create( Registries.PLACED_FEATURE, Tomfoolery.rl( name ) );
     }
     
     

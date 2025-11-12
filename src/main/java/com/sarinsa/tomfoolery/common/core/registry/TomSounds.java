@@ -14,7 +14,8 @@ public class TomSounds {
     public static final RegistryObject<SoundEvent> LAUNCHER_THUMP = register( "item.grenade_launcher.thump" );
     
     
+    @SuppressWarnings( "SameParameterValue" )
     private static RegistryObject<SoundEvent> register( String name ) {
-        return SOUNDS.register( name, () -> SoundEvent.createVariableRangeEvent( Tomfoolery.resourceLoc( name ) ) );
+        return SOUNDS.register( name, () -> SoundEvent.createVariableRangeEvent( Tomfoolery.rl( name ) ) );
     }
 }

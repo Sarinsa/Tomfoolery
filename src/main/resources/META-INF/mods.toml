@@ -1,26 +1,33 @@
-modLoader="javafml"
-loaderVersion="[47,)"
-license="GNU General Public License v3"
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "GNU General Public License v3"
 
 [[mods]]
-    modId="tomfoolery"
-    version="${file.jarVersion}"
-    displayName="Tomfoolery"
-    logoFile="logo.png"
-    credits="Frenderman (artist), Father Toast (cool dude)"
-    authors="Sarinsa"
-    description="An absolute dumpsterfire containing various insane ideas and silly thingamabobs"
+modId = "tomfoolery"
+version = "${file.jarVersion}"
+displayName = "Tomfoolery"
+logoFile = "logo.png"
+credits = "Frenderman (artist), Father Toast (cool dude)"
+authors = "Sarinsa"
+description = "An absolute dumpsterfire containing various insane ideas and silly thingamabobs"
 
 [[dependencies.tomfoolery]]
-    modId="forge"
-    mandatory=true
-    versionRange="[47.4.0,)"
-    ordering="NONE"
-    side="BOTH"
+modId = "forge"
+mandatory = true
+versionRange = "[47.4.0,)"
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.tomfoolery]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.20.1,)"
-    ordering="NONE"
-    side="BOTH"
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.tomfoolery]]
+modId = "crust"
+mandatory = true
+versionRange = "[4.8.14,)"
+ordering = "AFTER"
+side = "BOTH"

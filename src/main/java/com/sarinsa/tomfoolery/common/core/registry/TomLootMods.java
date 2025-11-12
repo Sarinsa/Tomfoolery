@@ -18,6 +18,7 @@ public class TomLootMods {
     public static final RegistryObject<Codec<SimpleAddLootModifier>> SIMPLE_ADD = register( "simple_add", SimpleAddLootModifier.CODEC );
     
     
+    @SuppressWarnings( "SameParameterValue" )
     private static <T extends Codec<? extends IGlobalLootModifier>> RegistryObject<T> register( String name, Supplier<T> supplier ) {
         return LOOT_MODIFIERS.register( name, supplier );
     }

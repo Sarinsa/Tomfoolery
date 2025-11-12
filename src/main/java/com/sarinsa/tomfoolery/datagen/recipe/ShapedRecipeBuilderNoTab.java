@@ -94,22 +94,23 @@ public class ShapedRecipeBuilderNoTab {
     }
     
     public void save( Consumer<FinishedRecipe> consumer ) {
+        // noinspection ConstantConditions
         this.save( consumer, ForgeRegistries.ITEMS.getKey( this.result ) );
     }
     
     public void save( Consumer<FinishedRecipe> consumer, String id ) {
         ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey( this.result );
-        if( (new ResourceLocation( id )).equals( resourcelocation ) ) {
+        if( (ResourceLocation.parse( id )).equals( resourcelocation ) ) {
             throw new IllegalStateException( "Shaped Recipe " + id + " should remove its 'save' argument" );
         }
         else {
-            this.save( consumer, new ResourceLocation( id ) );
+            this.save( consumer, ResourceLocation.parse( id ) );
         }
     }
     
     public void save( Consumer<FinishedRecipe> consumer, ResourceLocation id ) {
         this.ensureValid( id );
-        this.advancement.parent( new ResourceLocation( "recipes/root" ) )
+        this.advancement.parent( ResourceLocation.withDefaultNamespace( "recipes/root" ) )
                 .addCriterion( "has_the_recipe", RecipeUnlockedTrigger.unlocked( id ) )
                 .rewards( AdvancementRewards.Builder.recipe( id ) )
                 .requirements( RequirementsStrategy.OR );
@@ -122,7 +123,7 @@ public class ShapedRecipeBuilderNoTab {
                 this.rows,
                 this.key,
                 this.advancement,
-                new ResourceLocation( id.getNamespace(), "recipes/" + id.getPath() ) )
+                ResourceLocation.fromNamespaceAndPath( id.getNamespace(), "recipes/" + id.getPath() ) )
         );
     }
     
@@ -198,6 +199,7 @@ public class ShapedRecipeBuilderNoTab {
             
             jsonObject.add( "key", jsonobject );
             JsonObject jsonobject1 = new JsonObject();
+            // noinspection ConstantConditions
             jsonobject1.addProperty( "item", ForgeRegistries.ITEMS.getKey( this.result ).toString() );
             if( this.count > 1 ) {
                 jsonobject1.addProperty( "count", this.count );

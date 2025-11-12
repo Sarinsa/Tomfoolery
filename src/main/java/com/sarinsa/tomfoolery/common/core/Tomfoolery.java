@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -26,6 +25,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
+
 
 @Mod( Tomfoolery.MODID )
 public class Tomfoolery {
@@ -33,6 +34,7 @@ public class Tomfoolery {
     public static final String MODID = "tomfoolery";
     public static final Logger LOGGER = LogManager.getLogger( MODID );
     
+    @SuppressWarnings( "FieldCanBeLocal" )
     private final PacketHandler packetHandler = new PacketHandler();
     
     private final ITomfooleryApi api = new TomfooleryAPI();
@@ -40,10 +42,10 @@ public class Tomfoolery {
     private final RegistryHelper registryHelper = new RegistryHelper();
     
     
-    public Tomfoolery() {
+    public Tomfoolery( FMLJavaModLoadingContext context ) {
         packetHandler.registerMessages();
         
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus eventBus = context.getModEventBus();
         
         eventBus.addListener( this::onCommonSetup );
         eventBus.addListener( this::onLoadComplete );
@@ -69,15 +71,13 @@ public class Tomfoolery {
         TomConfiguredFeatures.P_REGISTRY.register( eventBus );
         TomDamageTypes.DAMAGE_TYPES.register( eventBus );
         
-        ModLoadingContext.get().registerConfig( ModConfig.Type.CLIENT, TomClientConfig.CLIENT_SPEC );
-        ModLoadingContext.get().registerConfig( ModConfig.Type.COMMON, TomCommonConfig.COMMON_SPEC );
+        context.registerConfig( ModConfig.Type.CLIENT, TomClientConfig.CLIENT_SPEC );
+        context.registerConfig( ModConfig.Type.COMMON, TomCommonConfig.COMMON_SPEC );
     }
     
     
     public void onCommonSetup( FMLCommonSetupEvent event ) {
-        event.enqueueWork( () -> {
-            TomPotions.registerBrewingRecipes();
-        } );
+        event.enqueueWork( TomPotions::registerBrewingRecipes );
     }
     
     public void onLoadComplete( FMLLoadCompleteEvent event ) {
@@ -87,6 +87,7 @@ public class Tomfoolery {
         } );
     }
     
+    @SuppressWarnings( "all" )
     private void processPlugins() {
         // Load mod plugins
         ModList.get().getAllScanData().forEach( scanData -> {
@@ -108,7 +109,7 @@ public class Tomfoolery {
                             }
                         }
                         catch( Exception e ) {
-                            LOGGER.error( "Failed to load Tomfoolery plugin at {}! Damn dag nabit damnit!", annotationData.memberName() );
+                            LOGGER.error( "Failed to load Tomfoolery plugin at {}! Damn dag nabbit dang it!", annotationData.memberName() );
                             e.printStackTrace();
                         }
                     }
@@ -117,8 +118,8 @@ public class Tomfoolery {
         } );
     }
     
-    public static ResourceLocation resourceLoc( String path ) {
-        return new ResourceLocation( MODID, path );
+    public static ResourceLocation rl( @Nonnull String path ) {
+        return ResourceLocation.fromNamespaceAndPath( MODID, path );
     }
     
     public ITomfooleryApi getApi() {

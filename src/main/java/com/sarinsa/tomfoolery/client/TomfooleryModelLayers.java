@@ -14,8 +14,9 @@ public class TomfooleryModelLayers {
         return create( path, "main" );
     }
     
+    @SuppressWarnings( "SameParameterValue" )
     private static ModelLayerLocation create( String path, String layerName ) {
-        return new ModelLayerLocation( Tomfoolery.resourceLoc( path ), layerName );
+        return new ModelLayerLocation( Tomfoolery.rl( path ), layerName );
     }
     
     public static void init() { }

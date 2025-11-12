@@ -24,6 +24,7 @@ public class RegistryHelper implements IRegistryHelper {
         if( item == null || launcherLogic == null ) {
             Tomfoolery.LOGGER.warn( "Mod plugin with ID {} attempted to register grenade launcher logic with either a missing item or missing logic instance.", currentPluginId == null ? "None :(" : currentPluginId );
             
+            // noinspection ConstantConditions
             String regName = ForgeRegistries.ITEMS.containsValue( item ) ? ForgeRegistries.ITEMS.getKey( item ).toString() : "null";
             Tomfoolery.LOGGER.warn( "Item type: {}", regName );
             Tomfoolery.LOGGER.warn( "Logic instance: {}", launcherLogic == null ? "null" : launcherLogic );

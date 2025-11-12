@@ -20,8 +20,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 
-import javax.annotation.Nonnull;
-
 
 public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnData {
     
@@ -60,7 +58,6 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
         return entityData.get( DATA_START_POS );
     }
     
-    @Nonnull
     @Override
     protected MovementEmission getMovementEmission() {
         return MovementEmission.NONE;
@@ -84,15 +81,17 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
             }
         }
         move( MoverType.SELF, getDeltaMovement() );
+        // noinspection resource
+        final Level level = level();
         
-        for( LivingEntity livingEntity : level().getEntitiesOfClass( LivingEntity.class, getBoundingBox().inflate( 1.2D ) ) ) {
+        for( LivingEntity livingEntity : level.getEntitiesOfClass( LivingEntity.class, getBoundingBox().inflate( 1.2D ) ) ) {
             if( getBoundingBox().intersects( livingEntity.getBoundingBox() ) ) {
-                livingEntity.hurt( level().damageSources().cactus(), 1.0F );
+                livingEntity.hurt( level.damageSources().cactus(), 1.0F );
             }
         }
         
-        if( !level().isClientSide && onGround() && gracePeriod <= 0 ) {
-            level().setBlock( blockPosition(), Blocks.CACTUS.defaultBlockState(), 3 );
+        if( !level.isClientSide && onGround() && gracePeriod <= 0 ) {
+            level.setBlock( blockPosition(), Blocks.CACTUS.defaultBlockState(), 3 );
             discard();
         }
         
@@ -116,6 +115,7 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
     
     @Override
     protected void readAdditionalSaveData( CompoundTag compoundTag ) {
+        // noinspection resource
         Entity entity = level().getEntity( compoundTag.getInt( "FollowTarget" ) );
         
         if( entity instanceof LivingEntity ) {
@@ -133,7 +133,6 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
         return false;
     }
     
-    @Nonnull
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket( this );
@@ -146,6 +145,7 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
     
     @Override
     public void readSpawnData( FriendlyByteBuf additionalData ) {
+        // noinspection resource
         Entity entity = level().getEntity( additionalData.readInt() );
         
         if( entity instanceof LivingEntity ) {

@@ -14,8 +14,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public class GrenadeRoundRenderer extends EntityRenderer<GrenadeRound> {
     
-    private static final ResourceLocation TEXTURE = Tomfoolery.resourceLoc( "textures/entity/grenade/grenade.png" );
-    private GrenadeRoundModel model;
+    private static final ResourceLocation TEXTURE = Tomfoolery.rl( "textures/entity/grenade/grenade.png" );
+    
+    private final GrenadeRoundModel model;
+    
     
     public GrenadeRoundRenderer( EntityRendererProvider.Context context ) {
         super( context );
