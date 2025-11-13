@@ -2,6 +2,7 @@ package com.sarinsa.tomfoolery.common.item;
 
 import com.sarinsa.tomfoolery.api.ILauncherLogic;
 import com.sarinsa.tomfoolery.client.render.entity.TomArmPoses;
+import com.sarinsa.tomfoolery.common.core.config.TomConfig;
 import com.sarinsa.tomfoolery.common.core.registry.TomItems;
 import com.sarinsa.tomfoolery.common.core.registry.TomSounds;
 import com.sarinsa.tomfoolery.common.entity.GrenadeRound;
@@ -41,10 +42,11 @@ public class GrenadeLauncherItem extends ProjectileWeaponItem {
     
     public static final Map<Item, ILauncherLogic> LAUNCHER_LOGICS = new HashMap<>();
     
-    private static final Predicate<ItemStack> DEFAULT_VALID_AMMO = ( itemStack ) -> itemStack.getItem() instanceof GrenadeRoundItem
-            || itemStack.getItem() instanceof SplashPotionItem
-            || itemStack.getItem() instanceof LingeringPotionItem
-            || (itemStack.getItem() instanceof BlockItem && ((BlockItem) itemStack.getItem()).getBlock() instanceof SaplingBlock);
+    private static final Predicate<ItemStack> DEFAULT_VALID_AMMO = ( itemStack ) ->
+            (itemStack.getItem() instanceof GrenadeRoundItem grenade && !TomConfig.GENERAL.REDICULAUNCHER.blacklistedGrenades.contains( grenade.getGrenadeType() ))
+                    || itemStack.getItem() instanceof SplashPotionItem
+                    || itemStack.getItem() instanceof LingeringPotionItem
+                    || (itemStack.getItem() instanceof BlockItem && ((BlockItem) itemStack.getItem()).getBlock() instanceof SaplingBlock);
     
     
     public GrenadeLauncherItem() {
@@ -107,7 +109,11 @@ public class GrenadeLauncherItem extends ProjectileWeaponItem {
                     LAUNCHER_LOGICS.get( ammoStack.getItem() ).onLaunch( level, player, hand );
                 }
                 
-                else if( ammoStack.getItem() instanceof GrenadeRoundItem ) {
+                else if( ammoStack.getItem() instanceof GrenadeRoundItem grenade ) {
+                    // Deny firing blacklisted grenade types
+                    if( TomConfig.GENERAL.REDICULAUNCHER.blacklistedGrenades.contains( grenade.getGrenadeType() ) )
+                        return InteractionResultHolder.fail( itemStack );
+                    
                     GrenadeRound entity = new GrenadeRound( player, level );
                     entity.shootFromRotation( player, player.getXRot(), player.getYRot(), 2.5F, 2.5F, 2.5F );
                     entity.setGrenadeType( ((GrenadeRoundItem) ammoStack.getItem()).getGrenadeType() );

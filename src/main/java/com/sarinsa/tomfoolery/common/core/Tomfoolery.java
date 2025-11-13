@@ -5,20 +5,19 @@ import com.sarinsa.tomfoolery.api.ITomfooleryPlugin;
 import com.sarinsa.tomfoolery.api.TomfooleryPlugin;
 import com.sarinsa.tomfoolery.api.impl.RegistryHelper;
 import com.sarinsa.tomfoolery.api.impl.TomfooleryAPI;
-import com.sarinsa.tomfoolery.common.core.config.TomClientConfig;
-import com.sarinsa.tomfoolery.common.core.config.TomCommonConfig;
+import com.sarinsa.tomfoolery.common.core.config.TomConfig;
 import com.sarinsa.tomfoolery.common.core.registry.*;
 import com.sarinsa.tomfoolery.common.event.CapabilityEventsListener;
 import com.sarinsa.tomfoolery.common.event.EntityEventsListener;
 import com.sarinsa.tomfoolery.common.event.ServerEventListener;
 import com.sarinsa.tomfoolery.common.network.PacketHandler;
 import com.sarinsa.tomfoolery.common.worldgen.TomConfiguredFeatures;
+import fathertoast.crust.api.config.common.ConfigManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -45,6 +44,8 @@ public class Tomfoolery {
     public Tomfoolery( FMLJavaModLoadingContext context ) {
         packetHandler.registerMessages();
         
+        ConfigManager.create( "Tomfoolery", MODID );
+        
         IEventBus eventBus = context.getModEventBus();
         
         eventBus.addListener( this::onCommonSetup );
@@ -70,9 +71,6 @@ public class Tomfoolery {
         TomConfiguredFeatures.CF_REGISTRY.register( eventBus );
         TomConfiguredFeatures.P_REGISTRY.register( eventBus );
         TomDamageTypes.DAMAGE_TYPES.register( eventBus );
-        
-        context.registerConfig( ModConfig.Type.CLIENT, TomClientConfig.CLIENT_SPEC );
-        context.registerConfig( ModConfig.Type.COMMON, TomCommonConfig.COMMON_SPEC );
     }
     
     
@@ -84,6 +82,7 @@ public class Tomfoolery {
         event.enqueueWork( () -> {
             registryHelper.registerDefaults();
             processPlugins();
+            TomConfig.initialize();
         } );
     }
     

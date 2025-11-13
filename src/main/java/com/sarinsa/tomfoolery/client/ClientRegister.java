@@ -1,5 +1,6 @@
 package com.sarinsa.tomfoolery.client;
 
+import com.sarinsa.tomfoolery.client.config.ClientConfig;
 import com.sarinsa.tomfoolery.client.render.entity.TomArmPoses;
 import com.sarinsa.tomfoolery.client.render.entity.cactus.CactusEntityRenderer;
 import com.sarinsa.tomfoolery.client.render.entity.ghastinator.GhastinatorModel;
@@ -10,6 +11,7 @@ import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
 import com.sarinsa.tomfoolery.common.core.registry.TomItems;
 import com.sarinsa.tomfoolery.common.item.GrenadeRoundItem;
+import fathertoast.crust.api.config.common.ConfigManager;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -23,10 +25,17 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber( value = Dist.CLIENT, modid = Tomfoolery.MODID, bus = Mod.EventBusSubscriber.Bus.MOD )
 public class ClientRegister {
     
+    /** Tomfoolery's client config. NOT AVAILABLE until client setup. */
+    public static ClientConfig CLIENT_CONFIG;
+    
     @SubscribeEvent
     public static void onClientSetup( FMLClientSetupEvent event ) {
+        CLIENT_CONFIG = new ClientConfig(
+                ConfigManager.getRequired( Tomfoolery.MODID ), "client_settings" );
+        
+        CLIENT_CONFIG.SPEC.initialize();
+        
         TomfooleryModelLayers.init();
-        setBlockRenderTypes();
         TomArmPoses.init();
     }
     
@@ -37,9 +46,6 @@ public class ClientRegister {
         }
     }
     
-    private static void setBlockRenderTypes() {
-    
-    }
     
     @SubscribeEvent
     public static void registerLayerDefs( EntityRenderersEvent.RegisterLayerDefinitions event ) {

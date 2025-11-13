@@ -1,5 +1,6 @@
 package com.sarinsa.tomfoolery.common.entity.living;
 
+import com.sarinsa.tomfoolery.common.core.config.TomConfig;
 import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
 import com.sarinsa.tomfoolery.common.entity.HugeFireball;
 import net.minecraft.server.level.ServerPlayer;
@@ -55,10 +56,9 @@ public class Ghastinator extends Ghast {
     @Override
     public void checkDespawn() {
         super.checkDespawn();
-        // noinspection resource
         final Level level = level();
         
-        if( level.isDay() && !level.isClientSide ) {
+        if( !level.isClientSide && TomConfig.GENERAL.GHASTINATOR.despawnConditions.getOrElse( level, blockPosition(), 0 ) > 0 ) {
             level.playSound( null, blockPosition(), SoundEvents.ZOMBIE_VILLAGER_CONVERTED, SoundSource.HOSTILE, 15.0F, 0.5F );
             discard();
         }
@@ -66,7 +66,7 @@ public class Ghastinator extends Ghast {
     
     @Override
     public int getExplosionPower() {
-        return 20;
+        return TomConfig.GENERAL.GHASTINATOR.explosionPower.get();
     }
     
     @Override

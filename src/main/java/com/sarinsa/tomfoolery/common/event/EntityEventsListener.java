@@ -1,32 +1,22 @@
 package com.sarinsa.tomfoolery.common.event;
 
-import com.sarinsa.tomfoolery.common.core.config.TomCommonConfig;
+import com.sarinsa.tomfoolery.common.core.config.TomConfig;
 import com.sarinsa.tomfoolery.common.core.registry.TomEffects;
-import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
 import com.sarinsa.tomfoolery.common.core.registry.TomItems;
-import com.sarinsa.tomfoolery.common.entity.living.Buffcat;
 import com.sarinsa.tomfoolery.common.entity.living.ai.GrenadeLauncherAttackGoal;
 import com.sarinsa.tomfoolery.common.item.CoolGlassesItem;
 import com.sarinsa.tomfoolery.common.network.NetworkHelper;
 import com.sarinsa.tomfoolery.common.util.NBTHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
-import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -107,10 +97,12 @@ public class EntityEventsListener {
     
     @SubscribeEvent( priority = EventPriority.LOWEST )
     public void onFinalizeSpawn( MobSpawnEvent.FinalizeSpawn event ) {
-        if( event.getEntity() instanceof Zombie zombie ) {
-            if( event.getLevel().getRandom().nextDouble() <= TomCommonConfig.COMMON.grenadeLauncherZombieChance.get() ) {
-                zombie.setItemSlot( EquipmentSlot.MAINHAND, new ItemStack( TomItems.GRENADE_LAUNCHER.get() ) );
-                zombie.goalSelector.addGoal( 1, new GrenadeLauncherAttackGoal( zombie, 1.0D, true ) );
+        final Mob mob = event.getEntity();
+        
+        if( TomConfig.GENERAL.REDICULAUNCHER.launcherWielders.contains( mob ) ) {
+            if( TomConfig.GENERAL.REDICULAUNCHER.launcherWielders.rollChance( mob ) ) {
+                mob.setItemSlot( EquipmentSlot.MAINHAND, new ItemStack( TomItems.GRENADE_LAUNCHER.get() ) );
+                mob.goalSelector.addGoal( 1, new GrenadeLauncherAttackGoal( mob, 1.0D, true ) );
             }
         }
     }
@@ -132,8 +124,10 @@ public class EntityEventsListener {
         }
     }
     
+    // TODO - Maybe
     @SubscribeEvent
     public void onCatInteract( PlayerInteractEvent.EntityInteract event ) {
+        /*
         if( event.getTarget() instanceof Cat cat ) {
             if( cat.hasEffect( MobEffects.DAMAGE_BOOST ) ) {
                 if( event.getItemStack().getItem() == Items.GOLDEN_APPLE ) {
@@ -153,6 +147,8 @@ public class EntityEventsListener {
                 }
             }
         }
+        
+         */
     }
     
     private static void updateEntityCactusAttract( MobEffect effect, LivingEntity livingEntity, boolean marked ) {

@@ -1,6 +1,6 @@
 package com.sarinsa.tomfoolery.common.event;
 
-import com.sarinsa.tomfoolery.common.core.config.TomCommonConfig;
+import com.sarinsa.tomfoolery.common.core.config.TomConfig;
 import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
 import com.sarinsa.tomfoolery.common.entity.living.Ghastinator;
 import net.minecraft.core.BlockPos;
@@ -41,7 +41,7 @@ public class ServerEventListener {
     public void serverTick( TickEvent.ServerTickEvent event ) {
         if( event.phase == TickEvent.Phase.START ) {
             
-            if( TomCommonConfig.COMMON.spawnGhastinators.get() ) {
+            if( TomConfig.GENERAL.GHASTINATOR.spawnGhastinator.get() ) {
                 if( --timeNextGhastinatorSpawnCheck <= 0 ) {
                     timeNextGhastinatorSpawnCheck = 900;
                     
@@ -61,25 +61,24 @@ public class ServerEventListener {
     
     private static void checkGhastinatorSpawn( MinecraftServer server, ServerPlayer player ) {
         ServerLevel level = server.overworld();
+        List<Ghastinator> existingGhastinators = level.getEntitiesOfClass( Ghastinator.class, player.getBoundingBox().inflate( 200, 200, 200 ) );
         
-        if( level.isNight() && level.getMoonPhase() == 4 ) {
-            List<Ghastinator> existingGhastinators = level.getEntitiesOfClass( Ghastinator.class, player.getBoundingBox().inflate( 200, 200, 200 ) );
+        if( !existingGhastinators.isEmpty() ) return;
+        
+        final RandomSource random = player.getRandom();
+        final int spawnY = 200;
+        
+        // Try 5 different random locations before giving up
+        for( int i = 0; i < 4; i++ ) {
+            int spawnX = (int) player.getX() + random.nextInt( 100 ) - random.nextInt( 100 );
+            int spawnZ = (int) player.getZ() + random.nextInt( 100 ) - random.nextInt( 100 );
             
-            if( existingGhastinators.isEmpty() ) {
-                RandomSource random = player.getRandom();
-                int spawnY = 200;
-                int spawnX = (int) player.getX() + random.nextInt( 100 ) - random.nextInt( 100 );
-                int spawnZ = (int) player.getZ() + random.nextInt( 100 ) - random.nextInt( 100 );
-                
-                BlockPos spawnPos = new BlockPos( spawnX, spawnY, spawnZ );
-                
-                if( !level.isLoaded( spawnPos ) )
-                    return;
-                
+            BlockPos spawnPos = new BlockPos( spawnX, spawnY, spawnZ );
+            
+            if( TomConfig.GENERAL.GHASTINATOR.spawnConditions.getOrElseIfLoaded( level, spawnPos, 0 ) > 0 ) {
                 if( !level.noCollision( TomEntities.GHASTINATOR.get().getAABB( (double) spawnPos.getX() + 0.5D, spawnPos.getY(), (double) spawnPos.getZ() + 0.5D ) ) ) {
                     return;
                 }
-                
                 Ghastinator ghastinator = TomEntities.GHASTINATOR.get().create( level, null, null, spawnPos, MobSpawnType.EVENT, true, true );
                 
                 if( ghastinator != null ) {

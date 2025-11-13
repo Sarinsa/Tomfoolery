@@ -36,7 +36,7 @@ public class TomRecipeProvider extends RecipeProvider {
         smithingRecipe( Items.DIAMOND_LEGGINGS, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_LEGGINGS.get(), consumer );
         smithingRecipe( Items.DIAMOND_BOOTS, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_BOOTS.get(), consumer );
         
-        
+        // TODO - Make conditional
         ShapedRecipeBuilder.shaped( RecipeCategory.COMBAT, TomItems.EXPLOSIVE_GRENADE_ROUND.get(), 1 )
                 .pattern( "#T#" )
                 .pattern( "#T#" )
@@ -50,6 +50,7 @@ public class TomRecipeProvider extends RecipeProvider {
                 .group( "grenade_ammo" )
                 .save( consumer );
         
+        // TODO - Make conditional
         ShapedRecipeBuilder.shaped( RecipeCategory.COMBAT, TomItems.DOOM_GRENADE_ROUND.get(), 2 )
                 .pattern( "#W#" )
                 .pattern( "#W#" )

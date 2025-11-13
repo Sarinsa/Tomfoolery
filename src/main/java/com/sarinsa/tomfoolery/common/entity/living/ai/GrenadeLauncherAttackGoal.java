@@ -9,7 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Node;
@@ -19,7 +19,7 @@ import java.util.EnumSet;
 
 public class GrenadeLauncherAttackGoal extends Goal {
     
-    protected final PathfinderMob mob;
+    protected final Mob mob;
     private final double speedModifier;
     private final boolean followingTargetEvenIfNotSeen;
     private Path path;
@@ -35,7 +35,7 @@ public class GrenadeLauncherAttackGoal extends Goal {
     private int nadesShot = 0;
     private int cooldown = 0;
     
-    public GrenadeLauncherAttackGoal( PathfinderMob mob, double speedModifier, boolean mustSee ) {
+    public GrenadeLauncherAttackGoal( Mob mob, double speedModifier, boolean mustSee ) {
         this.mob = mob;
         this.speedModifier = speedModifier;
         followingTargetEvenIfNotSeen = !mustSee;
@@ -67,7 +67,7 @@ public class GrenadeLauncherAttackGoal extends Goal {
                 if( canPenalize ) {
                     if( --ticksUntilNextPathRecalculation <= 0 ) {
                         path = mob.getNavigation().createPath( target, 0 );
-                        this.ticksUntilNextPathRecalculation = 4 + mob.getRandom().nextInt( 7 );
+                        ticksUntilNextPathRecalculation = 4 + mob.getRandom().nextInt( 7 );
                         return path != null;
                     }
                     else {
@@ -120,9 +120,9 @@ public class GrenadeLauncherAttackGoal extends Goal {
     
     @Override
     public void stop() {
-        LivingEntity livingentity = mob.getTarget();
+        LivingEntity target = mob.getTarget();
         
-        if( !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test( livingentity ) ) {
+        if( !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test( target ) ) {
             mob.setTarget( null );
         }
         mob.setAggressive( false );
@@ -192,9 +192,9 @@ public class GrenadeLauncherAttackGoal extends Goal {
             --cooldown;
         }
         else {
-            double attackReach = this.getAttackReachSqr( target );
+            double attackReach = getAttackReachSqr( target );
             
-            if( distanceForAttack <= attackReach && ticksUntilNextAttack <= 0 ) {
+            if( distanceForAttack <= attackReach && isTimeToAttack() ) {
                 resetAttackCooldown();
                 mob.swing( InteractionHand.MAIN_HAND );
                 nadesShot++;
@@ -224,7 +224,7 @@ public class GrenadeLauncherAttackGoal extends Goal {
     }
     
     protected int getTicksUntilNextAttack() {
-        return this.ticksUntilNextAttack;
+        return ticksUntilNextAttack;
     }
     
     protected int getAttackInterval() {
