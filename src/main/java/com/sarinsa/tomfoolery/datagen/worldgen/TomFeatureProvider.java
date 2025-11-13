@@ -1,8 +1,7 @@
-package com.sarinsa.tomfoolery.common.worldgen;
+package com.sarinsa.tomfoolery.datagen.worldgen;
 
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.core.registry.TomBlocks;
-import com.sarinsa.tomfoolery.common.worldgen.biome.modifier.ModOres;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -15,22 +14,11 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
-public class TomConfiguredFeatures {
-    
-    public static final DeferredRegister<ConfiguredFeature<?, ?>> CF_REGISTRY = DeferredRegister.create( Registries.CONFIGURED_FEATURE, Tomfoolery.MODID );
-    public static final DeferredRegister<PlacedFeature> P_REGISTRY = DeferredRegister.create( Registries.PLACED_FEATURE, Tomfoolery.MODID );
-    
-    private static final Map<ModOres, RegistryObject<PlacedFeature>> ORES_BY_TYPE = new HashMap<>();
-    
+public class TomFeatureProvider {
     
     public static final ResourceKey<ConfiguredFeature<?, ?>> ORE_ORE = configuredKey( "ore_ore" );
     public static final ResourceKey<ConfiguredFeature<?, ?>> CAKE_ORE = configuredKey( "cake_ore" );
@@ -40,19 +28,38 @@ public class TomConfiguredFeatures {
     
     
     public static void bootstrapConfigured( BootstapContext<ConfiguredFeature<?, ?>> context ) {
-        register( context, TomConfiguredFeatures.ORE_ORE, new ConfiguredFeature<>( Feature.ORE, new OreConfiguration( new BlockMatchTest( Blocks.STONE ), TomBlocks.ORE_ORE.get().defaultBlockState(), 9 ) ) );
-        register( context, TomConfiguredFeatures.CAKE_ORE, new ConfiguredFeature<>( Feature.ORE, new OreConfiguration( new BlockMatchTest( Blocks.STONE ), TomBlocks.ORE_ORE.get().defaultBlockState(), 9 ) ) );
+        register( context, TomFeatureProvider.ORE_ORE, new ConfiguredFeature<>( Feature.ORE, new OreConfiguration(
+                new BlockMatchTest( Blocks.STONE ),
+                TomBlocks.ORE_ORE.get().defaultBlockState(),
+                8 )
+        ) );
+        register( context, TomFeatureProvider.CAKE_ORE, new ConfiguredFeature<>( Feature.ORE, new OreConfiguration(
+                new BlockMatchTest( Blocks.STONE ),
+                TomBlocks.CAKE_ORE.get().defaultBlockState(),
+                5 )
+        ) );
     }
     
     
     public static void bootstrapPlaced( BootstapContext<PlacedFeature> context ) {
         HolderGetter<ConfiguredFeature<?, ?>> getter = context.lookup( Registries.CONFIGURED_FEATURE );
         
-        final Holder<ConfiguredFeature<?, ?>> ORE_ORE = getter.getOrThrow( TomConfiguredFeatures.ORE_ORE );
-        final Holder<ConfiguredFeature<?, ?>> CAKE_ORE = getter.getOrThrow( TomConfiguredFeatures.CAKE_ORE );
+        final Holder<ConfiguredFeature<?, ?>> ORE_ORE = getter.getOrThrow( TomFeatureProvider.ORE_ORE );
+        final Holder<ConfiguredFeature<?, ?>> CAKE_ORE = getter.getOrThrow( TomFeatureProvider.CAKE_ORE );
         
-        register( context, TomConfiguredFeatures.PLACED_ORE_ORE, ORE_ORE, rareOrePlacement( 3, HeightRangePlacement.triangle( VerticalAnchor.absolute( -16 ), VerticalAnchor.absolute( 40 ) ) ) );
-        register( context, TomConfiguredFeatures.PLACED_CAKE_ORE, CAKE_ORE, rareOrePlacement( 6, HeightRangePlacement.triangle( VerticalAnchor.absolute( -16 ), VerticalAnchor.absolute( 70 ) ) ) );
+        register( context, TomFeatureProvider.PLACED_ORE_ORE, ORE_ORE, rareOrePlacement(
+                3,
+                HeightRangePlacement.triangle(
+                        VerticalAnchor.absolute( 0 ),
+                        VerticalAnchor.absolute( 40 )
+                )
+        ) );
+        register( context, TomFeatureProvider.PLACED_CAKE_ORE, CAKE_ORE, rareOrePlacement(
+                2,
+                HeightRangePlacement.triangle(
+                        VerticalAnchor.absolute( 10 ),
+                        VerticalAnchor.absolute( 80 ) )
+        ) );
     }
     
     
@@ -77,21 +84,15 @@ public class TomConfiguredFeatures {
     }
     
     
-    private static List<PlacementModifier> orePlacement( PlacementModifier modifier1, PlacementModifier modifier2 ) {
-        return List.of( modifier1, InSquarePlacement.spread(), modifier2, BiomeFilter.biome() );
+    private static List<PlacementModifier> orePlacement( PlacementModifier placementCount, HeightRangePlacement heightRange ) {
+        return List.of( placementCount, InSquarePlacement.spread(), heightRange, BiomeFilter.biome() );
     }
     
-    private static List<PlacementModifier> commonOrePlacement( int count, PlacementModifier modifier ) {
+    private static List<PlacementModifier> commonOrePlacement( int count, HeightRangePlacement modifier ) {
         return orePlacement( CountPlacement.of( count ), modifier );
     }
     
-    private static List<PlacementModifier> rareOrePlacement( int count, PlacementModifier modifier ) {
+    private static List<PlacementModifier> rareOrePlacement( int count, HeightRangePlacement modifier ) {
         return orePlacement( RarityFilter.onAverageOnceEvery( count ), modifier );
-    }
-    
-    
-    @Nullable
-    public static RegistryObject<PlacedFeature> getOreForType( ModOres ore ) {
-        return ORES_BY_TYPE.get( ore );
     }
 }

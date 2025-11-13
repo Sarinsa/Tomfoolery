@@ -1,7 +1,7 @@
 package com.sarinsa.tomfoolery.datagen.loot_table;
 
 import com.sarinsa.tomfoolery.common.core.registry.TomBlocks;
-import com.sarinsa.tomfoolery.common.tags.TomItemTags;
+import com.sarinsa.tomfoolery.common.tags.TomTags;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -58,7 +58,7 @@ public class TomBlockLootTables extends BlockLootSubProvider {
                         .apply( ApplyBonusCount.addUniformBonusCount( Enchantments.BLOCK_FORTUNE ) ) ) ) );
         
         add( TomBlocks.CAKE_ORE.get(), ( block ) ->
-                createSilkTouchDispatchTable( block, applyExplosionDecay( block, TagEntry.expandTag( TomItemTags.CAKES )
+                createSilkTouchDispatchTable( block, applyExplosionDecay( block, TagEntry.expandTag( TomTags.Items.CAKES )
                         .apply( ApplyBonusCount.addUniformBonusCount( Enchantments.BLOCK_FORTUNE ) ) ) ) );
     }
 }

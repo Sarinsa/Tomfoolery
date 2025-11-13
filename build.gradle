@@ -34,53 +34,31 @@ minecraft {
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
-        client {
+        configureEach {
             workingDirectory project.file('run')
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-
-            property "mixin.debug.export", "true"
-
-            arg "-mixin.config=tomfoolery.mixins.json"
 
             mods {
                 tomfoolery {
                     source sourceSets.main
                 }
             }
+        }
+
+        client {
+            property "mixin.debug.export", "true"
+            arg "-mixin.config=tomfoolery.mixins.json"
         }
 
         server {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
             property "mixin.debug.export", "true"
-
             arg "-mixin.config=tomfoolery.mixins.json"
-
-            mods {
-                tomfoolery {
-                    source sourceSets.main
-                }
-            }
         }
 
         data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'tomfoolery', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                tomfoolery {
-                    source sourceSets.main
-                }
-            }
+            args '--mod', 'deadlyworld', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
 }

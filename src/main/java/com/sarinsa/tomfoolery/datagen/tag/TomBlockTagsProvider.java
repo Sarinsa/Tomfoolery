@@ -2,6 +2,7 @@ package com.sarinsa.tomfoolery.datagen.tag;
 
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.core.registry.TomBlocks;
+import com.sarinsa.tomfoolery.common.tags.TomTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.TagKey;
@@ -21,8 +22,11 @@ public class TomBlockTagsProvider extends BlockTagsProvider {
     
     @Override
     protected void addTags( HolderLookup.Provider provider ) {
-        this.tag( Tags.Blocks.ORES ).add( TomBlocks.ORE_ORE.get() );
-        this.tag( Tags.Blocks.ORES ).add( TomBlocks.CAKE_ORE.get() );
+        tag( TomTags.Blocks.ORES ).add(
+                TomBlocks.ORE_ORE.get(),
+                TomBlocks.CAKE_ORE.get()
+        );
+        tag( Tags.Blocks.ORES ).addTag( TomTags.Blocks.ORES );
         
         TomBlocks.BLOCK_TAGS.forEach( ( regObj, tagKeys ) -> {
             for( TagKey<Block> tagKey : tagKeys ) {

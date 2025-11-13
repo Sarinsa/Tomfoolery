@@ -11,7 +11,6 @@ import com.sarinsa.tomfoolery.common.event.CapabilityEventsListener;
 import com.sarinsa.tomfoolery.common.event.EntityEventsListener;
 import com.sarinsa.tomfoolery.common.event.ServerEventListener;
 import com.sarinsa.tomfoolery.common.network.PacketHandler;
-import com.sarinsa.tomfoolery.common.worldgen.TomConfiguredFeatures;
 import fathertoast.crust.api.config.common.ConfigManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -68,8 +67,6 @@ public class Tomfoolery {
         TomGrenadeTypes.GRENADE_TYPES.register( eventBus );
         TomLootMods.LOOT_MODIFIERS.register( eventBus );
         TomBiomeModifiers.BIOME_MODS.register( eventBus );
-        TomConfiguredFeatures.CF_REGISTRY.register( eventBus );
-        TomConfiguredFeatures.P_REGISTRY.register( eventBus );
         TomDamageTypes.DAMAGE_TYPES.register( eventBus );
     }
     
