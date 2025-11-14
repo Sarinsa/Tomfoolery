@@ -19,16 +19,18 @@ public class DoomGrenadeType extends GrenadeType {
     }
     
     /**
-     * Called when the grenade collides with something.
+     * Called when the grenade collides with something, be it a block or an entity.
+     * Only called on the server.
      */
     @Override
     public <T extends Projectile> void generalImpact( T entity, @Nullable Entity shooter, Level level, HitResult result ) {
-        if( !level.isClientSide ) {
-            level.explode( entity, entity.getX(), entity.getY(), entity.getZ(), 20.0F, Level.ExplosionInteraction.TNT );
-        }
-        entity.discard();
+        level.explode( entity, entity.getX(), entity.getY(), entity.getZ(), 20.0F, Level.ExplosionInteraction.TNT );
     }
     
+    /**
+     * Called when the grenade collides with an entity.
+     * Only called on the server.
+     */
     @Override
     public <T extends Projectile> void onEntityImpact( T entity, @Nullable Entity shooter, Level level, EntityHitResult result ) {
         if( result.getEntity() instanceof LivingEntity ) {

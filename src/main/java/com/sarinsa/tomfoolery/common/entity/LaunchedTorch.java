@@ -67,18 +67,18 @@ public class LaunchedTorch extends Projectile implements IEntityAdditionalSpawnD
         boolean teleporting = false;
         
         if( hitResult.getType() == HitResult.Type.BLOCK ) {
-            BlockPos blockpos = ((BlockHitResult) hitResult).getBlockPos();
-            BlockState blockstate = level.getBlockState( blockpos );
+            BlockPos pos = ((BlockHitResult) hitResult).getBlockPos();
+            BlockState state = level.getBlockState( pos );
             
-            if( blockstate.is( Blocks.NETHER_PORTAL ) ) {
-                handleInsidePortal( blockpos );
+            if( state.is( Blocks.NETHER_PORTAL ) ) {
+                handleInsidePortal( pos );
                 teleporting = true;
             }
-            else if( blockstate.is( Blocks.END_GATEWAY ) ) {
-                BlockEntity blockEntity = level.getExistingBlockEntity( blockpos );
+            else if( state.is( Blocks.END_GATEWAY ) ) {
+                BlockEntity blockEntity = level.getExistingBlockEntity( pos );
                 
                 if( blockEntity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport( this ) ) {
-                    TheEndGatewayBlockEntity.teleportEntity( level(), blockpos, level.getBlockState( blockpos ), this, (TheEndGatewayBlockEntity) blockEntity );
+                    TheEndGatewayBlockEntity.teleportEntity( level(), pos, level.getBlockState( pos ), this, (TheEndGatewayBlockEntity) blockEntity );
                 }
                 teleporting = true;
             }
@@ -144,16 +144,19 @@ public class LaunchedTorch extends Projectile implements IEntityAdditionalSpawnD
             if( !placed ) {
                 level.addFreshEntity( new ItemEntity( level(), getX(), getY(), getZ(), new ItemStack( Items.TORCH ) ) );
             }
+            discard();
         }
-        discard();
     }
     
     @Override
     protected void onHitEntity( EntityHitResult hitResult ) {
-        if( hitResult.getEntity() instanceof LivingEntity livingEntity && !livingEntity.getType().fireImmune() ) {
-            livingEntity.setSecondsOnFire( 3 );
+        // noinspection resource
+        if( !level().isClientSide ) {
+            if( hitResult.getEntity() instanceof LivingEntity livingEntity && !livingEntity.getType().fireImmune() ) {
+                livingEntity.setSecondsOnFire( 3 );
+            }
+            discard();
         }
-        discard();
     }
     
     @Override

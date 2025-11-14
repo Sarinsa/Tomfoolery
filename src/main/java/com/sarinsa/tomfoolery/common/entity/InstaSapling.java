@@ -132,18 +132,21 @@ public class InstaSapling extends Projectile implements IEntityAdditionalSpawnDa
         
         // noinspection resource
         final Level level = level();
-        level.setBlock( result.getBlockPos(), Blocks.DIRT.defaultBlockState(), 2 );
         
-        if( getItem().getItem() == Items.DARK_OAK_SAPLING ) {
-            level.setBlock( result.getBlockPos().north(), Blocks.DIRT.defaultBlockState(), 2 );
-            level.setBlock( result.getBlockPos().west(), Blocks.DIRT.defaultBlockState(), 2 );
-            level.setBlock( result.getBlockPos().north().west(), Blocks.DIRT.defaultBlockState(), 2 );
+        if( !level.isClientSide ) {
+            level.setBlock( result.getBlockPos(), Blocks.DIRT.defaultBlockState(), 2 );
+            
+            if( getItem().getItem() == Items.DARK_OAK_SAPLING ) {
+                level.setBlock( result.getBlockPos().north(), Blocks.DIRT.defaultBlockState(), 2 );
+                level.setBlock( result.getBlockPos().west(), Blocks.DIRT.defaultBlockState(), 2 );
+                level.setBlock( result.getBlockPos().north().west(), Blocks.DIRT.defaultBlockState(), 2 );
+            }
+            if( tree != null ) {
+                ServerLevel serverLevel = (ServerLevel) level();
+                tree.growTree( serverLevel, serverLevel.getChunkSource().getGenerator(), result.getBlockPos().above(), level.getBlockState( result.getBlockPos().above() ), serverLevel.random );
+            }
+            discard();
         }
-        if( !level.isClientSide && tree != null ) {
-            ServerLevel serverLevel = (ServerLevel) level();
-            tree.growTree( serverLevel, serverLevel.getChunkSource().getGenerator(), result.getBlockPos().above(), level.getBlockState( result.getBlockPos().above() ), serverLevel.random );
-        }
-        discard();
     }
     
     protected double getGravity() {

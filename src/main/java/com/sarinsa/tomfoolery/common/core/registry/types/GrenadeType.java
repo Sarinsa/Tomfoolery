@@ -25,16 +25,27 @@ public class GrenadeType {
     }
     
     
+    /**
+     * Called when the grenade collides with a block.
+     * Only called after the grande has traveled past its safety distance.
+     * Only called on the server.
+     */
     public <T extends Projectile> void onBlockImpact( T entity, @Nullable Entity shooter, Level level, BlockHitResult result ) {
     
     }
     
+    /**
+     * Called when the grande collides with an entity.
+     * Only called on the server.
+     */
     public <T extends Projectile> void onEntityImpact( T entity, @Nullable Entity shooter, Level level, EntityHitResult result ) {
     
     }
     
     /**
-     * Called when the grenade collides with something.
+     * Called when the grenade collides with something, be it a block or an entity.
+     * Only called after the grande has traveled past its safety distance.
+     * Only called on the server.
      */
     public <T extends Projectile> void generalImpact( T entity, @Nullable Entity shooter, Level level, HitResult result ) {
     

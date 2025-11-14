@@ -20,10 +20,7 @@ public class ExplosiveGrenadeType extends GrenadeType {
     
     @Override
     public <T extends Projectile> void generalImpact( T entity, @Nullable Entity shooter, Level level, HitResult result ) {
-        if( !level.isClientSide ) {
-            level.explode( entity, entity.getX(), entity.getY(), entity.getZ(), 6.0F, Level.ExplosionInteraction.NONE );
-        }
-        entity.discard();
+        level.explode( entity, entity.getX(), entity.getY(), entity.getZ(), 6.0F, Level.ExplosionInteraction.NONE );
     }
     
     @Override

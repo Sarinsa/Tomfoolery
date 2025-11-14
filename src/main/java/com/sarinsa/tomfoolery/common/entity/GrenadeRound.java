@@ -82,7 +82,6 @@ public class GrenadeRound extends Projectile implements IEntityAdditionalSpawnDa
                 teleporting = true;
             }
         }
-        
         if( hitResult.getType() != HitResult.Type.MISS && !teleporting && !ForgeEventFactory.onProjectileImpact( this, hitResult ) ) {
             onHit( hitResult );
         }
@@ -137,19 +136,22 @@ public class GrenadeRound extends Projectile implements IEntityAdditionalSpawnDa
         if( grenadeType == null )
             return;
         
-        if( traceResult.getType() == HitResult.Type.ENTITY ) {
-            grenadeType.onEntityImpact( this, getOwner(), level(), (EntityHitResult) traceResult );
-        }
-        
-        if( distanceToSqr( initialPos.getX(), initialPos.getY(), initialPos.getZ() ) > grenadeType.getSafetyDist() ) {
-            HitResult.Type resultType = traceResult.getType();
-            
-            if( resultType == HitResult.Type.BLOCK ) {
-                grenadeType.onBlockImpact( this, getOwner(), level(), (BlockHitResult) traceResult );
+        // noinspection resource
+        if( !level().isClientSide ) {
+            if( traceResult.getType() == HitResult.Type.ENTITY ) {
+                grenadeType.onEntityImpact( this, getOwner(), level(), (EntityHitResult) traceResult );
             }
-            grenadeType.generalImpact( this, getOwner(), level(), traceResult );
+            
+            if( distanceToSqr( initialPos.getX(), initialPos.getY(), initialPos.getZ() ) > grenadeType.getSafetyDist() ) {
+                HitResult.Type resultType = traceResult.getType();
+                
+                if( resultType == HitResult.Type.BLOCK ) {
+                    grenadeType.onBlockImpact( this, getOwner(), level(), (BlockHitResult) traceResult );
+                }
+                grenadeType.generalImpact( this, getOwner(), level(), traceResult );
+            }
+            discard();
         }
-        discard();
     }
     
     @Override
