@@ -10,15 +10,17 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
+
+import java.util.List;
 
 
 public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnData {
@@ -69,8 +71,11 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
             --gracePeriod;
         
         if( followTarget != null && followTarget.isAlive() && followTarget.hasEffect( TomEffects.CACTUS_ATTRACTION.get() ) ) {
-            Vec3 vec = new Vec3( followTarget.getX() - getX(), (followTarget.getY() + followTarget.getEyeHeight()) - getY(), followTarget.getZ() - getZ() );
-            setDeltaMovement( vec.scale( 0.1D ) );
+            Vec3 vec = new Vec3(
+                    followTarget.getX() - getX(),
+                    (followTarget.getY() + followTarget.getEyeHeight()) - getY(),
+                    followTarget.getZ() - getZ() );
+            setDeltaMovement( vec.normalize().scale( 0.3D ) );
             
             if( distanceToSqr( followTarget ) > 600 )
                 followTarget = null;
@@ -89,6 +94,7 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
                 livingEntity.hurt( level.damageSources().cactus(), 1.0F );
             }
         }
+        pushEntities();
         
         if( !level.isClientSide && onGround() && gracePeriod <= 0 ) {
             level.setBlock( blockPosition(), Blocks.CACTUS.defaultBlockState(), 3 );
@@ -96,6 +102,43 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
         }
         
         super.tick();
+    }
+    
+    protected void pushEntities() {
+        // noinspection resource
+        final Level level = level();
+        
+        if( level.isClientSide ) {
+            level.getEntities( EntityTypeTest.forClass( Player.class ), getBoundingBox(), EntitySelector.pushableBy( this ) )
+                    .forEach( this::doPush );
+        }
+        else {
+            List<Entity> list = level.getEntities( this, getBoundingBox(), EntitySelector.pushableBy( this ) );
+            
+            if( !list.isEmpty() ) {
+                int crammingLimit = level.getGameRules().getInt( GameRules.RULE_MAX_ENTITY_CRAMMING );
+                
+                if( crammingLimit > 0 && list.size() > crammingLimit - 1 && random.nextInt( 4 ) == 0 ) {
+                    int pushCount = 0;
+                    
+                    for( Entity entity : list ) {
+                        if( !entity.isPassenger() ) {
+                            ++pushCount;
+                        }
+                    }
+                    if( pushCount > crammingLimit - 1 ) {
+                        hurt( damageSources().cramming(), 6.0F );
+                    }
+                }
+                for( Entity entity : list ) {
+                    doPush( entity );
+                }
+            }
+        }
+    }
+    
+    protected void doPush( Entity toPush ) {
+        toPush.push( this );
     }
     
     @Override
