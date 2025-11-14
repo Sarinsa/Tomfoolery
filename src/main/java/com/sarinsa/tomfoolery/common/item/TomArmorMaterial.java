@@ -40,7 +40,7 @@ public class TomArmorMaterial implements ArmorMaterial {
             100,
             () -> SoundEvents.GLASS_BREAK,
             () -> Ingredient.of( Items.DIRT ),
-            name( "dirt_glasses" ),
+            name( "cool_glasses" ),
             0.0F,
             -0.3F
     );
