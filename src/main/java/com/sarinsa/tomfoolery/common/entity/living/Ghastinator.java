@@ -6,6 +6,7 @@ import com.sarinsa.tomfoolery.common.entity.HugeFireball;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -58,10 +59,25 @@ public class Ghastinator extends Ghast {
         super.checkDespawn();
         final Level level = level();
         
-        if( !level.isClientSide && TomConfig.GENERAL.GHASTINATOR.despawnConditions.getOrElse( level, blockPosition(), 0 ) > 0 ) {
-            level.playSound( null, blockPosition(), SoundEvents.ZOMBIE_VILLAGER_CONVERTED, SoundSource.HOSTILE, 15.0F, 0.5F );
-            discard();
+        if( !level.isClientSide ) {
+            System.out.println( level.getDayTime() % 24_000 );
+            
+            if( TomConfig.GENERAL.GHASTINATOR.despawnConditions.getOrElse( level, blockPosition(), 0 ) > 0 ) {
+                level.playSound( null, blockPosition(), SoundEvents.ZOMBIE_VILLAGER_CONVERTED, SoundSource.HOSTILE, 15.0F, 0.5F );
+                discard();
+            }
         }
+    }
+    
+    @Override
+    public boolean hurt( DamageSource damageSource, float damage ) {
+        // Allow killing via command
+        return damageSource == damageSources().genericKill() && super.hurt( damageSource, damage );
+    }
+    
+    @Override
+    public int getAmbientSoundInterval() {
+        return 200;
     }
     
     @Override

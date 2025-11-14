@@ -83,7 +83,11 @@ public class ServerEventListener {
                 
                 if( ghastinator != null ) {
                     level.addFreshEntity( ghastinator );
-                    level.playSound( null, spawnPos, SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 15.0F, 0.8F );
+                    
+                    if( ghastinator.isAddedToWorld() ) {
+                        level.playSound( null, spawnPos, SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 15.0F, 0.8F );
+                    }
+                    break;
                 }
             }
         }
