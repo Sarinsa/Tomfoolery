@@ -27,16 +27,15 @@ public class TomRecipeProvider extends RecipeProvider {
     }
     
     @Override
-    protected void buildRecipes( Consumer<FinishedRecipe> consumer ) {
-        smeltingRecipe( TomBlocks.CAKE_ORE.get(), Blocks.STONE, 0.1F, consumer );
-        smeltingRecipe( TomBlocks.ORE_ORE.get(), TomItems.NETHERAIGHT_INGOT.get(), 0.3F, consumer );
+    protected void buildRecipes( Consumer<FinishedRecipe> saver ) {
+        smeltingRecipe( TomBlocks.CAKE_ORE.get(), Blocks.STONE, 0.1F, saver );
+        smeltingRecipe( TomBlocks.ORE_ORE.get(), TomItems.NETHERAIGHT_INGOT.get(), 0.3F, saver );
         
-        smithingRecipe( Items.DIAMOND_HELMET, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_HELMET.get(), consumer );
-        smithingRecipe( Items.DIAMOND_CHESTPLATE, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_CHESTPLATE.get(), consumer );
-        smithingRecipe( Items.DIAMOND_LEGGINGS, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_LEGGINGS.get(), consumer );
-        smithingRecipe( Items.DIAMOND_BOOTS, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_BOOTS.get(), consumer );
+        smithingRecipe( Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, Items.DIAMOND_HELMET, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_HELMET.get(), saver );
+        smithingRecipe( Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, Items.DIAMOND_CHESTPLATE, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_CHESTPLATE.get(), saver );
+        smithingRecipe( Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, Items.DIAMOND_LEGGINGS, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_LEGGINGS.get(), saver );
+        smithingRecipe( Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, Items.DIAMOND_BOOTS, TomItems.NETHERAIGHT_INGOT.get(), TomItems.NETHERAIGHT_BOOTS.get(), saver );
         
-        // TODO - Make conditional
         ShapedRecipeBuilder.shaped( RecipeCategory.COMBAT, TomItems.EXPLOSIVE_GRENADE_ROUND.get(), 1 )
                 .pattern( "#T#" )
                 .pattern( "#T#" )
@@ -48,9 +47,8 @@ public class TomRecipeProvider extends RecipeProvider {
                 .unlockedBy( unlockName( Items.IRON_INGOT ), has( Tags.Items.INGOTS_IRON ) )
                 .unlockedBy( unlockName( Items.IRON_NUGGET ), has( Tags.Items.NUGGETS_IRON ) )
                 .group( "grenade_ammo" )
-                .save( consumer );
+                .save( saver );
         
-        // TODO - Make conditional
         ShapedRecipeBuilder.shaped( RecipeCategory.COMBAT, TomItems.DOOM_GRENADE_ROUND.get(), 2 )
                 .pattern( "#W#" )
                 .pattern( "#W#" )
@@ -62,7 +60,7 @@ public class TomRecipeProvider extends RecipeProvider {
                 .unlockedBy( unlockName( Items.IRON_INGOT ), has( Tags.Items.INGOTS_IRON ) )
                 .unlockedBy( unlockName( Items.IRON_NUGGET ), has( Tags.Items.NUGGETS_IRON ) )
                 .group( "grenade_ammo" )
-                .save( consumer );
+                .save( saver );
         
         ShapedRecipeBuilder.shaped( RecipeCategory.TOOLS, TomItems.COOL_DIRT_GLASSES.get() )
                 .pattern( " N " )
@@ -73,7 +71,7 @@ public class TomRecipeProvider extends RecipeProvider {
                 .unlockedBy( unlockName( Items.NETHER_STAR ), has( Tags.Items.NETHER_STARS ) )
                 .unlockedBy( unlockName( Items.GLASS ), has( Tags.Items.GLASS ) )
                 .unlockedBy( unlockName( Items.DIRT ), has( Items.DIRT ) )
-                .save( consumer );
+                .save( saver );
     }
     
     protected void smeltingRecipe( ItemLike ingredient, ItemLike result, float experience, Consumer<FinishedRecipe> consumer ) {
@@ -85,6 +83,7 @@ public class TomRecipeProvider extends RecipeProvider {
                 .save( consumer, Tomfoolery.rl( resultName + "_from_" + ingredientName + "_smelting" ) );
     }
     
+    @SuppressWarnings( "unused" )
     protected void blastingRecipe( ItemLike ingredient, ItemLike result, float experience, Consumer<FinishedRecipe> consumer ) {
         String ingredientName = itemName( ingredient );
         String resultName = itemName( result );
@@ -94,10 +93,11 @@ public class TomRecipeProvider extends RecipeProvider {
                 .save( consumer, Tomfoolery.rl( resultName + "_from_" + ingredientName + "_blasting" ) );
     }
     
-    @SuppressWarnings( "ConstantConditions" )
-    protected void smithingRecipe( ItemLike ingredient, ItemLike alloy, Item result, Consumer<FinishedRecipe> consumer ) {
-        SmithingRecipeBuilderNoTab.smithing( Ingredient.of( ingredient ), Ingredient.of( alloy ), result )
-                .unlocks( "has_" + itemName( alloy ), has( alloy ) )
+    @SuppressWarnings( { "ConstantConditions", "SameParameterValue" } )
+    protected void smithingRecipe( ItemLike template, ItemLike base, ItemLike addition, Item result, Consumer<FinishedRecipe> consumer ) {
+        SmithingTransformRecipeBuilderNoTab.smithing( Ingredient.of( template ), Ingredient.of( base ), Ingredient.of( addition ), result )
+                .unlocks( "has_" + itemName( addition ), has( addition ) )
+                .unlocks( "has_" + itemName( template ), has( template ) )
                 .save( consumer, regName( result ) );
     }
     
