@@ -15,7 +15,7 @@ import java.util.List;
 
 public class GeneralConfig extends AbstractConfigFile {
     
-    public final Rediculauncher REDICULAUNCHER;
+    public final Rediculauncher RIDICULAUNCHER;
     public final Ghastinator GHASTINATOR;
     
     /** Builds the config spec that should be used for this config. */
@@ -32,7 +32,7 @@ public class GeneralConfig extends AbstractConfigFile {
         SPEC.describeEnvironmentListPart1of2();
         SPEC.fileOnlyNewLine();
         
-        REDICULAUNCHER = new Rediculauncher( this );
+        RIDICULAUNCHER = new Rediculauncher( this );
         GHASTINATOR = new Ghastinator( this );
         
         SPEC.fileOnlyNewLine();
@@ -48,11 +48,11 @@ public class GeneralConfig extends AbstractConfigFile {
         
         
         Rediculauncher( GeneralConfig parent ) {
-            super( parent, "grenades",
-                    "Contains settings related to the Redicu-launcher, grenades and other ammo types." );
+            super( parent, "ridiculauncher",
+                    "Contains settings related to the Ridicu-launcher, grenades and other ammo types." );
             
             blacklistedGrenades = SPEC.define( new RegistryEntryListField<>( "blacklisted_grenades", createDefaultBlacklistedGrenades(),
-                    "A list of grenade types that are blacklisted and cannot be used or crafted." ) );
+                    "A list of grenade types that are blacklisted and cannot be used by the Ridicu-launcher." ) );
             
             SPEC.newLine();
             

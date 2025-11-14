@@ -43,7 +43,7 @@ public class GrenadeLauncherItem extends ProjectileWeaponItem {
     public static final Map<Item, ILauncherLogic> LAUNCHER_LOGICS = new HashMap<>();
     
     private static final Predicate<ItemStack> DEFAULT_VALID_AMMO = ( itemStack ) ->
-            (itemStack.getItem() instanceof GrenadeRoundItem grenade && !TomConfig.GENERAL.REDICULAUNCHER.blacklistedGrenades.contains( grenade.getGrenadeType() ))
+            (itemStack.getItem() instanceof GrenadeRoundItem grenade && !TomConfig.GENERAL.RIDICULAUNCHER.blacklistedGrenades.contains( grenade.getGrenadeType() ))
                     || itemStack.getItem() instanceof SplashPotionItem
                     || itemStack.getItem() instanceof LingeringPotionItem
                     || (itemStack.getItem() instanceof BlockItem && ((BlockItem) itemStack.getItem()).getBlock() instanceof SaplingBlock);
@@ -111,7 +111,7 @@ public class GrenadeLauncherItem extends ProjectileWeaponItem {
                 
                 else if( ammoStack.getItem() instanceof GrenadeRoundItem grenade ) {
                     // Deny firing blacklisted grenade types
-                    if( TomConfig.GENERAL.REDICULAUNCHER.blacklistedGrenades.contains( grenade.getGrenadeType() ) )
+                    if( TomConfig.GENERAL.RIDICULAUNCHER.blacklistedGrenades.contains( grenade.getGrenadeType() ) )
                         return InteractionResultHolder.fail( itemStack );
                     
                     GrenadeRound entity = new GrenadeRound( player, level );

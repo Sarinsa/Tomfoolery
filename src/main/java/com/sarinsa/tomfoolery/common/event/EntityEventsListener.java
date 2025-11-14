@@ -99,8 +99,8 @@ public class EntityEventsListener {
     public void onFinalizeSpawn( MobSpawnEvent.FinalizeSpawn event ) {
         final Mob mob = event.getEntity();
         
-        if( TomConfig.GENERAL.REDICULAUNCHER.launcherWielders.contains( mob ) ) {
-            if( TomConfig.GENERAL.REDICULAUNCHER.launcherWielders.rollChance( mob ) ) {
+        if( TomConfig.GENERAL.RIDICULAUNCHER.launcherWielders.contains( mob ) ) {
+            if( TomConfig.GENERAL.RIDICULAUNCHER.launcherWielders.rollChance( mob ) ) {
                 mob.setItemSlot( EquipmentSlot.MAINHAND, new ItemStack( TomItems.GRENADE_LAUNCHER.get() ) );
                 mob.goalSelector.addGoal( 1, new GrenadeLauncherAttackGoal( mob, 1.0D, true ) );
             }
