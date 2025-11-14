@@ -109,7 +109,8 @@ public class EntityEventsListener {
     
     @SubscribeEvent( priority = EventPriority.LOW )
     public void onPlayerUpdate( LivingEvent.LivingTickEvent event ) {
-        if( event.getEntity() instanceof Player player ) {
+        // noinspection resource
+        if( event.getEntity() instanceof Player player && !player.level().isClientSide ) {
             if( player.getItemBySlot( EquipmentSlot.HEAD ).getItem() instanceof CoolGlassesItem glasses ) {
                 double range = glasses.getRange();
                 

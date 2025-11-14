@@ -18,6 +18,8 @@ public abstract class CoolGlassesItem extends ArmorItem {
     /**
      * Called from {@link EntityEventsListener#onPlayerUpdate(LivingEvent.LivingTickEvent)}
      * every tick when the player is wearing this item on their head.
+     * <p>
+     * Only called on the server.
      */
     public abstract void gaze( Player player, Level level, BlockHitResult hitResult );
     
