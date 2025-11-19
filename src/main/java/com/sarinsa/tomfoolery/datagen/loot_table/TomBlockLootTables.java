@@ -2,6 +2,9 @@ package com.sarinsa.tomfoolery.datagen.loot_table;
 
 import com.sarinsa.tomfoolery.common.core.registry.TomBlocks;
 import com.sarinsa.tomfoolery.common.tags.TomTags;
+import fathertoast.crust.api.datagen.loot.LootEntryTagBuilder;
+import fathertoast.crust.api.datagen.loot.LootPoolBuilder;
+import fathertoast.crust.api.datagen.loot.LootTableBuilder;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -11,8 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.entries.TagEntry;
-import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraftforge.common.Tags;
@@ -52,13 +54,22 @@ public class TomBlockLootTables extends BlockLootSubProvider {
     @Override
     @SuppressWarnings( "all" )
     protected void generate() {
+        add( TomBlocks.ORE_ORE.get(), new LootTableBuilder()
+                .addPool( new LootPoolBuilder( "drop" )
+                        .addEntry( new LootEntryTagBuilder( Tags.Items.ORES )
+                                .setCount( 1 )
+                                .addCondition( () -> ExplosionCondition.survivesExplosion().build() )
+                                .toLootEntry() )
+                        .toLootPool() )
+                .toLootTable() );
         
-        add( TomBlocks.ORE_ORE.get(), ( block ) ->
-                createSilkTouchDispatchTable( block, applyExplosionDecay( block, TagEntry.expandTag( Tags.Items.ORES )
-                        .apply( ApplyBonusCount.addUniformBonusCount( Enchantments.BLOCK_FORTUNE ) ) ) ) );
-        
-        add( TomBlocks.CAKE_ORE.get(), ( block ) ->
-                createSilkTouchDispatchTable( block, applyExplosionDecay( block, TagEntry.expandTag( TomTags.Items.CAKES )
-                        .apply( ApplyBonusCount.addUniformBonusCount( Enchantments.BLOCK_FORTUNE ) ) ) ) );
+        add( TomBlocks.CAKE_ORE.get(), new LootTableBuilder()
+                .addPool( new LootPoolBuilder( "drop" )
+                        .addEntry( new LootEntryTagBuilder( TomTags.Items.CAKES )
+                                .setCount( 1 )
+                                .addCondition( () -> ExplosionCondition.survivesExplosion().build() )
+                                .toLootEntry() )
+                        .toLootPool() )
+                .toLootTable() );
     }
 }
