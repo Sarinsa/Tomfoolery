@@ -19,6 +19,7 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
@@ -125,25 +126,34 @@ public class InstaSapling extends Projectile implements IEntityAdditionalSpawnDa
     protected void onHitBlock( BlockHitResult result ) {
         super.onHitBlock( result );
         
-        if( result.getBlockPos().getY() < 3 ) {
+        final Level level = level();
+        final BlockPos hitPos = result.getBlockPos();
+        
+        // Don't mess with the lower bedrock level
+        if( hitPos.getY() == level.getMinBuildHeight() ) {
             discard();
             return;
         }
         
-        // noinspection resource
-        final Level level = level();
-        
         if( !level.isClientSide ) {
-            level.setBlock( result.getBlockPos(), Blocks.DIRT.defaultBlockState(), 2 );
+            BlockState existingState = level.getBlockState( hitPos );
+            level.setBlock( hitPos, Blocks.DIRT.defaultBlockState(), 2 );
             
-            if( getItem().getItem() == Items.DARK_OAK_SAPLING ) {
-                level.setBlock( result.getBlockPos().north(), Blocks.DIRT.defaultBlockState(), 2 );
-                level.setBlock( result.getBlockPos().west(), Blocks.DIRT.defaultBlockState(), 2 );
-                level.setBlock( result.getBlockPos().north().west(), Blocks.DIRT.defaultBlockState(), 2 );
-            }
             if( tree != null ) {
+                // Chonk tree exception moment
+                if( getItem().getItem() == Items.DARK_OAK_SAPLING ) {
+                    level.setBlock( hitPos.north(), Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS );
+                    level.setBlock( hitPos.west(), Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS );
+                    level.setBlock( hitPos.north().west(), Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS );
+                }
                 ServerLevel serverLevel = (ServerLevel) level();
-                tree.growTree( serverLevel, serverLevel.getChunkSource().getGenerator(), result.getBlockPos().above(), level.getBlockState( result.getBlockPos().above() ), serverLevel.random );
+                boolean grewTree = tree.growTree( serverLevel, serverLevel.getChunkSource().getGenerator(), hitPos.above(), level.getBlockState( hitPos.above() ), serverLevel.random );
+                
+                // Make the sapling retrievable if we couldn't generate a tree
+                if( !grewTree ) {
+                    level.setBlock( hitPos, existingState, Block.UPDATE_CLIENTS );
+                    Block.popResource( level, hitPos.above(), new ItemStack( getItem().getItem() ) );
+                }
             }
             discard();
         }
