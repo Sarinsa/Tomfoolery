@@ -30,7 +30,7 @@ public class ClientConfig extends AbstractConfigFile {
             overrideDeathFlip = SPEC.define( new BooleanField( "override_death_flip", true,
                     "If enabled, Tomfoolery will override vanilla Minecraft's death-flip animation that plays when an entity dies." ) );
             
-            deathRotationDegrees = SPEC.define( new DoubleField( "death_rotation_degrees", 360.0D, -10000.0D, 10000.0D,
+            deathRotationDegrees = SPEC.define( new DoubleField( "death_rotation_degrees", 1000.0D, -10000.0D, 10000.0D,
                     "If 'rotate_on_death' is enabled, this value will override how many degrees entities rotate when they die." ) );
         }
     }
