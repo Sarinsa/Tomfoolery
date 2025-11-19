@@ -1,0 +1,10 @@
+1.20.1-4.0.1
+    - Now required Crust 4.9.15+.
+    - Added Cool Stone Glasses.
+    - Slightly reworked some textures.
+    - Fixed ore generation.
+    - Fixed client-server desync for some Ridicu-launcher projectiles.
+    - Configs have been reworked to utilize the Crust config API.
+    - Insta-sapling entity now drops its sapling if a tree did not grow.
+    - Changed some default config settings.
+    - Fixed some broken recipes.
