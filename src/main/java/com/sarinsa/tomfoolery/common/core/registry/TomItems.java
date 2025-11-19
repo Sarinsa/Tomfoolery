@@ -44,7 +44,9 @@ public class TomItems {
     public static final RegistryObject<Item> NETHERAIGHT_LEGGINGS = registerItem( "netheraight_leggings", () -> new ArmorItem( TomArmorMaterial.NETHERAIGHT, ArmorItem.Type.LEGGINGS, new Item.Properties() ) );
     public static final RegistryObject<Item> NETHERAIGHT_BOOTS = registerItem( "netheraight_boots", () -> new ArmorItem( TomArmorMaterial.NETHERAIGHT, ArmorItem.Type.BOOTS, new Item.Properties() ) );
     
-    public static final RegistryObject<Item> COOL_DIRT_GLASSES = registerItem( "cool_dirt_glasses", () -> new CoolBlockReplacingGlassesItem( () -> Blocks.DIRT ), CreativeModeTabs.TOOLS_AND_UTILITIES );
+    public static final RegistryObject<Item> COOL_DIRT_GLASSES = registerItem( "cool_dirt_glasses", () -> new CoolBlockReplacingGlassesItem( () -> Blocks.DIRT, "dirt" ), CreativeModeTabs.TOOLS_AND_UTILITIES );
+    public static final RegistryObject<Item> COOL_STONE_GLASSES = registerItem( "cool_stone_glasses", () -> new CoolBlockReplacingGlassesItem( () -> Blocks.STONE, "stone" ), CreativeModeTabs.TOOLS_AND_UTILITIES );
+    
     
     //public static final RegistryObject<ForgeSpawnEggItem> BUFFCAT_SPAWN_EGG = registerSpawnEgg(TomEntities.BUFFCAT, 0x4E7EA4, 0x714B34);
     

@@ -62,43 +62,48 @@ public class TomRecipeProvider extends RecipeProvider {
                 .group( "grenade_ammo" )
                 .save( saver );
         
-        ShapedRecipeBuilder.shaped( RecipeCategory.TOOLS, TomItems.COOL_DIRT_GLASSES.get() )
-                .pattern( " N " )
-                .pattern( "GDG" )
-                .define( 'N', Tags.Items.NETHER_STARS )
-                .define( 'G', Items.GLASS )
-                .define( 'D', Items.DIRT )
-                .unlockedBy( unlockName( Items.NETHER_STAR ), has( Tags.Items.NETHER_STARS ) )
-                .unlockedBy( unlockName( Items.GLASS ), has( Tags.Items.GLASS ) )
-                .unlockedBy( unlockName( Items.DIRT ), has( Items.DIRT ) )
-                .save( saver );
+        coolGlasses( Items.DIRT, TomItems.COOL_DIRT_GLASSES.get(), saver );
+        coolGlasses( Items.STONE, TomItems.COOL_STONE_GLASSES.get(), saver );
     }
     
-    protected void smeltingRecipe( ItemLike ingredient, ItemLike result, float experience, Consumer<FinishedRecipe> consumer ) {
+    protected void smeltingRecipe( ItemLike ingredient, ItemLike result, float experience, Consumer<FinishedRecipe> saver ) {
         String ingredientName = itemName( ingredient );
         String resultName = itemName( result );
         
         CookingRecipeBuilderNoTab.smelting( Ingredient.of( ingredient ), result, experience, 200 )
                 .unlockedBy( "has_" + ingredientName, has( ingredient ) )
-                .save( consumer, Tomfoolery.rl( resultName + "_from_" + ingredientName + "_smelting" ) );
+                .save( saver, Tomfoolery.rl( resultName + "_from_" + ingredientName + "_smelting" ) );
     }
     
     @SuppressWarnings( "unused" )
-    protected void blastingRecipe( ItemLike ingredient, ItemLike result, float experience, Consumer<FinishedRecipe> consumer ) {
+    protected void blastingRecipe( ItemLike ingredient, ItemLike result, float experience, Consumer<FinishedRecipe> saver ) {
         String ingredientName = itemName( ingredient );
         String resultName = itemName( result );
         
         CookingRecipeBuilderNoTab.blasting( Ingredient.of( ingredient ), result, experience, 100 )
                 .unlockedBy( "has_" + ingredientName, has( ingredient ) )
-                .save( consumer, Tomfoolery.rl( resultName + "_from_" + ingredientName + "_blasting" ) );
+                .save( saver, Tomfoolery.rl( resultName + "_from_" + ingredientName + "_blasting" ) );
     }
     
     @SuppressWarnings( { "ConstantConditions", "SameParameterValue" } )
-    protected void smithingRecipe( ItemLike template, ItemLike base, ItemLike addition, Item result, Consumer<FinishedRecipe> consumer ) {
+    protected void smithingRecipe( ItemLike template, ItemLike base, ItemLike addition, Item result, Consumer<FinishedRecipe> saver ) {
         SmithingTransformRecipeBuilderNoTab.smithing( Ingredient.of( template ), Ingredient.of( base ), Ingredient.of( addition ), result )
                 .unlocks( "has_" + itemName( addition ), has( addition ) )
                 .unlocks( "has_" + itemName( template ), has( template ) )
-                .save( consumer, regName( result ) );
+                .save( saver, regName( result ) );
+    }
+    
+    protected void coolGlasses( ItemLike base, ItemLike result, Consumer<FinishedRecipe> saver ) {
+        ShapedRecipeBuilder.shaped( RecipeCategory.TOOLS, result )
+                .pattern( " N " )
+                .pattern( "GBG" )
+                .define( 'N', Tags.Items.NETHER_STARS )
+                .define( 'G', Items.GLASS )
+                .define( 'B', base )
+                .unlockedBy( unlockName( Items.NETHER_STAR ), has( Tags.Items.NETHER_STARS ) )
+                .unlockedBy( unlockName( Items.GLASS ), has( Tags.Items.GLASS ) )
+                .unlockedBy( unlockName( base ), has( base ) )
+                .save( saver );
     }
     
     protected static String itemName( ItemLike itemLike ) {
