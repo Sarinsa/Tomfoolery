@@ -28,6 +28,6 @@ side = "BOTH"
 [[dependencies.tomfoolery]]
 modId = "crust"
 mandatory = true
-versionRange = "[4.9.15,)"
+versionRange = "[4.15.23,)"
 ordering = "AFTER"
 side = "BOTH"
