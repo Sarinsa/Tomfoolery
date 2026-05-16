@@ -6,15 +6,16 @@ import com.sarinsa.tomfoolery.common.core.registry.TomItems;
 import com.sarinsa.tomfoolery.common.entity.living.ai.GrenadeLauncherAttackGoal;
 import com.sarinsa.tomfoolery.common.item.CoolGlassesItem;
 import com.sarinsa.tomfoolery.common.network.NetworkHelper;
-import com.sarinsa.tomfoolery.common.util.NBTHelper;
+import com.sarinsa.tomfoolery.common.util.NBTUtil;
+import fathertoast.crust.api.lib.DeferredAction;
+import fathertoast.crust.api.lib.EnvironmentHelper;
+import fathertoast.crust.api.lib.NBTHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.goal.WrappedGoal;
-import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -24,14 +25,14 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
-import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.Set;
-
 public class EntityEventsListener {
+    
+    public static final String KEY_LAUNCHER_MOB = "TMFOOLRLauncherMob";
+    
     
     @SubscribeEvent( priority = EventPriority.HIGH )
     public void onPotionEffectExpire( MobEffectEvent.Expired event ) {
@@ -73,38 +74,50 @@ public class EntityEventsListener {
                     for( ServerPlayer playerEntity : serverLevel.players() ) {
                         NetworkHelper.updateEntityCactusAttract( playerEntity, livingEntity );
                     }
-                    
-                    if( livingEntity instanceof Zombie zombie ) {
-                        if( zombie.getItemBySlot( EquipmentSlot.MAINHAND ).getItem() == TomItems.GRENADE_LAUNCHER.get() ) {
-                            Set<WrappedGoal> goals = zombie.goalSelector.getAvailableGoals();
-                            boolean addGoal = true;
-                            
-                            for( WrappedGoal goal : goals ) {
-                                if( goal.getGoal() instanceof GrenadeLauncherAttackGoal ) {
-                                    addGoal = false;
-                                    break;
-                                }
-                            }
-                            if( addGoal ) {
-                                zombie.goalSelector.addGoal( 1, new GrenadeLauncherAttackGoal( zombie, 1.0D, true ) );
-                            }
-                        }
-                    }
                 }
             }
         }
     }
     
     @SubscribeEvent( priority = EventPriority.LOWEST )
-    public void onFinalizeSpawn( MobSpawnEvent.FinalizeSpawn event ) {
-        final Mob mob = event.getEntity();
-        
-        if( TomConfig.GENERAL.RIDICULAUNCHER.launcherWielders.contains( mob ) ) {
-            if( TomConfig.GENERAL.RIDICULAUNCHER.launcherWielders.rollChance( mob ) ) {
-                mob.setItemSlot( EquipmentSlot.MAINHAND, new ItemStack( TomItems.GRENADE_LAUNCHER.get() ) );
-                mob.goalSelector.addGoal( 1, new GrenadeLauncherAttackGoal( mob, 1.0D, true ) );
+    public void onEntityJoinLevel( EntityJoinLevelEvent event ) {
+        if( event.getEntity() instanceof Mob mob && event.getLevel() instanceof ServerLevel serverLevel ) {
+            if( serverLevel.getServer().isSameThread() ) {
+                maybeMakeLauncherMob( mob, serverLevel );
+            }
+            else {
+                DeferredAction.queue( () -> maybeMakeLauncherMob( mob, serverLevel ) );
             }
         }
+    }
+    
+    /**
+     * Checks if the given mob should be made into a "launcher mob"
+     * by giving it a ridicu-launcher and an AI goal to "use" it.
+     *
+     * @return True if the mob was processed.
+     * Returns false if the mob is in an unloaded location.
+     */
+    private static boolean maybeMakeLauncherMob( Mob mob, ServerLevel level ) {
+        if( !EnvironmentHelper.isLoaded( level, mob.blockPosition() ) || mob.isRemoved() )
+            return false;
+        
+        // If the mob already has the launcher item and is marked as
+        // a launcher mob, give it the insaneo mode launcher goal.
+        if( mob.getMainHandItem().is( TomItems.GRENADE_LAUNCHER.get() ) &&
+                NBTHelper.containsNumber( mob.getPersistentData(), KEY_LAUNCHER_MOB ) ) {
+            mob.goalSelector.addGoal( 1, new GrenadeLauncherAttackGoal( mob, 1.0D, true ) );
+        }
+        else {
+            if( TomConfig.GENERAL.RIDICULAUNCHER.launcherWielders.contains( mob ) ) {
+                if( TomConfig.GENERAL.RIDICULAUNCHER.launcherWielders.rollChance( mob, level.getRandom() ) ) {
+                    mob.setItemSlot( EquipmentSlot.MAINHAND, new ItemStack( TomItems.GRENADE_LAUNCHER.get() ) );
+                    mob.goalSelector.addGoal( 1, new GrenadeLauncherAttackGoal( mob, 1.0D, true ) );
+                    mob.getPersistentData().putBoolean( KEY_LAUNCHER_MOB, true );
+                }
+            }
+        }
+        return true;
     }
     
     @SubscribeEvent( priority = EventPriority.LOW )
@@ -154,7 +167,7 @@ public class EntityEventsListener {
     
     private static void updateEntityCactusAttract( MobEffect effect, LivingEntity livingEntity, boolean marked ) {
         if( effect == TomEffects.CACTUS_ATTRACTION.get() ) {
-            NBTHelper.markEntityCactusAttr( livingEntity, marked );
+            NBTUtil.markEntityCactusAttr( livingEntity, marked );
         }
     }
 }
