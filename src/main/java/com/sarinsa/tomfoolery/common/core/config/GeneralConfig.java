@@ -5,14 +5,23 @@ import com.sarinsa.tomfoolery.common.core.registry.types.GrenadeType;
 import fathertoast.crust.api.config.common.AbstractConfigCategory;
 import fathertoast.crust.api.config.common.AbstractConfigFile;
 import fathertoast.crust.api.config.common.ConfigManager;
-import fathertoast.crust.api.config.common.field.*;
-import fathertoast.crust.api.config.common.value.*;
+import fathertoast.crust.api.config.common.field.BooleanField;
+import fathertoast.crust.api.config.common.field.EnvironmentListField;
+import fathertoast.crust.api.config.common.field.IntField;
+import fathertoast.crust.api.config.common.field.collection.EntityMapField;
+import fathertoast.crust.api.config.common.field.collection.RegistrySetField;
+import fathertoast.crust.api.config.common.value.EnvironmentEntry;
+import fathertoast.crust.api.config.common.value.EnvironmentList;
+import fathertoast.crust.api.config.common.value.collection.EntityMap;
+import fathertoast.crust.api.config.common.value.collection.RegistrySet;
+import fathertoast.crust.api.config.common.value.collection.value.DoubleValueCodec;
 import fathertoast.crust.api.config.common.value.environment.time.DayTimeEnvironment;
 import fathertoast.crust.api.config.common.value.environment.time.MoonPhaseEnvironment;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.List;
 
+@SuppressWarnings( "UnstableApiUsage" )
 public class GeneralConfig extends AbstractConfigFile {
     
     public final Rediculauncher RIDICULAUNCHER;
@@ -23,12 +32,6 @@ public class GeneralConfig extends AbstractConfigFile {
         super( cfgManager, cfgName,
                 "This config contains general settings for the mod."
         );
-        
-        SPEC.fileOnlyNewLine();
-        SPEC.describeRegistryEntryList();
-        SPEC.fileOnlyNewLine();
-        SPEC.describeEntityList();
-        SPEC.fileOnlyNewLine();
         SPEC.describeEnvironmentListPart1of2();
         SPEC.fileOnlyNewLine();
         
@@ -42,36 +45,37 @@ public class GeneralConfig extends AbstractConfigFile {
     
     public static class Rediculauncher extends AbstractConfigCategory<GeneralConfig> {
         
-        public final RegistryEntryListField<GrenadeType> blacklistedGrenades;
+        public final RegistrySetField<GrenadeType> blacklistedGrenades;
         
-        public final EntityListField launcherWielders;
+        public final EntityMapField<Double> launcherWielders;
         
         
         Rediculauncher( GeneralConfig parent ) {
             super( parent, "ridiculauncher",
                     "Contains settings related to the Ridicu-launcher, grenades and other ammo types." );
             
-            blacklistedGrenades = SPEC.define( new RegistryEntryListField<>( "blacklisted_grenades", createDefaultBlacklistedGrenades(),
+            blacklistedGrenades = SPEC.define( new RegistrySetField<>( "blacklisted_grenades", createDefaultBlacklistedGrenades(),
                     "A list of grenade types that are blacklisted and cannot be used by the Ridicu-launcher." ) );
             
             SPEC.newLine();
             
-            launcherWielders = SPEC.define( new EntityListField( "launcher_wielders", createDefaultLauncherWielders(),
+            launcherWielders = SPEC.define( new EntityMapField<>( "launcher_wielders", createDefaultLauncherWielders(),
                     "A list of entity types that can spawn with a Redicu-launcher equipped and AI to use it, as well as the chance for them to spawn with one." ) );
             
             SPEC.newLine();
         }
         
-        private RegistryEntryList<GrenadeType> createDefaultBlacklistedGrenades() {
-            return new RegistryEntryList<>( TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get() );
+        private RegistrySet<GrenadeType> createDefaultBlacklistedGrenades() {
+            return new RegistrySet.Builder<>( TomGrenadeTypes.GRENADE_TYPE_REGISTRY.get() )
+                    .build();
         }
         
-        private EntityList createDefaultLauncherWielders() {
-            return new EntityList( null,
-                    new EntityEntry( EntityType.ZOMBIE, 0.02 ),
-                    new EntityEntry( EntityType.SKELETON, 0.01 ),
-                    new EntityEntry( EntityType.WITHER_SKELETON, 0.01 )
-            );
+        private EntityMap<Double> createDefaultLauncherWielders() {
+            return new EntityMap.Builder<>( DoubleValueCodec.PERCENT )
+                    .put( EntityType.ZOMBIE, 0.02 )
+                    .put( EntityType.SKELETON, 0.01 )
+                    .put( EntityType.WITHER_SKELETON, 0.01 )
+                    .build();
         }
     }
     

@@ -1,7 +1,7 @@
 package com.sarinsa.tomfoolery.common.network.work;
 
 import com.sarinsa.tomfoolery.common.network.message.S2CUpdateEntityCactusAttract;
-import com.sarinsa.tomfoolery.common.util.NBTHelper;
+import com.sarinsa.tomfoolery.common.util.NBTUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
@@ -16,7 +16,7 @@ public class ClientWork {
             Entity entity = Minecraft.getInstance().player.clientLevel.getEntity( message.entityId );
             
             if( entity instanceof LivingEntity livingEntity ) {
-                NBTHelper.markEntityCactusAttr( livingEntity, message.marked );
+                NBTUtil.markEntityCactusAttr( livingEntity, message.marked );
             }
         }
     }

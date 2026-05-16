@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
 
-public class NBTHelper {
+public class NBTUtil {
     
     private static final String MOD_DATA_KEY = "TomfooleryModData";
     

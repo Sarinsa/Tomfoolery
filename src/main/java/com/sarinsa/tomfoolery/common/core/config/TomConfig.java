@@ -6,16 +6,12 @@ import fathertoast.crust.api.config.common.ConfigManager;
 public class TomConfig {
     
     /** General settings. */
-    public static final GeneralConfig GENERAL = new GeneralConfig( ConfigManager.getRequired( Tomfoolery.MODID ), "general" );
+    public static GeneralConfig GENERAL;
     
     
     /** Performs initial loading of our configs. */
     public static void initialize() {
-        ConfigManager manager = ConfigManager.getRequired( Tomfoolery.MODID );
-        manager.freezeFileWatcher = true;
-        
+        GENERAL = new GeneralConfig( ConfigManager.getRequired( Tomfoolery.MODID ), "general" );
         GENERAL.SPEC.initialize();
-        
-        manager.freezeFileWatcher = false;
     }
 }
