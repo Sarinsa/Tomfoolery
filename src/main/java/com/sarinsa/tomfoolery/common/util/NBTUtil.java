@@ -1,32 +1,27 @@
 package com.sarinsa.tomfoolery.common.util;
 
+import fathertoast.crust.api.lib.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 
 public class NBTUtil {
     
-    private static final String MOD_DATA_KEY = "TomfooleryModData";
+    private static final String KEY_MOD_DATA = "TomfooleryModData";
     
-    public static void markEntityCactusAttr( LivingEntity livingEntity, boolean marked ) {
-        if( livingEntity == null )
-            return;
-        
-        if( livingEntity.getPersistentData().contains( MOD_DATA_KEY, Tag.TAG_COMPOUND ) ) {
-            livingEntity.getPersistentData().getCompound( MOD_DATA_KEY ).putBoolean( "CactusMarked", marked );
-        }
-        else {
-            CompoundTag modData = new CompoundTag();
-            modData.putBoolean( "CactusMarked", marked );
-            livingEntity.getPersistentData().put( MOD_DATA_KEY, modData );
-        }
-    }
+    public static final String KEY_LAUNCHER_MOB = "IsLauncherMob";
     
-    public static boolean isEntityCactusMarked( LivingEntity livingEntity ) {
-        if( livingEntity.getPersistentData().contains( MOD_DATA_KEY, Tag.TAG_COMPOUND ) ) {
-            return livingEntity.getPersistentData().getCompound( MOD_DATA_KEY ).contains( "CactusMarked", Tag.TAG_BYTE )
-                    && livingEntity.getPersistentData().getCompound( MOD_DATA_KEY ).getBoolean( "CactusMarked" );
+    
+    /** @return True if the given mob is flagged as a Ridicu-launcher wielder mob. */
+    public static boolean isLauncherMob( Mob mob ) {
+        if( NBTHelper.containsCompound( mob.getPersistentData(), KEY_MOD_DATA ) ) {
+            return NBTHelper.containsNumber( mob.getPersistentData().getCompound( KEY_MOD_DATA ), KEY_LAUNCHER_MOB );
         }
         return false;
+    }
+    
+    /** Flags the given mob as being a Ridicu-launcher wielder. */
+    public static void setLauncherMob( Mob mob ) {
+        CompoundTag modData = NBTHelper.getOrCreateCompound( mob.getPersistentData(), KEY_MOD_DATA );
+        modData.putBoolean( KEY_LAUNCHER_MOB, true );
     }
 }

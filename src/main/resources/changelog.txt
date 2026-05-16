@@ -1,3 +1,9 @@
+1.20.1-4.0.2
+    - Bumped minimum required Crust version to 4.15.23+.
+    - Reworked some config stuff to utilize the new experimental fuzzy collection config API from Crust.
+    - Fixed ridicu-launcher item and AI goal not always being assigned correctly to the mobs that are configured to have it.
+    - Removed a redundant network packet.
+    - Made the CactusBlockEntity a bit less chaotic in its movement.
 1.20.1-4.0.1
     - Now required Crust 4.9.15+.
     - Added Cool Stone Glasses.

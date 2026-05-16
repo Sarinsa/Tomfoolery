@@ -20,11 +20,14 @@ public class CactusAttractionEffect extends MobEffect {
     
     @Override
     public void applyEffectTick( LivingEntity livingEntity, int amplifier ) {
-        Level level = livingEntity.getCommandSenderWorld();
-        BlockPos pos = livingEntity.blockPosition();
-        int range = amplifier > 0 ? 12 : 6;
+        final Level level = livingEntity.level();
         
-        Iterable<BlockPos> scanArea = BlockPos.betweenClosed( pos.offset( range, 5, range ), pos.offset( -range, -5, -range ) );
+        if( level.isClientSide ) return;
+        
+        final BlockPos pos = livingEntity.blockPosition();
+        final int range = amplifier > 0 ? 12 : 6;
+        
+        final Iterable<BlockPos> scanArea = BlockPos.betweenClosed( pos.offset( range, 5, range ), pos.offset( -range, -5, -range ) );
         
         for( BlockPos blockPos : scanArea ) {
             BlockState state = level.getBlockState( blockPos );
@@ -38,9 +41,8 @@ public class CactusAttractionEffect extends MobEffect {
     }
     
     @Override
-    public void applyInstantenousEffect( @Nullable Entity source, @Nullable Entity indirectSource, LivingEntity livingEntity, int amplifier, double health ) {
-    
-    }
+    public void applyInstantenousEffect( @Nullable Entity source, @Nullable Entity indirectSource, LivingEntity livingEntity,
+                                         int amplifier, double health ) { }
     
     @Override
     public boolean isDurationEffectTick( int duration, int amplifier ) {

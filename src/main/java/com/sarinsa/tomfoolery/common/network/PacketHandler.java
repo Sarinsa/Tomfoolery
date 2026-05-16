@@ -1,7 +1,6 @@
 package com.sarinsa.tomfoolery.common.network;
 
 import com.sarinsa.tomfoolery.common.core.Tomfoolery;
-import com.sarinsa.tomfoolery.common.network.message.S2CUpdateEntityCactusAttract;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
@@ -24,7 +23,6 @@ public class PacketHandler {
     }
     
     public void registerMessages() {
-        CHANNEL.registerMessage( messageIndex++, S2CUpdateEntityCactusAttract.class, S2CUpdateEntityCactusAttract::encode, S2CUpdateEntityCactusAttract::decode, S2CUpdateEntityCactusAttract::handle );
     }
     
     /**
