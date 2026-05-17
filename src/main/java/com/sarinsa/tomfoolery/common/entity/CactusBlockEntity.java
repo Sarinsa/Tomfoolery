@@ -68,9 +68,11 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
     public void tick() {
         super.tick();
         
+        // Tick grace period
         if( gracePeriod > 0 )
             --gracePeriod;
         
+        // Move towards target, if target exists
         if( followTarget != null && followTarget.isAlive() && followTarget.hasEffect( TomEffects.CACTUS_ATTRACTION.get() ) ) {
             final boolean intersects = followTarget.getBoundingBox().intersects( getBoundingBox() );
             final Vec3 vec = intersects
@@ -82,6 +84,7 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
             ).normalize().scale( followTarget.getBoundingBox().intersects( getBoundingBox() ) ? 0.005 : 0.3 );
             setDeltaMovement( vec );
             
+            // Check if target is too far away to follow
             if( distanceToSqr( followTarget ) > 600 )
                 followTarget = null;
         }
@@ -94,11 +97,13 @@ public class CactusBlockEntity extends Entity implements IEntityAdditionalSpawnD
         // noinspection resource
         final Level level = level();
         
+        // Hurt all living entities collided with
         for( LivingEntity livingEntity : level.getEntitiesOfClass( LivingEntity.class, getBoundingBox().inflate( 1.2D ) ) ) {
             if( getBoundingBox().intersects( livingEntity.getBoundingBox() ) ) {
                 livingEntity.hurt( level.damageSources().cactus(), 1.0F );
             }
         }
+        // Check if we are on the ground and should "solidify"
         if( !level.isClientSide && onGround() && gracePeriod <= 0 ) {
             level.setBlock( blockPosition(), Blocks.CACTUS.defaultBlockState(), Block.UPDATE_CLIENTS );
             discard();
