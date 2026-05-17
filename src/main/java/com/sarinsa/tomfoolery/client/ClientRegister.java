@@ -11,12 +11,14 @@ import com.sarinsa.tomfoolery.common.core.Tomfoolery;
 import com.sarinsa.tomfoolery.common.core.registry.TomEntities;
 import com.sarinsa.tomfoolery.common.core.registry.TomItems;
 import com.sarinsa.tomfoolery.common.item.GrenadeRoundItem;
+import fathertoast.crust.api.config.client.ClientConfigUtil;
 import fathertoast.crust.api.config.common.ConfigManager;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -34,6 +36,8 @@ public class ClientRegister {
                 ConfigManager.getRequired( Tomfoolery.MODID ), "client_settings" );
         
         CLIENT_CONFIG.SPEC.initialize();
+        
+        ClientConfigUtil.registerConfigButtonAsEditScreen( ModList.get().getModContainerById( Tomfoolery.MODID ).orElseThrow() );
         
         TomfooleryModelLayers.init();
         TomArmPoses.init();
