@@ -60,8 +60,6 @@ public class Ghastinator extends Ghast {
         final Level level = level();
         
         if( !level.isClientSide ) {
-            System.out.println( level.getDayTime() % 24_000 );
-            
             if( TomConfig.GENERAL.GHASTINATOR.despawnConditions.getOrElse( level, blockPosition(), 0 ) > 0 ) {
                 level.playSound( null, blockPosition(), SoundEvents.ZOMBIE_VILLAGER_CONVERTED, SoundSource.HOSTILE, 15.0F, 0.5F );
                 discard();
@@ -190,8 +188,6 @@ public class Ghastinator extends Ghast {
                         if( !ghastinator.isSilent() ) {
                             level.playSound( null, ghastinator.blockPosition(), SoundEvents.GHAST_SHOOT, SoundSource.HOSTILE, 15.0F, 0.35F );
                         }
-                        
-                        System.out.println( level.isClientSide );
                         HugeFireball fireball = new HugeFireball( level, ghastinator, x, y, z, ghastinator.getExplosionPower() );
                         fireball.setPos( ghastinator.getX() + viewVec.x * 16.0D, ghastinator.getY( 0.5D ) + 0.5D, fireball.getZ() + viewVec.z * 16.0D );
                         level.addFreshEntity( fireball );

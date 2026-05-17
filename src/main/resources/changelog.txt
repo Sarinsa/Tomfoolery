@@ -1,3 +1,5 @@
+1.20.1-4.0.3
+    - Removed some forgotten debug console prints.
 1.20.1-4.0.2
     - Bumped minimum required Crust version to 4.15.23+.
     - Reworked some config stuff to utilize the new experimental fuzzy collection config API from Crust.
