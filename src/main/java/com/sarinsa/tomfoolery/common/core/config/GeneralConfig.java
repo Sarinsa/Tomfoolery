@@ -19,8 +19,6 @@ import fathertoast.crust.api.config.common.value.environment.time.DayTimeEnviron
 import fathertoast.crust.api.config.common.value.environment.time.MoonPhaseEnvironment;
 import net.minecraft.world.entity.EntityType;
 
-import java.util.List;
-
 @SuppressWarnings( "UnstableApiUsage" )
 public class GeneralConfig extends AbstractConfigFile {
     
@@ -117,18 +115,22 @@ public class GeneralConfig extends AbstractConfigFile {
         
         private EnvironmentList createDefaultSpawnConditions() {
             return new EnvironmentList(
-                    new EnvironmentEntry( 1, List.of(
+                    new EnvironmentEntry( 1,
                             new MoonPhaseEnvironment( MoonPhaseEnvironment.Value.NEW, false ),
-                            new DayTimeEnvironment( DayTimeEnvironment.Value.NIGHT, false )
-                    ) )
+                            new DayTimeEnvironment( DayTimeEnvironment.Value.NIGHT, false ),
+                            new DayTimeEnvironment( DayTimeEnvironment.Value.SUNRISE, true )
+                    )
             );
         }
         
         private EnvironmentList createDefaultDespawnConditions() {
             return new EnvironmentList(
-                    new EnvironmentEntry( 1, List.of(
+                    new EnvironmentEntry( 1,
                             new DayTimeEnvironment( DayTimeEnvironment.Value.DAY, false )
-                    ) )
+                    ),
+                    new EnvironmentEntry( 1,
+                            new DayTimeEnvironment( DayTimeEnvironment.Value.SUNRISE, false )
+                    )
             );
         }
     }

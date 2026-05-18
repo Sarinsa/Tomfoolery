@@ -1,3 +1,6 @@
+1.20.1-4.0.4
+    - Tweaked default spawn and despawn conditions for the Ghastinator.
+    -
 1.20.1-4.0.3
     - Removed some forgotten debug console prints.
     - Mod-list screen button now opens Crust config editor.
