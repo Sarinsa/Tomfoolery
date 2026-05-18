@@ -1,6 +1,7 @@
 1.20.1-4.0.4
     - Tweaked default spawn and despawn conditions for the Ghastinator.
-    -
+    - Fixed Ghastinator spawning handler not respecting the "doMobSpawning" game rule.
+    - Added config option for whether the Ghastinator should do any invisibility targeting checks on targets.
 1.20.1-4.0.3
     - Removed some forgotten debug console prints.
     - Mod-list screen button now opens Crust config editor.

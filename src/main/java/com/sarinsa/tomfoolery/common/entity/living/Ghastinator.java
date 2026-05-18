@@ -251,7 +251,11 @@ public class Ghastinator extends Ghast {
                 return;
             }
             // noinspection resource
-            List<Player> nearbyPlayers = mob.level().getEntitiesOfClass( Player.class, mob.getBoundingBox().inflate( 200.0D, 300.0D, 200.0D ) );
+            final List<Player> nearbyPlayers = mob.level().getEntitiesOfClass( Player.class, mob.getBoundingBox().inflate( 200.0D, 300.0D, 200.0D ) );
+            
+            targetConditions = TomConfig.GENERAL.GHASTINATOR.ignoreInvisibility.get()
+                    ? TargetingConditions.forCombat().selector( null )
+                    : TargetingConditions.forCombat().range( 200.0D );
             // noinspection resource
             target = mob.level().getNearestEntity( nearbyPlayers, targetConditions, mob, mob.getX(), mob.getEyeY(), mob.getZ() );
             

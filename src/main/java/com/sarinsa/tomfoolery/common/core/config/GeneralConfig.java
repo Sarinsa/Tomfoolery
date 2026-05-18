@@ -80,8 +80,11 @@ public class GeneralConfig extends AbstractConfigFile {
     public static class Ghastinator extends AbstractConfigCategory<GeneralConfig> {
         
         public final BooleanField spawnGhastinator;
+        
         public final EnvironmentListField spawnConditions;
         public final EnvironmentListField despawnConditions;
+        
+        public final BooleanField ignoreInvisibility;
         
         public final IntField explosionPower;
         
@@ -97,6 +100,8 @@ public class GeneralConfig extends AbstractConfigFile {
                     "Ghastinators will not spawn near a player if one already exists within a 200 block radius of the player.",
                     "This feature exists solely to torture players." ) );
             
+            SPEC.newLine();
+            
             spawnConditions = SPEC.define( new EnvironmentListField( "spawn_conditions", createDefaultSpawnConditions(),
                     "A list of environment conditions that must be met for the Ghastinator to spawn.",
                     "If conditions return a value greater than 0, conditions are considered met",
@@ -105,6 +110,12 @@ public class GeneralConfig extends AbstractConfigFile {
             despawnConditions = SPEC.define( new EnvironmentListField( "despawn_conditions", createDefaultDespawnConditions(),
                     "A list of environment conditions that must be met for Ghastinators to despawn.",
                     "If conditions return a value greater than 0, conditions are considered met." ) );
+            
+            SPEC.newLine();
+            
+            ignoreInvisibility = SPEC.define( new BooleanField( "ignore_invisibility", false,
+                    "If true, the Ghastinator will not perform any invisibility checks on the player it tries to target.",
+                    "In other words, it will target players even if they are considered invisible." ) );
             
             SPEC.newLine();
             
