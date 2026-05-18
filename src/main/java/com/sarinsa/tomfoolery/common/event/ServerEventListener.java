@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.level.GameRules;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -45,7 +46,8 @@ public class ServerEventListener {
                 if( --timeNextGhastinatorSpawnCheck <= 0 ) {
                     timeNextGhastinatorSpawnCheck = 900;
                     
-                    if( server.overworld().getDifficulty() == Difficulty.PEACEFUL )
+                    if( !server.getGameRules().getRule( GameRules.RULE_DOMOBSPAWNING ).get()
+                            || server.overworld().getDifficulty() == Difficulty.PEACEFUL )
                         return;
                     
                     List<ServerPlayer> players = server.overworld().players();
